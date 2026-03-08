@@ -1,19 +1,22 @@
-const API_KEY = "7bdb3c0098a5464a8673d725ffe70da5";
-const BASE_URL = "https://api.themoviedb.org/3";
+const BASE_URL = "/functions/api"; 
 const IMG_URL = "https://image.tmdb.org/t/p/original";
 let currentItem;
 let debounceTimer;
 
+// --- 1. FETCH TRENDING ---
 async function fetchTrending(type) {
-    const res = await fetch(`${BASE_URL}/trending/${type}/week?api_key=${API_KEY}`);
+    // Imbes na TMDB URL, ang function na ang tatawagin natin
+    const res = await fetch(`${BASE_URL}?endpoint=/trending/${type}/week`);
     const data = await res.json();
     return data.results;
 }
 
+// --- 2. FETCH ANIME ---
 async function fetchTrendingAnime() {
     let allResults = [];
     for (let page = 1; page <= 2; page++) {
-        const res = await fetch(`${BASE_URL}/trending/tv/week?api_key=${API_KEY}&page=${page}`);
+        // Pinalitan din dito ang URL structure
+        const res = await fetch(`${BASE_URL}?endpoint=/trending/tv/week&page=${page}`);
         const data = await res.json();
         const filtered = data.results.filter(item => item.genre_ids.includes(16));
         allResults = allResults.concat(filtered);
@@ -37,20 +40,17 @@ function displayList(items, containerId) {
         const card = document.createElement("div");
         card.className = "movie-card";
 
-        // 1. IMAGE - Full Movie Click
         const img = document.createElement("img");
         img.src = `${IMG_URL}${item.poster_path}`;
-        img.onclick = () => showDetails(item); // Eto dapat ang mag-oopen ng Movie Player
+        img.onclick = () => showDetails(item); 
 
-        // 2. OVERLAY
         const overlay = document.createElement("div");
         overlay.className = "trailer-overlay";
         
-        // 3. BUTTON - Trailer Click Only
         const trailerBtn = document.createElement("button");
         trailerBtn.innerHTML = "▶ Play Trailer";
         trailerBtn.onclick = (e) => {
-            e.stopPropagation(); // Stop code from clicking the image behind
+            e.stopPropagation(); 
             playTrailer(item.id, item.media_type || (containerId === "movies-list" ? "movie" : "tv"));
         };
 
@@ -69,23 +69,20 @@ function showDetails(item) {
     document.getElementById("modal-rating").innerHTML = "⭐".repeat(Math.round(item.vote_average / 2));
     changeServer();
     document.getElementById("modal").style.display = "flex";
-
 }
 
+// --- 3. PLAY TRAILER ---
 async function playTrailer(id, type) {
     try {
-        const res = await fetch(`${BASE_URL}/${type}/${id}/videos?api_key=${API_KEY}`);
+        // Binago ang fetch dito para dumaan sa proxy function
+        const res = await fetch(`${BASE_URL}?endpoint=/${type}/${id}/videos`);
         const data = await res.json();
         
-        // Hanapin ang Official Trailer sa YouTube
         const trailer = data.results.find(vid => vid.type === "Trailer" && vid.site === "YouTube");
         
         if (trailer) {
-            // Gamitin ang modal mo para i-play ang YouTube trailer
             document.getElementById("modal-video").src = `https://www.youtube.com/embed/${trailer.key}?autoplay=1`;
             document.getElementById("modal").style.display = "flex";
-            
-            // I-set ang title para alam ng user na trailer ito
             document.getElementById("modal-title").textContent = "Watching Trailer";
         } else {
             alert("Pasensya na bro, walang available na trailer para dito.");
@@ -94,7 +91,6 @@ async function playTrailer(id, type) {
         console.error("Error fetching trailer:", error);
     }
 }
-    
 
 function changeServer() {
     const server = document.getElementById("server").value;
@@ -111,6 +107,7 @@ function closeModal() {
     document.getElementById("modal-video").src = "";
 }
 
+// --- 4. HANDLE SEARCH ---
 async function handleSearch(query) {
     const searchSection = document.getElementById("search-results-section");
     const trendingSection = document.getElementById("trending-section");
@@ -120,23 +117,21 @@ async function handleSearch(query) {
     if (!query.trim()) {
         searchSection.style.display = "none";
         trendingSection.style.display = "block";
-        resultsContainer.innerHTML = ""; // Linisin ang results container
+        resultsContainer.innerHTML = ""; 
         return;
     }
 
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(async () => {
         try {
-            // Gumamit tayo ng encodeURIComponent para sa special characters
-            const res = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}`);
+            // Updated search URL
+            const res = await fetch(`${BASE_URL}?endpoint=/search/multi&query=${encodeURIComponent(query)}`);
             const data = await res.json();
             
             if (data.results && data.results.length > 0) {
                 searchSection.style.display = "block";
                 trendingSection.style.display = "none";
                 searchTitle.textContent = `Results for: "${query}"`;
-                
-                // Tatawagin nito yung displayList na may Trailer Hover logic mo
                 displayList(data.results, "search-results-list");
             } else {
                 searchTitle.textContent = `No results found for "${query}"`;
@@ -146,19 +141,6 @@ async function handleSearch(query) {
             console.error("Search Error:", error);
         }
     }, 300);
-}
-
-function displaySuggestions(results) {
-    const box = document.getElementById("suggestions-box");
-    box.innerHTML = "";
-    results.forEach(item => {
-        if (!item.poster_path) return;
-        const div = document.createElement("div");
-        div.className = "suggestion-item";
-        div.onclick = () => { showDetails(item); box.innerHTML = ""; };
-        div.innerHTML = `<img src="${IMG_URL}${item.poster_path}"><div><h4>${item.title || item.name}</h4></div>`;
-        box.appendChild(div);
-    });
 }
 
 // Navbar scroll effect
@@ -179,9 +161,3 @@ async function init() {
 }
 
 init();
-
-
-
-
-
-
