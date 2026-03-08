@@ -22,7 +22,6 @@ async function fetchTrendingAnime() {
         for (let page = 1; page <= 2; page++) {
             const res = await fetch(`${BASE_URL}?endpoint=/trending/tv/week&page=${page}`);
             const data = await res.json();
-            // Genre 16 is Animation
             const filtered = data.results.filter(item => item.genre_ids && item.genre_ids.includes(16));
             allResults = allResults.concat(filtered);
         }
@@ -32,7 +31,41 @@ async function fetchTrendingAnime() {
     return allResults;
 }
 
-// --- 3. DISPLAY FUNCTIONS ---
+// --- 3. HANDLE SEARCH (DITO NABALIK YUNG NAWALA BRO) ---
+async function handleSearch(query) {
+    const searchSection = document.getElementById("search-results-section");
+    const trendingSection = document.getElementById("trending-section");
+    const resultsContainer = document.getElementById("search-results-list");
+    const searchTitle = document.getElementById("search-title");
+
+    if (!query.trim()) {
+        if (searchSection) searchSection.style.display = "none";
+        if (trendingSection) trendingSection.style.display = "block";
+        return;
+    }
+
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(async () => {
+        try {
+            const res = await fetch(`${BASE_URL}?endpoint=/search/multi&query=${encodeURIComponent(query)}`);
+            const data = await res.json();
+            
+            if (data.results && data.results.length > 0) {
+                if (searchSection) searchSection.style.display = "block";
+                if (trendingSection) trendingSection.style.display = "none";
+                if (searchTitle) searchTitle.textContent = `Results for: "${query}"`;
+                displayList(data.results, "search-results-list");
+            } else {
+                if (searchTitle) searchTitle.textContent = `No results found for "${query}"`;
+                if (resultsContainer) resultsContainer.innerHTML = ""; 
+            }
+        } catch (error) {
+            console.error("Search Error:", error);
+        }
+    }, 400);
+}
+
+// --- 4. DISPLAY FUNCTIONS ---
 function displayBanner(item) {
     if (!item) return;
     const banner = document.getElementById("banner");
@@ -76,7 +109,7 @@ function displayList(items, containerId) {
     });
 }
 
-// --- 4. MODAL LOGIC ---
+// --- 5. MODAL LOGIC ---
 function showDetails(item) {
     currentItem = item;
     document.getElementById("modal-title").textContent = item.title || item.name;
@@ -121,18 +154,13 @@ function closeModal() {
     document.getElementById("modal-video").src = "";
 }
 
-// --- 5. INITIALIZATION ---
+// --- 6. INITIALIZATION ---
 async function init() {
-    console.log("Sinelzflix is starting..."); // Lalabas to sa F12 Console
+    console.log("Sinelzflix is starting..."); 
     try {
         const movies = await fetchTrending("movie");
-        console.log("Movies fetched:", movies ? movies.length : 0);
-
         const tvshows = await fetchTrending("tv");
-        console.log("TV Shows fetched:", tvshows ? tvshows.length : 0);
-
         const anime = await fetchTrendingAnime();
-        console.log("Anime fetched:", anime ? anime.length : 0);
 
         if (movies && movies.length > 0) {
             displayBanner(movies[0]);
@@ -149,4 +177,3 @@ async function init() {
 }
 
 init();
-
