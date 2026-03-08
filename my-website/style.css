@@ -221,3 +221,46 @@ select {
     #modal-image { display: none; } /* Tinago para lumaki ang text area sa mobile */
     #modal-title { font-size: 1.5rem; }
 }
+
+/* --- NEW LOGO STYLES (Dito natin aayusin bro) --- */
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+#site-logo {
+    /* Taasan natin ng konti para mas klaro, pero hindi masyadong malaki */
+    height: 70px; 
+    width: auto;
+    
+    /* Siguraduhin na hindi ma-stretch ang image */
+    object-fit: contain; 
+    
+    /* Konting shadow para lumutang sa navbar background */
+    filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.6)); 
+    
+    transition: transform 0.3s ease;
+}
+
+#site-logo:hover {
+    transform: scale(1.03); /* Konting zoom effect pag tinapat ang mouse */
+}
+
+/* --- NAVBAR STYLES (Siguraduhin na sapat ang space) --- */
+#navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    /* Lakihan natin ang padding sa taas at baba para sa logo */
+    padding: 10px 4%; 
+    
+    /* Gamitin natin ang primary black/blue color ng logo background */
+    background: rgba(2, 11, 26, 0.98); 
+    
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
