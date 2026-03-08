@@ -6,7 +6,7 @@
       padding: 100px; background: #222;
     }
 
-    .navbar img { height: 95px; }
+    .navbar img { height: 450px; }
     .nav-links { display: flex; align-items: center; gap: 10px; }
     .nav-links a { color: white; text-decoration: none; margin: 0 5px; }
 
@@ -285,4 +285,5 @@
   }
 
 }
+
 
