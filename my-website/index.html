@@ -14,42 +14,40 @@
             <img src="logo.png" alt="Sinelzflix Logo">
         </div>
         <div class="search-box">
-    <input type="text" id="search-input" placeholder="Search movies, anime..." oninput="handleSearch(this.value)">
-</div>
-
-<main>
-    <section id="search-results-section" style="display: none;">
-        <h2 id="search-title">Search Results</h2>
-        <div id="search-results-list" class="movie-row"></div>
-        <hr style="border: 1px solid var(--primary-blue); opacity: 0.2; margin: 40px 0;">
-    </section>
-
-</main>
+            <input type="text" id="search-input" placeholder="Search movies, anime..." oninput="handleSearch(this.value)">
         </div>
     </nav>
 
-    <header id="banner">
-        <div id="banner-content">
-            <h1 id="banner-title">Loading...</h1>
-            <p id="banner-desc"></p>
-        </div>
-    </header>
-
     <main>
-        <section>
-            <h2>Trending Movies</h2>
-            <div id="movies-list" class="movie-row"></div>
+        <section id="search-results-section" style="display: none; padding-top: 100px;">
+            <h2 id="search-title">Search Results</h2>
+            <div id="search-results-list" class="movie-row"></div>
+            <hr style="border: 1px solid var(--primary-blue); opacity: 0.2; margin: 40px 0;">
         </section>
 
-        <section>
-            <h2>TV Shows</h2>
-            <div id="tvshows-list" class="movie-row"></div>
-        </section>
+        <div id="trending-section">
+            <header id="banner">
+                <div id="banner-content">
+                    <h1 id="banner-title">Loading...</h1>
+                    <p id="banner-desc"></p>
+                </div>
+            </header>
 
-        <section>
-            <h2>Anime World</h2>
-            <div id="anime-list" class="movie-row"></div>
-        </section>
+            <section>
+                <h2>Trending Movies</h2>
+                <div id="movies-list" class="movie-row"></div>
+            </section>
+
+            <section>
+                <h2>TV Shows</h2>
+                <div id="tvshows-list" class="movie-row"></div>
+            </section>
+
+            <section>
+                <h2>Anime World</h2>
+                <div id="anime-list" class="movie-row"></div>
+            </section>
+        </div>
     </main>
 
     <div id="modal" class="modal">
@@ -79,6 +77,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
-
-
