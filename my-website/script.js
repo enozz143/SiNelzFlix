@@ -37,20 +37,23 @@ function displayList(items, containerId) {
         const card = document.createElement("div");
         card.className = "movie-card";
 
-        // Image - Pag ni-click ang mismong poster, MOVIE ang mag-play
+        // 1. IMAGE PART - Pag ni-click ang poster, FULL MOVIE ang lalabas
         const img = document.createElement("img");
         img.src = `${IMG_URL}${item.poster_path}`;
-        img.onclick = () => showDetails(item); 
+        img.onclick = () => {
+            // Siguraduhin na showDetails ang tinatawag para sa full movie
+            showDetails(item); 
+        };
 
-        // Overlay - Lalabas lang pag na-hover
+        // 2. OVERLAY PART - Lalabas lang pag na-hover
         const overlay = document.createElement("div");
         overlay.className = "trailer-overlay";
         
-        // Button sa loob ng overlay para sa TRAILER lang
+        // 3. TRAILER BUTTON - Pag ito lang ang ni-click, TRAILER ang lalabas
         const trailerBtn = document.createElement("button");
         trailerBtn.innerHTML = "▶ Play Trailer";
         trailerBtn.onclick = (e) => {
-            e.stopPropagation(); // Para hindi mag-trigger yung movie click
+            e.stopPropagation(); // IMPORTANTE: Para hindi mag-trigger yung click ng Movie
             playTrailer(item.id, item.media_type || (containerId === "movies-list" ? "movie" : "tv"));
         };
 
@@ -179,6 +182,7 @@ async function init() {
 }
 
 init();
+
 
 
 
