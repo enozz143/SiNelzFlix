@@ -102,7 +102,7 @@ function changeServer(){
 
 const server=document.getElementById("server").value
 
-const type=currentItem.title?"movie":"tv"
+const type=currentItem.media_type || (currentItem.title ? "movie" : "tv")
 
 let embedURL=""
 
@@ -173,5 +173,6 @@ displayList(tvshows,"tvshows-list")
 displayList(anime,"anime-list")
 
 }
+
 
 init()
