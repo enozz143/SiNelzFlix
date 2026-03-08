@@ -2,11 +2,9 @@ const BASE_URL = "/api";
 const IMG_URL = "https://image.tmdb.org/t/p/original";
 let currentItem;
 let debounceTimer;
-
-// --- STEP 1: PAGINATION TRACKING ---
 let currentPage = 1; 
 
-// --- 1. FETCH TRENDING (Updated with Page Support) ---
+// --- 1. FETCH TRENDING ---
 async function fetchTrending(type, page = 1) {
     try {
         const res = await fetch(`${BASE_URL}?endpoint=/trending/${type}/week&page=${page}`);
@@ -34,39 +32,32 @@ async function fetchTrendingAnime() {
     return allResults;
 }
 
-// --- 3. LOAD MORE LOGIC ---
+// --- 3. LOAD MORE LOGIC (FIXED) ---
 async function loadMore() {
     currentPage++; 
     const loadBtn = document.getElementById("load-more-btn");
-    const originalText = loadBtn.textContent;
     loadBtn.textContent = "Loading...";
     loadBtn.disabled = true;
 
+    // Kukuha ng Page 2, 3, etc.
     const moreMovies = await fetchTrending("movie", currentPage);
     
     if (moreMovies && moreMovies.length > 0) {
-        // Idudugtong natin sa listahan imbes na palitan lahat
-        appendToList(moreMovies, "movies-list");
-        loadBtn.textContent = originalText;
+        const container = document.getElementById("movies-list");
+        moreMovies.forEach(item => {
+            if (!item.poster_path) return;
+            // Dito natin ididikit agad sa container
+            const card = createMovieCard(item, "movies-list");
+            container.appendChild(card);
+        });
+        loadBtn.textContent = "Load More Movies";
         loadBtn.disabled = false;
     } else {
         loadBtn.style.display = "none"; 
     }
 }
 
-// Bagong function para mag-dagdag lang ng cards sa container
-function appendToList(items, containerId) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    
-    items.forEach(item => {
-        if (!item.poster_path) return;
-        const card = createMovieCard(item, containerId);
-        container.appendChild(card);
-    });
-}
-
-// Reusable function para sa paggawa ng Movie Card
+// --- 4. CARD CREATION ---
 function createMovieCard(item, containerId) {
     const card = document.createElement("div");
     card.className = "movie-card";
@@ -91,18 +82,30 @@ function createMovieCard(item, containerId) {
     return card;
 }
 
-// --- 4. HANDLE SEARCH ---
+// --- 5. DISPLAY LIST (Para sa Initial Load) ---
+function displayList(items, containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = "";
+    items.forEach(item => {
+        if (!item.poster_path) return;
+        const card = createMovieCard(item, containerId);
+        container.appendChild(card);
+    });
+}
+
+// --- 6. HANDLE SEARCH ---
 async function handleSearch(query) {
     const searchSection = document.getElementById("search-results-section");
     const trendingSection = document.getElementById("trending-section");
     const resultsContainer = document.getElementById("search-results-list");
     const searchTitle = document.getElementById("search-title");
-    const loadMoreContainer = document.querySelector(".load-more-container");
+    const loadMoreBtn = document.getElementById("load-more-btn");
 
     if (!query.trim()) {
         if (searchSection) searchSection.style.display = "none";
         if (trendingSection) trendingSection.style.display = "block";
-        if (loadMoreContainer) loadMoreContainer.style.display = "block";
+        if (loadMoreBtn) loadMoreBtn.parentElement.style.display = "block";
         return;
     }
 
@@ -115,12 +118,9 @@ async function handleSearch(query) {
             if (data.results && data.results.length > 0) {
                 if (searchSection) searchSection.style.display = "block";
                 if (trendingSection) trendingSection.style.display = "none";
-                if (loadMoreContainer) loadMoreContainer.style.display = "none"; // Hide Load More during search
+                if (loadMoreBtn) loadMoreBtn.parentElement.style.display = "none";
                 if (searchTitle) searchTitle.textContent = `Results for: "${query}"`;
                 displayList(data.results, "search-results-list");
-            } else {
-                if (searchTitle) searchTitle.textContent = `No results found for "${query}"`;
-                if (resultsContainer) resultsContainer.innerHTML = ""; 
             }
         } catch (error) {
             console.error("Search Error:", error);
@@ -128,26 +128,7 @@ async function handleSearch(query) {
     }, 400);
 }
 
-// --- 5. DISPLAY FUNCTIONS ---
-function displayBanner(item) {
-    if (!item) return;
-    const banner = document.getElementById("banner");
-    const title = document.getElementById("banner-title");
-    const desc = document.getElementById("banner-desc");
-    
-    banner.style.backgroundImage = `linear-gradient(to right, rgba(2,11,26,1), rgba(2,11,26,0)), url(${IMG_URL}${item.backdrop_path})`;
-    title.textContent = item.title || item.name;
-    desc.textContent = item.overview ? item.overview.substring(0, 200) + "..." : "";
-}
-
-function displayList(items, containerId) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    container.innerHTML = "";
-    appendToList(items, containerId);
-}
-
-// --- 6. MODAL & TRAILER LOGIC ---
+// --- 7. MODAL & TRAILER LOGIC ---
 function showDetails(item) {
     currentItem = item;
     document.getElementById("modal-title").textContent = item.title || item.name;
@@ -192,9 +173,8 @@ function closeModal() {
     document.getElementById("modal-video").src = "";
 }
 
-// --- 7. INITIALIZATION ---
+// --- 8. INITIALIZATION ---
 async function init() {
-    console.log("Sinelzflix is starting..."); 
     try {
         const movies = await fetchTrending("movie", 1);
         const tvshows = await fetchTrending("tv", 1);
@@ -204,13 +184,10 @@ async function init() {
             displayBanner(movies[0]);
             displayList(movies, "movies-list");
         }
-        
         if (tvshows) displayList(tvshows, "tvshows-list");
         if (anime) displayList(anime, "anime-list");
-
-        console.log("All lists displayed!");
     } catch (err) {
-        console.error("ALARM! May error sa init:", err);
+        console.error("Init failed:", err);
     }
 }
 
