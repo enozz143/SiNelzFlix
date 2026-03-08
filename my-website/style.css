@@ -13,7 +13,7 @@ body {
     overflow-x: hidden;
 }
 
-/* --- FIX 1: NAVBAR BOX-SIZING --- */
+/* --- NAVBAR --- */
 nav {
     display: flex;
     justify-content: space-between;
@@ -22,8 +22,8 @@ nav {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%; /* Gamitin ang 100% */
-    box-sizing: border-box; /* Para kasama ang padding sa sukat */
+    width: 100%; 
+    box-sizing: border-box; 
     z-index: 1000;
     transition: 0.4s;
     background: transparent;
@@ -48,9 +48,9 @@ nav {
     box-shadow: 0 0 10px var(--primary-blue);
 }
 
-/* --- FIX 2: SPACING PARA SA SECTIONS --- */
+/* --- MAIN CONTENT SPACING --- */
 main {
-    margin-top: 80px; /* Para hindi tabon ng navbar */
+    margin-top: 80px; 
 }
 
 #banner {
@@ -60,17 +60,16 @@ main {
     display: flex;
     align-items: center;
     padding: 0 5%;
-    /* Gradient mask para sa cinematic feel */
     mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 80%, rgba(0,0,0,0));
     -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 80%, rgba(0,0,0,0));
 }
 
 #banner-title { 
-    font-size: clamp(2rem, 5vw, 3.5rem); /* Responsive font size */
+    font-size: clamp(2rem, 5vw, 3.5rem); 
     text-shadow: 2px 2px 15px rgba(0,212,255,0.7); 
 }
 
-/* --- FIX 3: MOVIE CARD & OVERLAY --- */
+/* --- MOVIE CARD & TRAILER OVERLAY --- */
 .movie-row {
     display: flex;
     overflow-x: auto;
@@ -83,10 +82,10 @@ main {
 
 .movie-card {
     position: relative;
-    flex: 0 0 auto; /* Importante para sa horizontal scroll */
+    flex: 0 0 auto; 
     width: 180px;
     border-radius: 10px;
-    overflow: hidden; /* Para hindi lumabas yung image pag lumaki */
+    overflow: hidden; 
     cursor: pointer;
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
@@ -106,12 +105,14 @@ main {
     position: absolute;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(2, 11, 26, 0.7); /* Mas dark para mabasa yung button */
+    background: rgba(2, 11, 26, 0.6); 
     display: flex;
     justify-content: center;
     align-items: center;
     opacity: 0;
     transition: opacity 0.3s ease;
+    /* PUMAPAYAG SA CLICK NA TUMAGOS SA POSTER */
+    pointer-events: none; 
 }
 
 .movie-card:hover .trailer-overlay {
@@ -129,6 +130,9 @@ main {
     font-size: 0.8rem;
     box-shadow: 0 0 15px var(--primary-blue);
     transition: 0.3s;
+    /* ETO LANG ANG PWEDE I-CLICK SA OVERLAY */
+    pointer-events: auto; 
+    z-index: 10;
 }
 
 .trailer-overlay button:hover {
@@ -136,62 +140,84 @@ main {
     color: var(--dark-bg);
 }
 
-/* --- FIX 4: MODAL ENHANCEMENTS --- */
+/* --- THE BIG SCREEN MODAL PLAYER --- */
 .modal {
     display: none;
     position: fixed;
-    z-index: 2000;
+    z-index: 3000;
     top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0, 0, 0, 0.95);
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(10px);
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    padding: 10px;
 }
 
 .modal-content { 
-    width: 100%; 
-    max-width: 900px; 
+    width: 95%; 
+    max-width: 1200px; /* Mas malapad para sa cinematic feel */
     background: var(--card-bg); 
     border-radius: 15px; 
-    border: 1px solid rgba(0, 212, 255, 0.2);
-    overflow: hidden; 
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    position: relative;
+    overflow-y: auto;
+    max-height: 95vh;
+}
+
+.player-container {
+    width: 100%;
+    background: #000;
+}
+
+#modal-video { 
+    width: 100%; 
+    aspect-ratio: 16 / 9; /* Standard cinematic ratio */
+    border: none;
+    display: block;
+}
+
+.modal-details {
+    padding: 25px;
+    background: linear-gradient(to bottom, #0a192f, #020b1a);
+}
+
+.modal-info { 
+    display: flex; 
+    gap: 30px; 
+    align-items: flex-start;
 }
 
 #modal-image { 
-    width: 120px; 
-    height: auto; 
-    object-fit: cover; 
-    border-radius: 8px;
-    display: none; /* Itago sa mobile kung masikip */
+    width: 180px; 
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    object-fit: cover;
 }
 
-@media (min-width: 600px) {
-    #modal-image { display: block; }
+.close { 
+    position: absolute; 
+    right: 20px; 
+    top: 10px; 
+    font-size: 35px; 
+    cursor: pointer; 
+    color: var(--primary-blue); 
+    z-index: 100;
 }
 
-.trailer-overlay {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(2, 11, 26, 0.6); 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    
-    /* ETO ANG MAGIC LINE BRO */
-    pointer-events: none; 
+select {
+    padding: 10px;
+    background: var(--primary-blue);
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    margin-top: 10px;
 }
 
-.movie-card:hover .trailer-overlay {
-    opacity: 1;
+/* RESPONSIVE DESIGN PARA SA MOBILE */
+@media (max-width: 768px) {
+    .modal-info { flex-direction: column; align-items: center; text-align: center; }
+    #modal-image { display: none; } /* Tinago para lumaki ang text area sa mobile */
+    #modal-title { font-size: 1.5rem; }
 }
-
-/* PAG CLINICK YUNG BUTTON, DAPAT GAGANA PA RIN */
-.trailer-overlay button {
-    pointer-events: auto; 
-    z-index: 10;
-}
-
