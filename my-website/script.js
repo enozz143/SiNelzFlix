@@ -176,3 +176,57 @@ displayList(anime,"anime-list")
 
 
 init()
+
+let debounceTimer;
+
+async function handleSearch(query) {
+    const box = document.getElementById("suggestions-box");
+    
+    // Clear suggestions kung walang tinype
+    if (!query.trim()) {
+        box.innerHTML = "";
+        return;
+    }
+
+    // Debounce: Antayin matapos mag-type si user (300ms)
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(async () => {
+        const res = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${query}`);
+        const data = await res.json();
+        displaySuggestions(data.results.slice(0, 8)); // Limit to top 8 results
+    }, 300);
+}
+
+function displaySuggestions(results) {
+    const box = document.getElementById("suggestions-box");
+    box.innerHTML = "";
+
+    results.forEach(item => {
+        // Skip results na walang poster or name
+        if (!item.poster_path || (!item.title && !item.name)) return;
+
+        const div = document.createElement("div");
+        div.className = "suggestion-item";
+        div.onclick = () => {
+            showDetails(item); // Bubukas yung modal na ginawa mo kanina
+            box.innerHTML = ""; // Close suggestions after click
+            document.getElementById("search-input").value = ""; // Clear input
+        };
+
+        div.innerHTML = `
+            <img src="${IMG_URL}${item.poster_path}" alt="poster">
+            <div class="suggestion-info">
+                <h4>${item.title || item.name}</h4>
+                <p>${item.release_date ? item.release_date.split('-')[0] : (item.first_air_date ? item.first_air_date.split('-')[0] : 'N/A')}</p>
+            </div>
+        `;
+        box.appendChild(div);
+    });
+}
+
+// Close suggestions box pag nag-click sa labas
+document.addEventListener("click", (e) => {
+    if (e.target.id !== "search-input") {
+        document.getElementById("suggestions-box").innerHTML = "";
+    }
+});
