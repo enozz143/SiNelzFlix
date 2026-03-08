@@ -1,105 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>SiNelzFlix Free HDmovie Streaming</title>
-
-<link rel="stylesheet" href="style.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sinelzflix | Watch Now</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
 
-<header>
+    <nav id="navbar">
+        <div class="logo">
+            <img src="nelzvalogotransparent.jpg" alt="Sinelzflix Logo">
+        </div>
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="Search movies, anime..." oninput="handleSearch(this.value)">
+            <div id="suggestions-box"></div>
+        </div>
+    </nav>
 
-<h1 class="logo">SiNelzFlix</h1>
+    <header id="banner">
+        <div id="banner-content">
+            <h1 id="banner-title">Loading...</h1>
+            <p id="banner-desc"></p>
+        </div>
+    </header>
 
-<div class="search-container">
-    <input type="text" id="search-input" placeholder="Search movies, anime..." oninput="handleSearch(this.value)">
-    <div id="suggestions-box" class="suggestions"></div>
-</div>
+    <main>
+        <section>
+            <h2>Trending Movies</h2>
+            <div id="movies-list" class="movie-row"></div>
+        </section>
 
-</header>
+        <section>
+            <h2>TV Shows</h2>
+            <div id="tvshows-list" class="movie-row"></div>
+        </section>
 
+        <section>
+            <h2>Anime World</h2>
+            <div id="anime-list" class="movie-row"></div>
+        </section>
+    </main>
 
-<section id="banner">
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div class="player-container">
+                <iframe id="modal-video" allowfullscreen></iframe>
+            </div>
+            <div class="modal-details">
+                <div class="modal-info">
+                    <img id="modal-image" src="" alt="">
+                    <div>
+                        <h2 id="modal-title"></h2>
+                        <div id="modal-rating"></div>
+                        <p id="modal-description"></p>
+                        <select id="server" onchange="changeServer()">
+                            <option value="vidsrc">Server 1 (VidSrc)</option>
+                            <option value="vidsrc2">Server 2 (Net)</option>
+                            <option value="videasy">Server 3 (Easy)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<div class="banner-content">
-
-<h2 id="banner-title"></h2>
-
-<p id="banner-desc"></p>
-
-</div>
-
-</section>
-
-
-<section class="row">
-
-<h2>Trending Movies</h2>
-
-<div id="movies-list" class="movie-row"></div>
-
-</section>
-
-
-<section class="row">
-
-<h2>Trending TV Shows</h2>
-
-<div id="tvshows-list" class="movie-row"></div>
-
-</section>
-
-
-<section class="row">
-
-<h2>Trending Anime</h2>
-
-<div id="anime-list" class="movie-row"></div>
-
-</section>
-
-
-<div id="modal">
-
-<div class="modal-content">
-
-<span onclick="closeModal()" class="close">X</span>
-
-<img id="modal-image" class="modal-poster">
-
-<h2 id="modal-title"></h2>
-
-<p id="modal-description"></p>
-
-<div id="modal-rating"></div>
-
-
-<select id="server" onchange="changeServer()">
-
-<option value="vidsrc">Server 1</option>
-<option value="vidsrc2">Server 2</option>
-<option value="videasy">Server 3</option>
-
-</select>
-
-
-<iframe
-id="modal-video"
-allowfullscreen
-></iframe>
-
-</div>
-
-</div>
-
-<script src="script.js"></script>
-
+    <script src="script.js"></script>
 </body>
-
 </html>
-
