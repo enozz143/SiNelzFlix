@@ -116,3 +116,33 @@ select {
     font-weight: bold;
     cursor: pointer;
 }
+
+.movie-card {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.movie-card:hover {
+    transform: scale(1.1);
+}
+
+.trailer-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 212, 255, 0.5); /* Branding color mo bro */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+}
+
+.movie-card:hover .trailer-overlay {
+    opacity: 1;
+}
