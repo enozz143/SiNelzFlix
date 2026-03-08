@@ -5,24 +5,27 @@ let debounceTimer;
 let currentPage = 1; 
 let currentGenre = 'all'; // Tracking para sa genre
 
-// --- 1. FETCH TRENDING & GENRES ---
+// --- 1. FETCH TRENDING & GENRES (FIXED LOGIC) ---
 async function fetchMovies(type, page = 1, genreId = 'all') {
     try {
-        let endpoint = `/trending/${type}/week`;
-        if (genreId !== 'all') {
-            endpoint = `/discover/${type}`;
-        }
+        let url;
         
-        let url = `${BASE_URL}?endpoint=${endpoint}&page=${page}`;
-        if (genreId !== 'all') {
-            url += `&with_genres=${genreId}`;
+        // Kapag 'all', Trending ang kukunin natin (Default)
+        if (genreId === 'all') {
+            url = `${BASE_URL}?endpoint=/trending/${type}/week&page=${page}`;
+        } else {
+            // Kapag may Genre, Discover endpoint ang dapat para gumana ang filter
+            // Note: Sa discover, kailangan nating linawin kung movie o tv
+            url = `${BASE_URL}?endpoint=/discover/${type}&page=${page}&with_genres=${genreId}&sort_by=popularity.desc`;
         }
 
         const res = await fetch(url);
         const data = await res.json();
-        return data.results;
+        
+        // Importante: Siguraduhin na may results tayong nakuha
+        return data.results || [];
     } catch (error) {
-        console.error("Fetch error:", error);
+        console.error("Fetch error, bro:", error);
         return [];
     }
 }
@@ -181,3 +184,4 @@ async function handleSearch(q) {
 }
 
 init();
+
