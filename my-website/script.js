@@ -113,26 +113,37 @@ function closeModal() {
 
 async function handleSearch(query) {
     const searchSection = document.getElementById("search-results-section");
-    const trendingSection = document.getElementById("trending-section"); // I-wrap mo lahat ng trending lists mo sa isang div na may ganitong ID
+    const trendingSection = document.getElementById("trending-section");
     const resultsContainer = document.getElementById("search-results-list");
     const searchTitle = document.getElementById("search-title");
 
     if (!query.trim()) {
         searchSection.style.display = "none";
         trendingSection.style.display = "block";
+        resultsContainer.innerHTML = ""; // Linisin ang results container
         return;
     }
 
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(async () => {
-        const res = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${query}`);
-        const data = await res.json();
-        
-        if (data.results.length > 0) {
-            searchSection.style.display = "block";
-            trendingSection.style.display = "none"; // Itatago muna ang trending para focus sa search
-            searchTitle.textContent = `Results for: "${query}"`;
-            displayList(data.results, "search-results-list");
+        try {
+            // Gumamit tayo ng encodeURIComponent para sa special characters
+            const res = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}`);
+            const data = await res.json();
+            
+            if (data.results && data.results.length > 0) {
+                searchSection.style.display = "block";
+                trendingSection.style.display = "none";
+                searchTitle.textContent = `Results for: "${query}"`;
+                
+                // Tatawagin nito yung displayList na may Trailer Hover logic mo
+                displayList(data.results, "search-results-list");
+            } else {
+                searchTitle.textContent = `No results found for "${query}"`;
+                resultsContainer.innerHTML = ""; 
+            }
+        } catch (error) {
+            console.error("Search Error:", error);
         }
     }, 300);
 }
@@ -168,6 +179,7 @@ async function init() {
 }
 
 init();
+
 
 
 
