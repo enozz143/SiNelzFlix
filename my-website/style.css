@@ -146,3 +146,21 @@ select {
 .movie-card:hover .trailer-overlay {
     opacity: 1;
 }
+
+.trailer-overlay button {
+    background: var(--primary-blue);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.6);
+    transition: 0.3s;
+}
+
+.trailer-overlay button:hover {
+    transform: scale(1.1);
+    background: white;
+    color: var(--primary-blue);
+}
