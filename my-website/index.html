@@ -14,8 +14,17 @@
             <img src="logo.png" alt="Sinelzflix Logo">
         </div>
         <div class="search-box">
-            <input type="text" id="search-input" placeholder="Search movies, anime..." oninput="handleSearch(this.value)">
-            <div id="suggestions-box"></div>
+    <input type="text" id="search-input" placeholder="Search movies, anime..." oninput="handleSearch(this.value)">
+</div>
+
+<main>
+    <section id="search-results-section" style="display: none;">
+        <h2 id="search-title">Search Results</h2>
+        <div id="search-results-list" class="movie-row"></div>
+        <hr style="border: 1px solid var(--primary-blue); opacity: 0.2; margin: 40px 0;">
+    </section>
+
+</main>
         </div>
     </nav>
 
@@ -70,5 +79,6 @@
     <script src="script.js"></script>
 </body>
 </html>
+
 
 
