@@ -5,7 +5,7 @@ let debounceTimer;
 
 // --- 1. FETCH TRENDING ---
 async function fetchTrending(type) {
-    // Imbes na TMDB URL, ang function na ang tatawagin natin
+    // Inalis ang space bago ang ? para hindi mag-error ang URL
     const res = await fetch(`${BASE_URL}?endpoint=/trending/${type}/week`);
     const data = await res.json();
     return data.results;
@@ -15,7 +15,6 @@ async function fetchTrending(type) {
 async function fetchTrendingAnime() {
     let allResults = [];
     for (let page = 1; page <= 2; page++) {
-        // Pinalitan din dito ang URL structure
         const res = await fetch(`${BASE_URL}?endpoint=/trending/tv/week&page=${page}`);
         const data = await res.json();
         const filtered = data.results.filter(item => item.genre_ids.includes(16));
@@ -74,7 +73,6 @@ function showDetails(item) {
 // --- 3. PLAY TRAILER ---
 async function playTrailer(id, type) {
     try {
-        // Binago ang fetch dito para dumaan sa proxy function
         const res = await fetch(`${BASE_URL}?endpoint=/${type}/${id}/videos`);
         const data = await res.json();
         
@@ -124,7 +122,6 @@ async function handleSearch(query) {
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(async () => {
         try {
-            // Updated search URL
             const res = await fetch(`${BASE_URL}?endpoint=/search/multi&query=${encodeURIComponent(query)}`);
             const data = await res.json();
             
@@ -161,4 +158,3 @@ async function init() {
 }
 
 init();
-
