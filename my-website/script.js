@@ -123,20 +123,30 @@ function closeModal() {
 
 // --- 5. INITIALIZATION ---
 async function init() {
+    console.log("Sinelzflix is starting..."); // Lalabas to sa F12 Console
     try {
         const movies = await fetchTrending("movie");
-        const tvshows = await fetchTrending("tv");
-        const anime = await fetchTrendingAnime();
+        console.log("Movies fetched:", movies ? movies.length : 0);
 
-        if (movies && movies.length > 0) displayBanner(movies[0]);
-        displayList(movies || [], "movies-list");
-        displayList(tvshows || [], "tvshows-list");
-        displayList(anime || [], "anime-list");
+        const tvshows = await fetchTrending("tv");
+        console.log("TV Shows fetched:", tvshows ? tvshows.length : 0);
+
+        const anime = await fetchTrendingAnime();
+        console.log("Anime fetched:", anime ? anime.length : 0);
+
+        if (movies && movies.length > 0) {
+            displayBanner(movies[0]);
+            displayList(movies, "movies-list");
+        }
         
-        console.log("Sinelzflix initialized successfully, bro!");
+        if (tvshows) displayList(tvshows, "tvshows-list");
+        if (anime) displayList(anime, "anime-list");
+
+        console.log("All lists displayed!");
     } catch (err) {
-        console.error("Init failed:", err);
+        console.error("ALARM! May error sa init:", err);
     }
 }
 
 init();
+
