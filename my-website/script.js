@@ -32,21 +32,19 @@ async function fetchTrendingAnime() {
     return allResults;
 }
 
-// --- 3. LOAD MORE LOGIC (FIXED) ---
+// --- 3. LOAD MORE LOGIC ---
 async function loadMore() {
     currentPage++; 
     const loadBtn = document.getElementById("load-more-btn");
     loadBtn.textContent = "Loading...";
     loadBtn.disabled = true;
 
-    // Kukuha ng Page 2, 3, etc.
     const moreMovies = await fetchTrending("movie", currentPage);
     
     if (moreMovies && moreMovies.length > 0) {
         const container = document.getElementById("movies-list");
         moreMovies.forEach(item => {
             if (!item.poster_path) return;
-            // Dito natin ididikit agad sa container
             const card = createMovieCard(item, "movies-list");
             container.appendChild(card);
         });
@@ -82,11 +80,11 @@ function createMovieCard(item, containerId) {
     return card;
 }
 
-// --- 5. DISPLAY LIST (Para sa Initial Load) ---
+// --- 5. DISPLAY LIST (TAMA NA TO BRO) ---
 function displayList(items, containerId) {
     const container = document.getElementById(containerId);
-    if (!container) return;
-    container.innerHTML = "";
+    if (!container || !items) return;
+    container.innerHTML = ""; // Clear muna bago mag-load ng bago
     items.forEach(item => {
         if (!item.poster_path) return;
         const card = createMovieCard(item, containerId);
@@ -100,12 +98,12 @@ async function handleSearch(query) {
     const trendingSection = document.getElementById("trending-section");
     const resultsContainer = document.getElementById("search-results-list");
     const searchTitle = document.getElementById("search-title");
-    const loadMoreBtn = document.getElementById("load-more-btn");
+    const loadMoreContainer = document.querySelector(".load-more-container");
 
     if (!query.trim()) {
         if (searchSection) searchSection.style.display = "none";
         if (trendingSection) trendingSection.style.display = "block";
-        if (loadMoreBtn) loadMoreBtn.parentElement.style.display = "block";
+        if (loadMoreContainer) loadMoreContainer.style.display = "block";
         return;
     }
 
@@ -118,7 +116,7 @@ async function handleSearch(query) {
             if (data.results && data.results.length > 0) {
                 if (searchSection) searchSection.style.display = "block";
                 if (trendingSection) trendingSection.style.display = "none";
-                if (loadMoreBtn) loadMoreBtn.parentElement.style.display = "none";
+                if (loadMoreContainer) loadMoreContainer.style.display = "none";
                 if (searchTitle) searchTitle.textContent = `Results for: "${query}"`;
                 displayList(data.results, "search-results-list");
             }
@@ -128,7 +126,7 @@ async function handleSearch(query) {
     }, 400);
 }
 
-// --- 7. MODAL & TRAILER LOGIC ---
+// --- 7. MODAL LOGIC ---
 function showDetails(item) {
     currentItem = item;
     document.getElementById("modal-title").textContent = item.title || item.name;
@@ -173,22 +171,39 @@ function closeModal() {
     document.getElementById("modal-video").src = "";
 }
 
-// --- 8. INITIALIZATION ---
+// --- 8. INITIALIZATION (BALIK SA DATI NA MAY MOVIES AGAD) ---
 async function init() {
+    console.log("Sinelzflix is starting..."); 
     try {
         const movies = await fetchTrending("movie", 1);
         const tvshows = await fetchTrending("tv", 1);
         const anime = await fetchTrendingAnime();
 
+        // Banner and Lists
         if (movies && movies.length > 0) {
+            document.getElementById("banner-title").textContent = movies[0].title || movies[0].name; // Fix loading text
             displayBanner(movies[0]);
             displayList(movies, "movies-list");
         }
+        
         if (tvshows) displayList(tvshows, "tvshows-list");
         if (anime) displayList(anime, "anime-list");
+
+        console.log("All initial lists displayed!");
     } catch (err) {
         console.error("Init failed:", err);
     }
+}
+
+// Helper for banner
+function displayBanner(item) {
+    if (!item) return;
+    const banner = document.getElementById("banner");
+    const title = document.getElementById("banner-title");
+    const desc = document.getElementById("banner-desc");
+    banner.style.backgroundImage = `linear-gradient(to right, rgba(2,11,26,1), rgba(2,11,26,0)), url(${IMG_URL}${item.backdrop_path})`;
+    title.textContent = item.title || item.name;
+    desc.textContent = item.overview ? item.overview.substring(0, 200) + "..." : "";
 }
 
 init();
