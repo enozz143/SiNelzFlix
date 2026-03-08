@@ -3,11 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sinelzflix | Watch Now</title>
+    <title>CINElzFlix | Unlimited Cinema Experience</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        /* Konting style para sa Load More button para hindi magulo ang style.css mo */
+        /* --- GENRE & LOAD MORE STYLES --- */
+        .genre-container {
+            padding: 20px 4%;
+            text-align: center;
+            overflow-x: auto;
+            white-space: nowrap;
+            margin-top: 20px;
+        }
+        .genre-btn {
+            padding: 8px 20px;
+            margin: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+        .genre-btn:hover, .genre-btn.active {
+            background: #e50914;
+            border-color: #e50914;
+            transform: translateY(-2px);
+        }
         .load-more-container {
             text-align: center;
             margin: 40px 0;
@@ -36,13 +59,13 @@
 <body>
 
     <nav id="navbar">
-    <div class="logo">
-        <img src="logo.png" alt="SiNelzFlix Logo" id="site-logo">
-    </div>
-    <div class="search-box">
-        <input type="text" id="search-input" placeholder="Search movies, anime..." oninput="handleSearch(this.value)">
-    </div>
-</nav>
+        <div class="logo">
+            <img src="logo.png" alt="CINElzFlix Logo" id="site-logo">
+        </div>
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="Search movies, anime..." oninput="handleSearch(this.value)">
+        </div>
+    </nav>
     
     <main>
         <section id="search-results-section" style="display: none; padding-top: 100px;">
@@ -58,6 +81,15 @@
                     <p id="banner-desc"></p>
                 </div>
             </header>
+
+            <div class="genre-container">
+                <button class="genre-btn active" onclick="filterGenre('all')">All</button>
+                <button class="genre-btn" onclick="filterGenre(28)">Action</button>
+                <button class="genre-btn" onclick="filterGenre(35)">Comedy</button>
+                <button class="genre-btn" onclick="filterGenre(27)">Horror</button>
+                <button class="genre-btn" onclick="filterGenre(10749)">Romance</button>
+                <button class="genre-btn" onclick="filterGenre(878)">Sci-Fi</button>
+            </div>
 
             <section>
                 <h2>Trending Movies</h2>
@@ -107,4 +139,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
