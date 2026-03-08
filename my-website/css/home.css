@@ -3,7 +3,7 @@
 
     .navbar {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 10px; background: #222;
+      padding: 100px; background: #222;
     }
 
     .navbar img { height: 40px; }
@@ -283,4 +283,5 @@
     flex-direction: row;
     gap: 8px;
   }
+
 }
