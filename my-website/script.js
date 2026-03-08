@@ -30,12 +30,29 @@ function displayBanner(item) {
 function displayList(items, containerId) {
     const container = document.getElementById(containerId);
     container.innerHTML = "";
+    
     items.forEach(item => {
         if (!item.poster_path) return;
+
+      
+        const card = document.createElement("div");
+        card.className = "movie-card";
+
+       
         const img = document.createElement("img");
         img.src = `${IMG_URL}${item.poster_path}`;
-        img.onclick = () => showDetails(item);
-        container.appendChild(img);
+        
+       
+        const overlay = document.createElement("div");
+        overlay.className = "trailer-overlay";
+        overlay.innerHTML = "▶ Play Trailer";
+
+        
+        card.onclick = () => playTrailer(item.id, item.media_type || (containerId === "movies-list" ? "movie" : "tv"));
+
+        card.appendChild(img);
+        card.appendChild(overlay);
+        container.appendChild(card);
     });
 }
 
@@ -47,7 +64,32 @@ function showDetails(item) {
     document.getElementById("modal-rating").innerHTML = "⭐".repeat(Math.round(item.vote_average / 2));
     changeServer();
     document.getElementById("modal").style.display = "flex";
+
 }
+
+async function playTrailer(id, type) {
+    try {
+        const res = await fetch(`${BASE_URL}/${type}/${id}/videos?api_key=${API_KEY}`);
+        const data = await res.json();
+        
+        // Hanapin ang Official Trailer sa YouTube
+        const trailer = data.results.find(vid => vid.type === "Trailer" && vid.site === "YouTube");
+        
+        if (trailer) {
+            // Gamitin ang modal mo para i-play ang YouTube trailer
+            document.getElementById("modal-video").src = `https://www.youtube.com/embed/${trailer.key}?autoplay=1`;
+            document.getElementById("modal").style.display = "flex";
+            
+            // I-set ang title para alam ng user na trailer ito
+            document.getElementById("modal-title").textContent = "Watching Trailer";
+        } else {
+            alert("Pasensya na bro, walang available na trailer para dito.");
+        }
+    } catch (error) {
+        console.error("Error fetching trailer:", error);
+    }
+}
+    
 
 function changeServer() {
     const server = document.getElementById("server").value;
@@ -106,3 +148,4 @@ async function init() {
 }
 
 init();
+
