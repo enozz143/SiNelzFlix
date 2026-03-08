@@ -16,12 +16,10 @@
 
 <h1 class="logo">SiNelzFlix</h1>
 
-<input
-type="text"
-placeholder="Search movies..."
-id="search-input"
-onkeyup="searchTMDB()"
-/>
+<div class="search-container">
+    <input type="text" id="search-input" placeholder="Search movies, anime..." oninput="handleSearch(this.value)">
+    <div id="suggestions-box" class="suggestions"></div>
+</div>
 
 </header>
 
@@ -104,3 +102,4 @@ allowfullscreen
 </body>
 
 </html>
+
