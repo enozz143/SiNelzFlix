@@ -1,4 +1,4 @@
-const BASE_URL = "/functions/api"; 
+const BASE_URL = "/api"; 
 const IMG_URL = "https://image.tmdb.org/t/p/original";
 let currentItem;
 let debounceTimer;
@@ -161,3 +161,4 @@ async function init() {
 }
 
 init();
+
