@@ -34,22 +34,27 @@ function displayList(items, containerId) {
     items.forEach(item => {
         if (!item.poster_path) return;
 
-      
         const card = document.createElement("div");
         card.className = "movie-card";
 
-       
+        // Image - Pag ni-click ang mismong poster, MOVIE ang mag-play
         const img = document.createElement("img");
         img.src = `${IMG_URL}${item.poster_path}`;
-        
-       
+        img.onclick = () => showDetails(item); 
+
+        // Overlay - Lalabas lang pag na-hover
         const overlay = document.createElement("div");
         overlay.className = "trailer-overlay";
-        overlay.innerHTML = "▶ Play Trailer";
-
         
-        card.onclick = () => playTrailer(item.id, item.media_type || (containerId === "movies-list" ? "movie" : "tv"));
+        // Button sa loob ng overlay para sa TRAILER lang
+        const trailerBtn = document.createElement("button");
+        trailerBtn.innerHTML = "▶ Play Trailer";
+        trailerBtn.onclick = (e) => {
+            e.stopPropagation(); // Para hindi mag-trigger yung movie click
+            playTrailer(item.id, item.media_type || (containerId === "movies-list" ? "movie" : "tv"));
+        };
 
+        overlay.appendChild(trailerBtn);
         card.appendChild(img);
         card.appendChild(overlay);
         container.appendChild(card);
@@ -148,4 +153,5 @@ async function init() {
 }
 
 init();
+
 
