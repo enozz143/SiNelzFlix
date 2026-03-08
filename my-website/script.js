@@ -112,13 +112,28 @@ function closeModal() {
 }
 
 async function handleSearch(query) {
-    const box = document.getElementById("suggestions-box");
-    if (!query.trim()) { box.innerHTML = ""; return; }
+    const searchSection = document.getElementById("search-results-section");
+    const trendingSection = document.getElementById("trending-section"); // I-wrap mo lahat ng trending lists mo sa isang div na may ganitong ID
+    const resultsContainer = document.getElementById("search-results-list");
+    const searchTitle = document.getElementById("search-title");
+
+    if (!query.trim()) {
+        searchSection.style.display = "none";
+        trendingSection.style.display = "block";
+        return;
+    }
+
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(async () => {
         const res = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${query}`);
         const data = await res.json();
-        displaySuggestions(data.results.slice(0, 6));
+        
+        if (data.results.length > 0) {
+            searchSection.style.display = "block";
+            trendingSection.style.display = "none"; // Itatago muna ang trending para focus sa search
+            searchTitle.textContent = `Results for: "${query}"`;
+            displayList(data.results, "search-results-list");
+        }
     }, 300);
 }
 
@@ -153,5 +168,6 @@ async function init() {
 }
 
 init();
+
 
 
