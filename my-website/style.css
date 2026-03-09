@@ -32,11 +32,14 @@ body {
 }
 
 #site-logo {
-    height: 50px;
+    height: 70px; /* Laking Moviestream vibe na 'to bro */
     width: auto;
     object-fit: contain;
+    filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.6));
     transition: transform 0.3s ease;
 }
+
+#site-logo:hover { transform: scale(1.05); }
 
 .search-box { position: relative; width: 300px; }
 #search-input {
@@ -49,11 +52,11 @@ body {
     outline: none;
 }
 
-/* --- HERO SLIDER (THE MOVIESTREAM 247 VIBE) --- */
+/* --- HERO SLIDER --- */
 #hero-slider-container {
     position: relative;
     width: 100%;
-    height: 85vh; /* Malapad na banner */
+    height: 85vh;
     overflow: hidden;
     background: #000;
 }
@@ -73,9 +76,33 @@ body {
     align-items: center;
 }
 
+.hero-video-container {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.hero-video-container iframe {
+    width: 100vw;
+    height: 56.25vw;
+    min-height: 100vh;
+    min-width: 177.77vh;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+}
+
+.hero-slide.active .hero-video-container iframe { opacity: 0.5; }
+
 .hero-overlay {
     position: absolute;
     width: 100%; height: 100%;
+    z-index: 2;
     background: linear-gradient(to right, rgba(2, 11, 26, 0.9) 20%, rgba(2, 11, 26, 0.4) 50%, rgba(2, 11, 26, 0) 100%),
                 linear-gradient(to bottom, transparent 60%, rgba(2, 11, 26, 1) 100%);
 }
@@ -87,11 +114,7 @@ body {
     max-width: 800px;
 }
 
-.hero-content h1 { 
-    font-size: clamp(2rem, 6vw, 4rem); 
-    margin: 10px 0; 
-    line-height: 1.1;
-}
+.hero-content h1 { font-size: clamp(2rem, 6vw, 4rem); margin: 10px 0; line-height: 1.1; }
 
 .hero-meta { display: flex; gap: 15px; margin-bottom: 15px; color: var(--primary-blue); font-weight: bold; }
 
@@ -103,10 +126,7 @@ body {
     padding: 12px 30px; border-radius: 5px; 
     cursor: pointer; font-weight: bold; 
     display: flex; align-items: center; gap: 10px;
-    transition: 0.3s;
 }
-
-.btn-watch:hover { background: #ff0a16; transform: scale(1.05); }
 
 .slider-dots {
     position: absolute;
@@ -118,7 +138,7 @@ body {
 .dot { width: 10px; height: 10px; background: rgba(255,255,255,0.3); border-radius: 50%; cursor: pointer; }
 .dot.active { background: var(--primary-blue); width: 25px; border-radius: 10px; }
 
-/* --- GRID ROWS (2 ROWS & LOAD MORE FIXED) --- */
+/* --- GRID ROWS (2 ROWS & CLICK FIX) --- */
 .movie-row {
     display: grid !important;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -134,14 +154,12 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.4s ease;
     cursor: pointer;
+    z-index: 5; /* Para clickable agad */
 }
 
-.movie-card:hover {
-    transform: translateY(-10px);
-    border-color: var(--accent-red);
-}
+.movie-card:hover { transform: translateY(-10px); border-color: var(--accent-red); }
 
-.movie-card img { width: 100%; display: block; }
+.movie-card img { width: 100%; display: block; pointer-events: none; }
 
 .trailer-overlay {
     position: absolute;
@@ -149,9 +167,15 @@ body {
     background: rgba(0,0,0,0.5);
     display: flex; justify-content: center; align-items: center;
     opacity: 0; transition: 0.3s;
+    pointer-events: none; /* CLICK WILL PASS THROUGH TO CARD */
 }
 
 .movie-card:hover .trailer-overlay { opacity: 1; }
+
+.trailer-overlay button {
+    pointer-events: auto; /* Play button remains clickable */
+    z-index: 10;
+}
 
 /* --- MODAL --- */
 .modal {
@@ -159,7 +183,7 @@ body {
     position: fixed;
     z-index: 3000;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(10px);
     justify-content: center; align-items: center;
 }
@@ -178,31 +202,4 @@ body {
     .hero-content h1 { font-size: 2.5rem; }
     .movie-row { grid-template-columns: repeat(2, 1fr); }
     .search-box { width: 150px; }
-}
-
-
-/* --- HERO VIDEO BACKGROUND --- */
-.hero-video-container {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: 1; /* Nasa likod ng content, pero nasa harap ng image */
-    pointer-events: none; /* Para hindi ma-click ang video buttons */
-    overflow: hidden;
-}
-
-.hero-video-container iframe {
-    width: 100vw;
-    height: 56.25vw; /* 16:9 ratio */
-    min-height: 100vh;
-    min-width: 177.77vh; /* Para laging cover ang screen */
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0;
-    transition: opacity 1.5s ease-in-out;
-}
-
-.hero-slide.active .hero-video-container iframe {
-    opacity: 0.6; /* Konting aninag lang para kitang-kita pa rin ang text */
 }
