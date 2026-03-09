@@ -26,37 +26,45 @@ async function fetchMovies(type, page = 1, genreId = 'all') {
 }
 
 // --- 2. HERO SLIDER LOGIC (MOVIESTREAM247 STYLE) ---
-function setupHeroSlider(movies) {
-    sliderItems = movies.slice(0, 6); // Kunin ang top 6 movies para sa slider
+async function setupHeroSlider(movies) {
+    sliderItems = movies.slice(0, 6);
     const sliderContainer = document.getElementById("hero-slider");
     const dotsContainer = document.getElementById("slider-dots");
     
     sliderContainer.innerHTML = "";
     dotsContainer.innerHTML = "";
 
-    sliderItems.forEach((movie, index) => {
+    for (let index = 0; index < sliderItems.length; index++) {
+        const movie = sliderItems[index];
         const slide = document.createElement("div");
         slide.className = `hero-slide ${index === 0 ? 'active' : ''}`;
         slide.style.backgroundImage = `url(${IMG_URL}${movie.backdrop_path})`;
         
-        const releaseYear = movie.release_date ? movie.release_date.split('-')[0] : 'N/A';
-        
+        // --- FETCH TRAILER KEY PARA SA PREVIEW ---
+        let trailerKey = "";
+        try {
+            const videoRes = await fetch(`${BASE_URL}?endpoint=/movie/${movie.id}/videos`);
+            const videoData = await videoRes.json();
+            const trailer = videoData.results.find(v => v.type === "Trailer" && v.site === "YouTube");
+            if (trailer) trailerKey = trailer.key;
+        } catch (err) { console.error("Slider video error:", err); }
+
         slide.innerHTML = `
+            <div class="hero-video-container">
+                ${trailerKey ? `<iframe src="https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=1&controls=0&loop=1&playlist=${trailerKey}&showinfo=0&rel=0" frameborder="0"></iframe>` : ''}
+            </div>
             <div class="hero-overlay"></div>
             <div class="hero-content">
                 <div class="hero-meta">
                     <span>⭐ ${movie.vote_average.toFixed(1)}</span>
                     <span>•</span>
-                    <span>${releaseYear}</span>
-                    <span>•</span>
-                    <span style="border: 1px solid var(--primary-blue); padding: 2px 5px; border-radius: 3px; font-size: 0.7rem;">HD</span>
+                    <span>${movie.release_date ? movie.release_date.split('-')[0] : 'N/A'}</span>
+                    <span style="border: 1px solid var(--primary-blue); padding: 2px 5px; border-radius: 3px; font-size: 0.7rem;">HD PREVIEW</span>
                 </div>
-                <h1>${movie.title || movie.name}</h1>
+                <h1>${movie.title}</h1>
                 <p>${movie.overview.substring(0, 180)}...</p>
                 <div class="hero-btns">
-                    <button class="btn-watch" onclick='showDetails(${JSON.stringify(movie).replace(/'/g, "&apos;")})'>
-                        <span style="font-size: 1.2rem;">▶</span> Watch Now
-                    </button>
+                    <button class="btn-watch" onclick='showDetails(${JSON.stringify(movie).replace(/'/g, "&apos;")})'>▶ Watch Full Movie</button>
                     <button class="btn-list">+ Add to My List</button>
                 </div>
             </div>
@@ -67,12 +75,10 @@ function setupHeroSlider(movies) {
         dot.className = `dot ${index === 0 ? 'active' : ''}`;
         dot.onclick = () => goToSlide(index);
         dotsContainer.appendChild(dot);
-    });
+    }
 
-    // Auto-swipe every 7 seconds
-    setInterval(nextSlide, 7000);
+    setInterval(nextSlide, 10000); // 10 seconds para mas matagal ang playback preview
 }
-
 function nextSlide() {
     sliderIndex = (sliderIndex + 1) % sliderItems.length;
     updateSliderUI();
@@ -291,3 +297,4 @@ async function init() {
 }
 
 init();
+
