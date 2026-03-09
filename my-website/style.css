@@ -20,7 +20,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 10px 4%;
-    background: rgba(2, 11, 26, 0.85) !important;
+    background: rgba(2, 11, 26, 0.95) !important;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -66,24 +66,18 @@ main { margin-top: 80px; }
     -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 85%, rgba(0,0,0,0));
 }
 
-/* --- MOVIE ROWS (HORIZONTAL SCROLL) --- */
+/* --- FIXED GRID LAYOUT (Para sa 2 Rows at Load More) --- */
 .movie-row {
-    display: flex !important; /* Pahiga by default */
-    overflow-x: auto !important;
-    overflow-y: hidden;
-    gap: 15px;
+    display: grid !important; 
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 20px;
     padding: 20px 5%;
-    scroll-behavior: smooth;
-    scrollbar-width: none; /* Hide scrollbar Firefox */
+    overflow-x: hidden !important;
 }
-
-.movie-row::-webkit-scrollbar { display: none; } /* Hide scrollbar Chrome/Safari */
 
 /* --- MOVIE CARD (GLASS UI) --- */
 .movie-card {
     position: relative;
-    flex: 0 0 160px; /* Fixed width para hindi mapitpit sa flex */
-    min-width: 160px;
     border-radius: 12px;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.05);
@@ -91,6 +85,7 @@ main { margin-top: 80px; }
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     cursor: pointer;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    width: 100%;
 }
 
 .movie-card img {
@@ -133,15 +128,6 @@ main { margin-top: 80px; }
     pointer-events: auto;
 }
 
-/* --- SEARCH RESULTS (GRID FIX) --- */
-#search-results-list {
-    display: grid !important; /* Force grid pag search */
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
-    gap: 20px;
-    padding: 20px 5%;
-    overflow-x: hidden !important;
-}
-
 /* --- MODAL PLAYER STYLES --- */
 .modal {
     display: none;
@@ -176,4 +162,5 @@ main { margin-top: 80px; }
     #modal-image { display: none; }
     .search-box { width: 150px; }
     #site-logo { height: 45px; }
+    .movie-row { grid-template-columns: repeat(2, 1fr); } /* Para saktong 2 columns sa mobile */
 }
