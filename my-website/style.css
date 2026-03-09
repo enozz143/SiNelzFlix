@@ -179,3 +179,30 @@ body {
     .movie-row { grid-template-columns: repeat(2, 1fr); }
     .search-box { width: 150px; }
 }
+
+
+/* --- HERO VIDEO BACKGROUND --- */
+.hero-video-container {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 1; /* Nasa likod ng content, pero nasa harap ng image */
+    pointer-events: none; /* Para hindi ma-click ang video buttons */
+    overflow: hidden;
+}
+
+.hero-video-container iframe {
+    width: 100vw;
+    height: 56.25vw; /* 16:9 ratio */
+    min-height: 100vh;
+    min-width: 177.77vh; /* Para laging cover ang screen */
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+}
+
+.hero-slide.active .hero-video-container iframe {
+    opacity: 0.6; /* Konting aninag lang para kitang-kita pa rin ang text */
+}
