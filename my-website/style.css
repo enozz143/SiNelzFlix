@@ -348,3 +348,29 @@ select {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* --- MODAL IMPROVEMENTS --- */
+#modal-rating {
+    margin: 10px 0;
+    color: #ffb400; /* Gold color para sa stars */
+    font-weight: bold;
+}
+
+#similar-movies {
+    gap: 10px !important;
+}
+
+#similar-movies .movie-card {
+    border-radius: 8px;
+}
+
+/* Para hindi masyadong malaki ang modal details sa mobile */
+@media (max-width: 768px) {
+    .modal-info {
+        flex-direction: column;
+        align-items: center;
+    }
+    #modal-image {
+        width: 150px;
+        margin-bottom: 20px;
+    }
+}
