@@ -62,15 +62,11 @@ async function loadMore() {
     }
 }
 
-// --- 4. DISPLAY HELPERS (FIXED FOR HORIZONTAL) ---
 function createMovieCard(item, containerId) {
     const card = document.createElement("div");
     card.className = "movie-card";
     
-    // ETO ANG SECRET: Pinipigilan natin na mapitpit ang card sa Flexbox
-    card.style.minWidth = "160px";
-    card.style.flexShrink = "0";
-
+    // Tinanggal na natin yung inline style na min-width para Grid na ang masunod
     const img = document.createElement("img");
     img.src = `${IMG_URL}${item.poster_path}`;
     img.onclick = () => showDetails(item); 
@@ -94,19 +90,7 @@ function displayList(items, containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
     
-    container.innerHTML = "";
-    
-    // Grid para sa Search, Flex para sa Rows
-    if (containerId === "search-results-list") {
-        container.style.display = "grid";
-        container.style.gridTemplateColumns = "repeat(auto-fill, minmax(150px, 1fr))";
-        container.style.gap = "20px";
-    } else {
-        container.style.display = "flex";
-        container.style.overflowX = "auto";
-        container.style.gap = "15px";
-        container.style.paddingBottom = "15px"; // Space para sa scrollbar
-    }
+    container.innerHTML = ""; // Linisin ang listahan bago mag-load ng bago
     
     items.forEach(item => {
         if (item.poster_path) {
@@ -256,3 +240,4 @@ async function init() {
 }
 
 init();
+
