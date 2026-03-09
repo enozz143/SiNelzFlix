@@ -30,7 +30,6 @@ async function setupHeroSlider(movies) {
     sliderItems = movies.slice(0, 6);
     const sliderContainer = document.getElementById("hero-slider");
     const dotsContainer = document.getElementById("slider-dots");
-    
     sliderContainer.innerHTML = "";
     dotsContainer.innerHTML = "";
 
@@ -95,6 +94,7 @@ function updateSliderUI() {
     dots.forEach((d, i) => d.classList.toggle("active", i === sliderIndex));
 }
 
+// --- 3. MOVIE CARD LOGIC (WITH SMART SHARE) ---
 function createMovieCard(item, containerId) {
     const card = document.createElement("div");
     card.className = "movie-card";
@@ -105,7 +105,6 @@ function createMovieCard(item, containerId) {
     const overlay = document.createElement("div");
     overlay.className = "trailer-overlay";
     
-    // BUTTON 1: PLAY TRAILER
     const trailerBtn = document.createElement("button");
     trailerBtn.className = "hover-btn trailer-btn";
     trailerBtn.innerHTML = "Play Trailer";
@@ -114,7 +113,6 @@ function createMovieCard(item, containerId) {
         playTrailer(item.id, item.title ? "movie" : "tv"); 
     };
 
-    // BUTTON 2: PLAY FULL MOVIE
     const fullMovieBtn = document.createElement("button");
     fullMovieBtn.className = "hover-btn movie-btn";
     fullMovieBtn.innerHTML = "Full Movie";
@@ -123,25 +121,17 @@ function createMovieCard(item, containerId) {
         showDetails(item); 
     };
 
-  // UPDATED SHARE BUTTON LOGIC
     const shareBtn = document.createElement("button");
     shareBtn.className = "share-mini-btn";
     shareBtn.innerHTML = "🔗 Share";
     shareBtn.onclick = (e) => {
         e.stopPropagation();
-        
         const type = item.title ? "movie" : "tv";
         const titleSlug = (item.title || item.name).toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
-        
-        // Eto ang magic link, bro! Kasama na ang ID at type
         const shareUrl = `${window.location.origin}${window.location.pathname}?${type}=${item.id}-${titleSlug}`;
         
         if (navigator.share) {
-            navigator.share({
-                title: item.title || item.name,
-                text: `Panoorin natin 'to sa CINElzFlix!`,
-                url: shareUrl,
-            });
+            navigator.share({ title: item.title || item.name, text: `Panoorin natin 'to sa CINElzFlix!`, url: shareUrl });
         } else {
             navigator.clipboard.writeText(shareUrl);
             alert("Movie link copied to clipboard, bro!");
@@ -150,11 +140,12 @@ function createMovieCard(item, containerId) {
     
     overlay.appendChild(trailerBtn);
     overlay.appendChild(fullMovieBtn);
-    overlay.appendChild(shareBtn); // Dagdag natin sa overlay
+    overlay.appendChild(shareBtn);
     card.appendChild(img);
     card.appendChild(overlay);
     return card;
 }
+
 function displayList(items, containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -164,7 +155,7 @@ function displayList(items, containerId) {
     });
 }
 
-// --- 4. MODAL & UTILS ---
+// --- 4. MODAL & SERVER LOGIC ---
 async function showDetails(item) {
     currentItem = item;
     const type = item.title ? "movie" : "tv";
@@ -268,14 +259,8 @@ async function filterGenre(genreId) {
     currentPage = 1; 
     document.querySelectorAll('.genre-btn').forEach(btn => btn.classList.remove('active'));
     if (event && event.target) event.target.classList.add('active');
-    const moviesList = document.getElementById("movies-list");
-    moviesList.innerHTML = "<div style='color:white; text-align:center; width:100%; padding:50px;'>Searching for Cinema Gems...</div>";
     const filteredMovies = await fetchMovies("movie", 1, genreId);
-    if (filteredMovies && filteredMovies.length > 0) {
-        displayList(filteredMovies, "movies-list");
-    } else {
-        moviesList.innerHTML = "<p style='color:white; text-align:center; width:100%;'>No movies found, bro.</p>";
-    }
+    displayList(filteredMovies, "movies-list");
 }
 
 async function loadMore() {
@@ -303,6 +288,7 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
+// --- 5. INITIALIZATION (REPLACED WITH DEEP LINKING SUPPORT) ---
 async function init() {
     console.log("CINElzFlix Engine Online!"); 
     try {
@@ -314,13 +300,24 @@ async function init() {
         const tvData = await fetch(`${BASE_URL}?endpoint=/trending/tv/week`);
         const tvJson = await tvData.json();
         displayList(tvJson.results, "tvshows-list");
+
         const animeData = await fetch(`${BASE_URL}?endpoint=/discover/tv&with_genres=16`);
         const animeJson = await animeData.json();
         displayList(animeJson.results, "anime-list");
+
+        // --- DEEP LINKING LOGIC BRO ---
+        const params = new URLSearchParams(window.location.search);
+        const movieId = params.get('movie');
+        const tvId = params.get('tv');
+
+        if (movieId || tvId) {
+            const id = (movieId || tvId).split('-')[0];
+            const type = movieId ? 'movie' : 'tv';
+            const res = await fetch(`${BASE_URL}?endpoint=/${type}/${id}`);
+            const data = await res.json();
+            if (data) showDetails(data);
+        }
     } catch (err) { console.error("Init Error:", err); }
 }
 
 init();
-
-
-
