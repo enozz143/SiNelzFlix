@@ -145,13 +145,64 @@ function displayBanner(item) {
     document.getElementById("banner-desc").textContent = item.overview ? item.overview.substring(0, 150) + "..." : "";
 }
 
-function showDetails(item) {
+// --- ADVANCED MODAL LOGIC ---
+async function showDetails(item) {
     currentItem = item;
+    const type = item.title ? "movie" : "tv";
+    
+    // 1. Basic Info agad para hindi mukhang loading
     document.getElementById("modal-title").textContent = item.title || item.name;
-    document.getElementById("modal-description").textContent = item.overview;
+    document.getElementById("modal-description").textContent = item.overview || "No description available.";
     document.getElementById("modal-image").src = `${IMG_URL}${item.poster_path}`;
+    
+    // 2. Fetch Extra Details (Rating & Release Date)
+    const rating = item.vote_average ? `⭐ ${item.vote_average.toFixed(1)}` : "No Rating";
+    const releaseDate = item.release_date || item.first_air_date || "Unknown";
+    document.getElementById("modal-rating").innerHTML = `<span>${rating}</span> | <span>${releaseDate}</span>`;
+
+    // 3. I-load ang Video Server
     changeServer();
+    
+    // 4. I-open ang Modal
     document.getElementById("modal").style.display = "flex";
+
+    // 5. FETCH SIMILAR MOVIES (Eto ang pampatagal ng users, bro)
+    try {
+        const res = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/recommendations`);
+        const data = await res.json();
+        displaySimilar(data.results.slice(0, 6)); // Kunin lang ang top 6
+    } catch (err) {
+        console.error("Similar movies error:", err);
+    }
+}
+
+// Helper para sa Similar Movies display
+function displaySimilar(items) {
+    // Check muna kung may container na tayo para sa similar movies sa HTML mo
+    let similarContainer = document.getElementById("similar-movies");
+    if (!similarContainer) {
+        // Kung wala pa, gagawa tayo ng div sa loob ng modal-details
+        const details = document.querySelector(".modal-details");
+        const title = document.createElement("h3");
+        title.textContent = "You Might Also Like";
+        title.style.margin = "20px 0 10px 0";
+        title.style.color = "#fff";
+        
+        similarContainer = document.createElement("div");
+        similarContainer.id = "similar-movies";
+        similarContainer.className = "movie-row"; // Gamitin ang existing style natin
+        similarContainer.style.gridTemplateColumns = "repeat(auto-fill, minmax(100px, 1fr))"; // Maliit lang dapat sa modal
+        
+        details.appendChild(title);
+        details.appendChild(similarContainer);
+    }
+    
+    similarContainer.innerHTML = "";
+    items.forEach(item => {
+        if (!item.poster_path) return;
+        const card = createMovieCard(item, "similar-movies");
+        similarContainer.appendChild(card);
+    });
 }
 
 function changeServer() {
@@ -196,3 +247,4 @@ async function handleSearch(q) {
 }
 
 init();
+
