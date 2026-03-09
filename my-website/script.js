@@ -98,25 +98,28 @@ function updateSliderUI() {
 function createMovieCard(item, containerId) {
     const card = document.createElement("div");
     card.className = "movie-card";
-    
-    // Ibalik natin ang click sa BUONG CARD, hindi lang sa image.
     card.onclick = () => showDetails(item); 
 
     const img = document.createElement("img");
     img.src = `${IMG_URL}${item.poster_path}`;
     
-    // ETO ANG DAGDAG: TRAILER OVERLAY NA MAY PLAY BUTTON
     const overlay = document.createElement("div");
     overlay.className = "trailer-overlay";
     
-    // Pwede tayong gumamit ng FontAwesome o simple na character
-    const playIcon = document.createElement("div");
-    playIcon.className = "play-icon";
-    playIcon.innerHTML = "▶"; // Play character
-    playIcon.onclick = (e) => { 
-        e.stopPropagation(); // Iwasan na mag-double trigger ang click
+    // BINAGO NATIN: Mula Icon, ginawa nating Text Button
+    const playBtn = document.createElement("div");
+    playBtn.className = "play-trailer-text"; // New class para sa text style
+    playBtn.innerHTML = "PLAY TRAILER";
+    playBtn.onclick = (e) => { 
+        e.stopPropagation(); 
         playTrailer(item.id, item.title ? "movie" : "tv"); 
     };
+    
+    overlay.appendChild(playBtn);
+    card.appendChild(img);
+    card.appendChild(overlay);
+    return card;
+}
     
     overlay.appendChild(playIcon);
     card.appendChild(img);
@@ -290,4 +293,5 @@ async function init() {
 }
 
 init();
+
 
