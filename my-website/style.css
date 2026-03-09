@@ -20,7 +20,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 10px 4%;
-    background: rgba(2, 11, 26, 0.9);
+    background: rgba(2, 11, 26, 0.95);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -38,6 +38,8 @@ body {
     filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.6));
     transition: transform 0.3s ease;
 }
+
+#site-logo:hover { transform: scale(1.05); }
 
 .search-box { position: relative; width: 300px; }
 #search-input {
@@ -112,7 +114,7 @@ body {
     max-width: 800px;
 }
 
-.hero-content h1 { font-size: clamp(2rem, 6vw, 4rem); margin: 10px 0; line-height: 1.1; }
+.hero-content h1 { font-size: clamp(2.5rem, 6vw, 4rem); margin: 10px 0; line-height: 1.1; }
 .hero-meta { display: flex; gap: 15px; margin-bottom: 15px; color: var(--primary-blue); font-weight: bold; }
 .hero-btns { display: flex; gap: 15px; margin-top: 25px; }
 
@@ -121,8 +123,10 @@ body {
     color: white; border: none; 
     padding: 12px 30px; border-radius: 5px; 
     cursor: pointer; font-weight: bold; 
-    display: flex; align-items: center; gap: 10px;
+    transition: 0.3s;
 }
+
+.btn-watch:hover { background: #ff0a16; transform: scale(1.05); }
 
 .slider-dots {
     position: absolute;
@@ -134,7 +138,7 @@ body {
 .dot { width: 10px; height: 10px; background: rgba(255,255,255,0.3); border-radius: 50%; cursor: pointer; }
 .dot.active { background: var(--primary-blue); width: 25px; border-radius: 10px; }
 
-/* --- GRID ROWS & MOVIE CARD --- */
+/* --- MOVIE CARD & PLAY TRAILER OVERLAY --- */
 .movie-row {
     display: grid !important;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -165,7 +169,6 @@ body {
     transition: transform 0.5s ease;
 }
 
-/* --- PLAY ICON OVERLAY (BALIK NA TO BRO) --- */
 .trailer-overlay {
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -173,34 +176,38 @@ body {
     display: flex; justify-content: center; align-items: center;
     opacity: 0; 
     transition: opacity 0.3s ease;
-    pointer-events: none; /* Let clicks pass to the card details */
+    pointer-events: none; 
 }
 
-.movie-card:hover .trailer-overlay {
-    opacity: 1;
-}
+.movie-card:hover .trailer-overlay { opacity: 1; }
 
-.play-icon {
-    font-size: 2.5rem;
+.play-trailer-text {
+    font-size: 0.75rem;
+    font-weight: bold;
     color: white;
-    background: rgba(0, 0, 0, 0.6);
-    width: 65px; height: 65px;
-    border-radius: 50%;
-    display: flex; justify-content: center; align-items: center;
-    border: 2px solid white;
-    transform: scale(0.5); /* Pop-in start */
-    transition: all 0.3s ease-out;
-    pointer-events: auto; /* Clickable icon */
-    z-index: 15;
-}
-
-.movie-card:hover .play-icon {
-    transform: scale(1); /* Pop-in end */
     background: var(--accent-red);
-    border-color: var(--accent-red);
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(229, 9, 20, 0.4);
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    pointer-events: auto;
+    z-index: 15;
+    white-space: nowrap;
 }
 
-/* --- MODAL PLAYER & DETAILS --- */
+.movie-card:hover .play-trailer-text {
+    transform: translateY(0);
+}
+
+.play-trailer-text:hover {
+    background: #ff0a16;
+    transform: scale(1.1);
+}
+
+/* --- MODAL PLAYER --- */
 .modal {
     display: none;
     position: fixed;
@@ -231,10 +238,12 @@ body {
     flex-shrink: 0;
 }
 
+#modal-rating { color: #ffb400; font-weight: bold; margin-bottom: 10px; }
+
 /* MOBILE RESPONSIVE */
 @media (max-width: 768px) {
     #hero-slider-container { height: 60vh; }
-    .hero-content h1 { font-size: 2.2rem; }
+    .hero-content h1 { font-size: 2rem; }
     .movie-row { grid-template-columns: repeat(2, 1fr); }
     .search-box { width: 150px; }
     #modal-image { display: none; }
