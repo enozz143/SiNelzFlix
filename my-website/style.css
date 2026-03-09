@@ -3,6 +3,7 @@
     --dark-bg: #020b1a;
     --card-bg: #0a192f;
     --text-white: #e6f1ff;
+    --accent-red: #e50914;
 }
 
 body {
@@ -13,23 +14,32 @@ body {
     overflow-x: hidden;
 }
 
-/* --- NAVBAR --- */
-nav {
+/* --- NAVBAR & LOGO --- */
+#navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 5%;
+    padding: 10px 4%;
+    background: rgba(2, 11, 26, 0.85) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     position: fixed;
     top: 0;
-    left: 0;
-    width: 100%; 
-    box-sizing: border-box; 
+    width: 100%;
     z-index: 1000;
-    transition: 0.4s;
-    background: transparent;
+    box-sizing: border-box;
 }
 
-.logo img { height: 50px; }
+#site-logo {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.6));
+    transition: transform 0.3s ease;
+}
+
+#site-logo:hover { transform: scale(1.05); }
 
 .search-box { position: relative; width: 300px; }
 #search-input {
@@ -40,243 +50,40 @@ nav {
     border-radius: 20px;
     color: white;
     outline: none;
-    transition: 0.3s;
 }
 
-#search-input:focus {
-    background: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 0 10px var(--primary-blue);
-}
-
-/* --- MAIN CONTENT SPACING --- */
-main {
-    margin-top: 80px; 
-}
+/* --- MAIN BANNER --- */
+main { margin-top: 80px; }
 
 #banner {
-    height: 80vh;
+    height: 75vh;
     background-size: cover;
     background-position: center;
     display: flex;
     align-items: center;
     padding: 0 5%;
-    mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 80%, rgba(0,0,0,0));
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 80%, rgba(0,0,0,0));
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 85%, rgba(0,0,0,0));
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 85%, rgba(0,0,0,0));
 }
 
-#banner-title { 
-    font-size: clamp(2rem, 5vw, 3.5rem); 
-    text-shadow: 2px 2px 15px rgba(0,212,255,0.7); 
-}
-
-/* --- MOVIE CARD & TRAILER OVERLAY --- */
+/* --- MOVIE ROWS (HORIZONTAL SCROLL) --- */
 .movie-row {
-    display: flex;
-    overflow-x: auto;
-    gap: 20px;
+    display: flex !important; /* Pahiga by default */
+    overflow-x: auto !important;
+    overflow-y: hidden;
+    gap: 15px;
     padding: 20px 5%;
-    scrollbar-width: none;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Hide scrollbar Firefox */
 }
 
-.movie-row::-webkit-scrollbar { display: none; }
+.movie-row::-webkit-scrollbar { display: none; } /* Hide scrollbar Chrome/Safari */
 
+/* --- MOVIE CARD (GLASS UI) --- */
 .movie-card {
     position: relative;
-    flex: 0 0 auto; 
-    width: 180px;
-    border-radius: 10px;
-    overflow: hidden; 
-    cursor: pointer;
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.movie-card img {
-    width: 100%;
-    display: block;
-    border-radius: 10px;
-}
-
-.movie-card:hover {
-    transform: scale(1.08);
-    z-index: 2;
-}
-
-.trailer-overlay {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(2, 11, 26, 0.6); 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    /* PUMAPAYAG SA CLICK NA TUMAGOS SA POSTER */
-    pointer-events: none; 
-}
-
-.movie-card:hover .trailer-overlay {
-    opacity: 1;
-}
-
-.trailer-overlay button {
-    background: var(--primary-blue);
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 0.8rem;
-    box-shadow: 0 0 15px var(--primary-blue);
-    transition: 0.3s;
-    /* ETO LANG ANG PWEDE I-CLICK SA OVERLAY */
-    pointer-events: auto; 
-    z-index: 10;
-}
-
-.trailer-overlay button:hover {
-    background: white;
-    color: var(--dark-bg);
-}
-
-/* --- THE BIG SCREEN MODAL PLAYER --- */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 3000;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.95);
-    backdrop-filter: blur(10px);
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-}
-
-.modal-content { 
-    width: 95%; 
-    max-width: 1200px; /* Mas malapad para sa cinematic feel */
-    background: var(--card-bg); 
-    border-radius: 15px; 
-    border: 1px solid rgba(0, 212, 255, 0.3);
-    position: relative;
-    overflow-y: auto;
-    max-height: 95vh;
-}
-
-.player-container {
-    width: 100%;
-    background: #000;
-}
-
-#modal-video { 
-    width: 100%; 
-    aspect-ratio: 16 / 9; /* Standard cinematic ratio */
-    border: none;
-    display: block;
-}
-
-.modal-details {
-    padding: 25px;
-    background: linear-gradient(to bottom, #0a192f, #020b1a);
-}
-
-.modal-info { 
-    display: flex; 
-    gap: 30px; 
-    align-items: flex-start;
-}
-
-#modal-image { 
-    width: 180px; 
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
-    object-fit: cover;
-}
-
-.close { 
-    position: absolute; 
-    right: 20px; 
-    top: 10px; 
-    font-size: 35px; 
-    cursor: pointer; 
-    color: var(--primary-blue); 
-    z-index: 100;
-}
-
-select {
-    padding: 10px;
-    background: var(--primary-blue);
-    border: none;
-    border-radius: 5px;
-    font-weight: bold;
-    color: white;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-/* RESPONSIVE DESIGN PARA SA MOBILE */
-@media (max-width: 768px) {
-    .modal-info { flex-direction: column; align-items: center; text-align: center; }
-    #modal-image { display: none; } /* Tinago para lumaki ang text area sa mobile */
-    #modal-title { font-size: 1.5rem; }
-}
-
-/* --- NEW LOGO STYLES (Dito natin aayusin bro) --- */
-.logo {
-    display: flex;
-    align-items: center;
-}
-
-#site-logo {
-    /* Taasan natin ng konti para mas klaro, pero hindi masyadong malaki */
-    height: 70px; 
-    width: auto;
-    
-    /* Siguraduhin na hindi ma-stretch ang image */
-    object-fit: contain; 
-    
-    /* Konting shadow para lumutang sa navbar background */
-    filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.6)); 
-    
-    transition: transform 0.3s ease;
-}
-
-#site-logo:hover {
-    transform: scale(1.03); /* Konting zoom effect pag tinapat ang mouse */
-}
-
-/* --- NAVBAR STYLES (Siguraduhin na sapat ang space) --- */
-#navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    
-    /* Lakihan natin ang padding sa taas at baba para sa logo */
-    padding: 10px 4%; 
-    
-    /* Gamitin natin ang primary black/blue color ng logo background */
-    background: rgba(2, 11, 26, 0.98); 
-    
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
-}
-
-/* --- CINElzFlix MOVIESTREAM247 VIBE --- */
-
-/* 1. Improved Movie Row Spacing */
-.movie-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 20px;
-    padding: 20px 0;
-}
-
-/* 2. Glass Style Movie Card */
-.movie-card {
-    position: relative;
+    flex: 0 0 160px; /* Fixed width para hindi mapitpit sa flex */
+    min-width: 160px;
     border-radius: 12px;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.05);
@@ -290,123 +97,83 @@ select {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.5s ease;
 }
 
-/* 3. Hover Effects */
 .movie-card:hover {
-    transform: translateY(-10px) scale(1.03);
-    border-color: #e50914; /* Netflix red border on hover */
+    transform: translateY(-10px) scale(1.05);
+    border-color: var(--accent-red);
     box-shadow: 0 15px 40px rgba(229, 9, 20, 0.3);
+    z-index: 10;
 }
 
-.movie-card:hover img {
-    transform: scale(1.1);
-    filter: brightness(0.7);
-}
-
-/* 4. Play Button Overlay (Kasing-linis ng Moviestream247) */
+/* --- OVERLAY & PLAY BUTTON --- */
 .trailer-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba(0, 0, 0, 0.4);
     opacity: 0;
     transition: opacity 0.3s ease;
+    pointer-events: none;
 }
 
-.movie-card:hover .trailer-overlay {
-    opacity: 1;
-}
+.movie-card:hover .trailer-overlay { opacity: 1; }
 
 .trailer-overlay button {
     padding: 10px 20px;
-    background: #e50914;
+    background: var(--accent-red);
+    color: white;
     border: none;
     border-radius: 50px;
-    color: white;
     font-weight: bold;
     cursor: pointer;
-    transform: translateY(20px);
-    transition: transform 0.3s ease;
+    box-shadow: 0 0 15px var(--accent-red);
+    pointer-events: auto;
 }
 
-.movie-card:hover .trailer-overlay button {
-    transform: translateY(0);
-}
-
-/* 5. Sticky Navbar Blur */
-#navbar {
-    background: rgba(2, 11, 26, 0.85) !important;
-    backdrop-filter: blur(10px); /* Ito ang 'Glass' effect bro */
-    -webkit-backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* --- MODAL IMPROVEMENTS --- */
-#modal-rating {
-    margin: 10px 0;
-    color: #ffb400; /* Gold color para sa stars */
-    font-weight: bold;
-}
-
-#similar-movies {
-    gap: 10px !important;
-}
-
-#similar-movies .movie-card {
-    border-radius: 8px;
-}
-
-/* Para hindi masyadong malaki ang modal details sa mobile */
-@media (max-width: 768px) {
-    .modal-info {
-        flex-direction: column;
-        align-items: center;
-    }
-    #modal-image {
-        width: 150px;
-        margin-bottom: 20px;
-    }
-}
-
-/* --- HORIZONTAL SCROLL UPGRADE --- */
-
-.movie-row {
-    display: flex; /* Gagawing pahiga ang layout */
-    overflow-x: auto; /* Papayagan ang horizontal scroll */
-    overflow-y: hidden;
-    gap: 15px;
-    padding: 20px 10px;
-    scroll-behavior: smooth; /* Para swabe ang pag-scroll */
-    scrollbar-width: none; /* Itatago ang scrollbar sa Firefox */
-}
-
-/* Itatago ang scrollbar sa Chrome, Safari, at Edge */
-.movie-row::-webkit-scrollbar {
-    display: none;
-}
-
-/* Bagong size para sa cards kapag naka-horizontal */
-.movie-row .movie-card {
-    min-width: 160px; /* Importante: Hindi dapat liliit ang card */
-    max-width: 160px;
-    flex-shrink: 0; /* Pinipigilan ang pag-squeeze ng poster */
-}
-
-/* Optional: Fade effect sa gilid para alam ng user na may scroll pa */
-.row-container {
-    position: relative;
-    margin-bottom: 30px;
-}
-
+/* --- SEARCH RESULTS (GRID FIX) --- */
 #search-results-list {
-    display: grid !important; /* Force Grid para sa Search */
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    overflow-x: hidden;
+    display: grid !important; /* Force grid pag search */
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
+    gap: 20px;
+    padding: 20px 5%;
+    overflow-x: hidden !important;
+}
+
+/* --- MODAL PLAYER STYLES --- */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 3000;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(10px);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    width: 95%;
+    max-width: 1100px;
+    background: var(--card-bg);
+    border-radius: 15px;
+    overflow-y: auto;
+    max-height: 95vh;
+}
+
+#modal-video { width: 100%; aspect-ratio: 16 / 9; border: none; }
+
+.modal-details { padding: 25px; }
+.modal-info { display: flex; gap: 20px; }
+#modal-image { width: 180px; border-radius: 10px; }
+#modal-rating { color: #ffb400; font-weight: bold; margin: 10px 0; }
+
+/* MOBILE RESPONSIVE */
+@media (max-width: 768px) {
+    .modal-info { flex-direction: column; align-items: center; text-align: center; }
+    #modal-image { display: none; }
+    .search-box { width: 150px; }
+    #site-logo { height: 45px; }
 }
