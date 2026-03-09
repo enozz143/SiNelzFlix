@@ -134,7 +134,7 @@ body {
 .dot { width: 10px; height: 10px; background: rgba(255,255,255,0.3); border-radius: 50%; cursor: pointer; }
 .dot.active { background: var(--primary-blue); width: 25px; border-radius: 10px; }
 
-/* --- GRID ROWS & MOVIE CARD (HOVER ZOOM FIXED) --- */
+/* --- GRID ROWS & MOVIE CARD (ZOOM + OVERLAY FIX) --- */
 .movie-row {
     display: grid !important;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -153,7 +153,6 @@ body {
     z-index: 5;
 }
 
-/* ETO YUNG ZOOM EFFECT BRO */
 .movie-card:hover { 
     transform: scale(1.08); 
     border-color: var(--accent-red);
@@ -163,10 +162,9 @@ body {
 .movie-card img { 
     width: 100%; 
     display: block; 
-    transition: transform 0.5s ease;
+    pointer-events: none; /* Let clicks pass to the card */
 }
 
-/* --- PLAY BUTTON OVERLAY FIXED --- */
 .trailer-overlay {
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -174,7 +172,7 @@ body {
     display: flex; justify-content: center; align-items: center;
     opacity: 0; 
     transition: opacity 0.3s ease;
-    pointer-events: none; /* Hayaan ang click dumaan sa card */
+    pointer-events: none; 
 }
 
 .movie-card:hover .trailer-overlay { 
@@ -193,7 +191,7 @@ body {
     pointer-events: auto; 
     z-index: 15;
     transform: translateY(20px);
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .movie-card:hover .trailer-overlay button {
