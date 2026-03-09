@@ -32,14 +32,12 @@ body {
 }
 
 #site-logo {
-    height: 70px; /* Malaki at klaro gaya ng Moviestream vibe */
+    height: 70px;
     width: auto;
     object-fit: contain;
     filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.6));
     transition: transform 0.3s ease;
 }
-
-#site-logo:hover { transform: scale(1.05); }
 
 .search-box { position: relative; width: 300px; }
 #search-input {
@@ -52,7 +50,7 @@ body {
     outline: none;
 }
 
-/* --- HERO SLIDER (PREVIEW PLAYBACK READY) --- */
+/* --- HERO SLIDER --- */
 #hero-slider-container {
     position: relative;
     width: 100%;
@@ -136,7 +134,7 @@ body {
 .dot { width: 10px; height: 10px; background: rgba(255,255,255,0.3); border-radius: 50%; cursor: pointer; }
 .dot.active { background: var(--primary-blue); width: 25px; border-radius: 10px; }
 
-/* --- GRID ROWS (FIXED FOR LOAD MORE) --- */
+/* --- GRID ROWS & MOVIE CARD (HOVER ZOOM FIXED) --- */
 .movie-row {
     display: grid !important;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -150,27 +148,59 @@ body {
     overflow: hidden;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.4s ease;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     cursor: pointer;
     z-index: 5;
 }
 
-.movie-card:hover { transform: translateY(-10px); border-color: var(--accent-red); }
-.movie-card img { width: 100%; display: block; pointer-events: none; }
+/* ETO YUNG ZOOM EFFECT BRO */
+.movie-card:hover { 
+    transform: scale(1.08); 
+    border-color: var(--accent-red);
+    z-index: 10;
+}
 
+.movie-card img { 
+    width: 100%; 
+    display: block; 
+    transition: transform 0.5s ease;
+}
+
+/* --- PLAY BUTTON OVERLAY FIXED --- */
 .trailer-overlay {
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0,0,0,0.5);
     display: flex; justify-content: center; align-items: center;
-    opacity: 0; transition: 0.3s;
-    pointer-events: none;
+    opacity: 0; 
+    transition: opacity 0.3s ease;
+    pointer-events: none; /* Hayaan ang click dumaan sa card */
 }
 
-.movie-card:hover .trailer-overlay { opacity: 1; }
-.trailer-overlay button { pointer-events: auto; z-index: 10; }
+.movie-card:hover .trailer-overlay { 
+    opacity: 1; 
+}
 
-/* --- MODAL PLAYER & DETAILS (POSTER FIX HERE) --- */
+.trailer-overlay button { 
+    background: var(--accent-red);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    box-shadow: 0 0 15px var(--accent-red);
+    pointer-events: auto; 
+    z-index: 15;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+.movie-card:hover .trailer-overlay button {
+    transform: translateY(0);
+}
+
+/* --- MODAL PLAYER & DETAILS --- */
 .modal {
     display: none;
     position: fixed;
@@ -193,7 +223,7 @@ body {
 .modal-info { display: flex; gap: 30px; align-items: flex-start; }
 
 #modal-image { 
-    width: 200px; /* FIXED SIZE BRO */
+    width: 200px; 
     height: auto;
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0,0,0,0.5);
@@ -201,14 +231,12 @@ body {
     flex-shrink: 0;
 }
 
-#modal-rating { color: #ffb400; font-weight: bold; margin-bottom: 10px; }
-
 /* MOBILE RESPONSIVE */
 @media (max-width: 768px) {
     #hero-slider-container { height: 60vh; }
     .hero-content h1 { font-size: 2.5rem; }
     .movie-row { grid-template-columns: repeat(2, 1fr); }
     .search-box { width: 150px; }
-    #modal-image { display: none; } /* Hidden on mobile to save space */
+    #modal-image { display: none; }
     .modal-info { flex-direction: column; text-align: center; }
 }
