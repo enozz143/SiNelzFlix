@@ -135,21 +135,25 @@ async function loadMore() {
     }
 }
 
-// --- 5. DISPLAY HELPERS ---
 function createMovieCard(item, containerId) {
     const card = document.createElement("div");
     card.className = "movie-card";
+    
+    // 1. DITO DAPAT ANG CLICK: Sa mismong CARD, hindi lang sa image.
+    card.onclick = () => showDetails(item); 
+
     const img = document.createElement("img");
     img.src = `${IMG_URL}${item.poster_path}`;
-    img.onclick = () => showDetails(item); 
     
     const overlay = document.createElement("div");
     overlay.className = "trailer-overlay";
+    
     const btn = document.createElement("button");
     btn.innerHTML = "▶ Play";
     btn.onclick = (e) => { 
+        // 2. STOP PROPAGATION: Para hindi mag-double trigger ang click
         e.stopPropagation(); 
-        playTrailer(item.id, item.title ? "movie" : "tv"); 
+        showDetails(item); // O playTrailer kung trailer lang talaga gusto mo
     };
     
     overlay.appendChild(btn);
@@ -297,4 +301,5 @@ async function init() {
 }
 
 init();
+
 
