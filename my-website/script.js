@@ -88,9 +88,16 @@ function createMovieCard(item, containerId) {
 function displayList(items, containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
+    
     container.innerHTML = "";
+    
+    // Siguraduhin na naka-flex style ang container para sa horizontal scroll
+    container.style.display = "flex"; 
+    
     items.forEach(item => {
-        if (item.poster_path) container.appendChild(createMovieCard(item, containerId));
+        if (item.poster_path) {
+            container.appendChild(createMovieCard(item, containerId));
+        }
     });
 }
 
@@ -239,3 +246,4 @@ async function init() {
 }
 
 init();
+
