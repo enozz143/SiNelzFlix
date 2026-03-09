@@ -5,22 +5,17 @@ let debounceTimer;
 let currentPage = 1; 
 let currentGenre = 'all'; 
 
-// --- 1. FETCH MOVIES (PINALAKAS NA LOGIC) ---
+// --- 1. FETCH MOVIES ---
 async function fetchMovies(type, page = 1, genreId = 'all') {
     try {
         let url;
-        // Kapag 'all', Trending ang default display
         if (genreId === 'all') {
             url = `${BASE_URL}?endpoint=/trending/${type}/week&page=${page}`;
         } else {
-            // Kapag may Genre, Discover ang gagamitin natin (Popularity Sort)
             url = `${BASE_URL}?endpoint=/discover/${type}&page=${page}&with_genres=${genreId}&sort_by=popularity.desc`;
         }
-
-        console.log("Fetching from URL:", url); // Makikita natin to sa F12
         const res = await fetch(url);
         const data = await res.json();
-        
         return data.results || [];
     } catch (error) {
         console.error("Fetch error, bro:", error);
@@ -28,31 +23,22 @@ async function fetchMovies(type, page = 1, genreId = 'all') {
     }
 }
 
-// --- 2. GENRE FILTER (WITH REFRESH LOGIC) ---
+// --- 2. GENRE FILTER ---
 async function filterGenre(genreId) {
-    console.log("Genre Selected:", genreId);
     currentGenre = genreId;
     currentPage = 1; 
-
-    // UI: Active button effect
     document.querySelectorAll('.genre-btn').forEach(btn => btn.classList.remove('active'));
-    if (event && event.target) {
-        event.target.classList.add('active');
-    }
+    if (event && event.target) event.target.classList.add('active');
 
     const moviesList = document.getElementById("movies-list");
     moviesList.innerHTML = "<div style='color:white; text-align:center; width:100%; padding:50px;'>Searching for Cinema Gems...</div>";
 
-    // Kunin ang bagong batch ng movies
     const filteredMovies = await fetchMovies("movie", 1, genreId);
-    
     if (filteredMovies && filteredMovies.length > 0) {
         displayList(filteredMovies, "movies-list");
     } else {
         moviesList.innerHTML = "<p style='color:white; text-align:center; width:100%;'>No movies found for this genre, bro.</p>";
     }
-    
-    // Siguraduhin na labas ang Load More
     document.getElementById("load-more-btn").style.display = "inline-block";
 }
 
@@ -64,13 +50,10 @@ async function loadMore() {
     loadBtn.disabled = true;
 
     const moreMovies = await fetchMovies("movie", currentPage, currentGenre);
-    
     if (moreMovies && moreMovies.length > 0) {
         const container = document.getElementById("movies-list");
         moreMovies.forEach(item => {
-            if (item.poster_path) {
-                container.appendChild(createMovieCard(item, "movies-list"));
-            }
+            if (item.poster_path) container.appendChild(createMovieCard(item, "movies-list"));
         });
         loadBtn.textContent = "Load More Movies";
         loadBtn.disabled = false;
@@ -107,37 +90,10 @@ function displayList(items, containerId) {
     if (!container) return;
     container.innerHTML = "";
     items.forEach(item => {
-        if (item.poster_path) {
-            container.appendChild(createMovieCard(item, containerId));
-        }
+        if (item.poster_path) container.appendChild(createMovieCard(item, containerId));
     });
 }
 
-// --- 5. INITIALIZATION ---
-async function init() {
-    console.log("CINElzFlix Engine Online!"); 
-    try {
-        const movies = await fetchMovies("movie", 1);
-        if (movies && movies.length > 0) {
-            displayBanner(movies[0]);
-            displayList(movies, "movies-list");
-        }
-
-        // Lazy load others
-        const tvData = await fetch(`${BASE_URL}?endpoint=/trending/tv/week`);
-        const tvJson = await tvData.json();
-        displayList(tvJson.results, "tvshows-list");
-
-        const animeData = await fetch(`${BASE_URL}?endpoint=/discover/tv&with_genres=16`);
-        const animeJson = await animeData.json();
-        displayList(animeJson.results, "anime-list");
-
-    } catch (err) {
-        console.error("Init Error:", err);
-    }
-}
-
-// --- BANNER, MODAL, SEARCH (Standard) ---
 function displayBanner(item) {
     const banner = document.getElementById("banner");
     banner.style.backgroundImage = `linear-gradient(to right, rgba(2,11,26,1), rgba(2,11,26,0)), url(${IMG_URL}${item.backdrop_path})`;
@@ -145,88 +101,77 @@ function displayBanner(item) {
     document.getElementById("banner-desc").textContent = item.overview ? item.overview.substring(0, 150) + "..." : "";
 }
 
+// --- 5. MODAL LOGIC (UPDATED WITH URL SYNC) ---
 async function showDetails(item) {
     currentItem = item;
     const type = item.title ? "movie" : "tv";
     
-    // 1. Basic Info display agad
+    // --- URL SYNC LOGIC ---
+    const titleSlug = (item.title || item.name).toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+    const newUrl = window.location.origin + window.location.pathname + `?${type}=${item.id}-${titleSlug}`;
+    window.history.pushState({ path: newUrl }, '', newUrl);
+
+    // Basic Info Display
     document.getElementById("modal-title").textContent = item.title || item.name;
     document.getElementById("modal-description").textContent = item.overview || "No description available.";
     document.getElementById("modal-image").src = `${IMG_URL}${item.poster_path}`;
     
-    // 2. Rating & Release Date display
     const rating = item.vote_average ? `⭐ ${item.vote_average.toFixed(1)}` : "No Rating";
     const releaseDate = item.release_date || item.first_air_date || "Unknown";
     document.getElementById("modal-rating").innerHTML = `<span>${rating}</span> | <span>${releaseDate}</span>`;
 
-    // 3. I-load ang Video Player
     changeServer();
     document.getElementById("modal").style.display = "flex";
 
-    // --- ETO YUNG DINAGDAG NATIN NA CAST LOGIC, BRO ---
+    // Cast Logic
     try {
         const creditsRes = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/credits`);
         const creditsData = await creditsRes.json();
-        
-        // Kunin lang ang top 5 actors
         const castList = creditsData.cast.slice(0, 5).map(actor => actor.name).join(", ");
-        
-        // I-display sa modal
         const castContainer = document.getElementById("modal-cast");
-        if (castContainer) {
-            castContainer.innerHTML = `<strong>Cast:</strong> ${castList || "Information not available"}`;
-        }
-    } catch (err) {
-        console.error("Cast error:", err);
-    }
+        if (castContainer) castContainer.innerHTML = `<strong>Cast:</strong> ${castList || "Information not available"}`;
+    } catch (err) { console.error("Cast error:", err); }
 
-    // 4. FETCH SIMILAR/RECOMMENDED (The Double-Check Logic)
+    // Similar Movies Logic
     try {
         let res = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/recommendations`);
         let data = await res.json();
-        
         if (!data.results || data.results.length === 0) {
             res = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/similar`);
             data = await res.json();
         }
-
-        if (data.results && data.results.length > 0) {
-            displaySimilar(data.results.slice(0, 6)); 
-        } else {
-            const similarContainer = document.getElementById("similar-movies");
-            if (similarContainer) similarContainer.innerHTML = "<p style='color:gray;'>No similar titles found.</p>";
-        }
-    } catch (err) {
-        console.error("Error fetching suggestions:", err);
-    }
+        if (data.results && data.results.length > 0) displaySimilar(data.results.slice(0, 6)); 
+    } catch (err) { console.error("Suggestions error:", err); }
 }
 
-// Helper para sa Similar Movies display
+function closeModal() {
+    document.getElementById("modal").style.display = "none";
+    document.getElementById("modal-video").src = "";
+    
+    // --- CLEAN URL LOGIC ---
+    const originalUrl = window.location.origin + window.location.pathname;
+    window.history.pushState({ path: originalUrl }, '', originalUrl);
+}
+
+// --- 6. ADDITIONAL HELPERS ---
 function displaySimilar(items) {
-    // Check muna kung may container na tayo para sa similar movies sa HTML mo
     let similarContainer = document.getElementById("similar-movies");
     if (!similarContainer) {
-        // Kung wala pa, gagawa tayo ng div sa loob ng modal-details
         const details = document.querySelector(".modal-details");
         const title = document.createElement("h3");
         title.textContent = "You Might Also Like";
         title.style.margin = "20px 0 10px 0";
         title.style.color = "#fff";
-        
         similarContainer = document.createElement("div");
         similarContainer.id = "similar-movies";
-        similarContainer.className = "movie-row"; // Gamitin ang existing style natin
-        similarContainer.style.gridTemplateColumns = "repeat(auto-fill, minmax(100px, 1fr))"; // Maliit lang dapat sa modal
-        
+        similarContainer.className = "movie-row";
+        similarContainer.style.gridTemplateColumns = "repeat(auto-fill, minmax(100px, 1fr))";
         details.appendChild(title);
         details.appendChild(similarContainer);
     }
-    
     similarContainer.innerHTML = "";
     items.forEach(item => {
-        if (!item.poster_path) return;
-        const card = createMovieCard(item, "similar-movies");
-        similarContainer.appendChild(card);
+        if (item.poster_path) similarContainer.appendChild(createMovieCard(item, "similar-movies"));
     });
 }
 
@@ -238,11 +183,6 @@ function changeServer() {
     if (server === "vidsrc2") url = `https://vidsrc.net/embed/${type}/?tmdb=${currentItem.id}`;
     if (server === "videasy") url = `https://player.videasy.net/${type}/${currentItem.id}`;
     document.getElementById("modal-video").src = url;
-}
-
-function closeModal() {
-    document.getElementById("modal").style.display = "none";
-    document.getElementById("modal-video").src = "";
 }
 
 async function playTrailer(id, type) {
@@ -271,7 +211,31 @@ async function handleSearch(q) {
     }, 500);
 }
 
+// --- 7. EVENT LISTENERS ---
+document.addEventListener('keydown', function(event) {
+    if (event.key === "Escape") {
+        const modal = document.getElementById("modal");
+        if (modal && modal.style.display === "flex") closeModal();
+    }
+});
+
+// --- 8. INITIALIZATION ---
+async function init() {
+    console.log("CINElzFlix Engine Online!"); 
+    try {
+        const movies = await fetchMovies("movie", 1);
+        if (movies && movies.length > 0) {
+            displayBanner(movies[0]);
+            displayList(movies, "movies-list");
+        }
+        const tvData = await fetch(`${BASE_URL}?endpoint=/trending/tv/week`);
+        const tvJson = await tvData.json();
+        displayList(tvJson.results, "tvshows-list");
+
+        const animeData = await fetch(`${BASE_URL}?endpoint=/discover/tv&with_genres=16`);
+        const animeJson = await animeData.json();
+        displayList(animeJson.results, "anime-list");
+    } catch (err) { console.error("Init Error:", err); }
+}
+
 init();
-
-
-
