@@ -25,6 +25,7 @@ async function fetchMovies(type, page = 1, genreId = 'all') {
     }
 }
 
+// --- 2. HERO SLIDER LOGIC (WITH RED BUTTONS & DOTS) ---
 async function setupHeroSlider(movies) {
     sliderItems = movies.slice(0, 6);
     const sliderContainer = document.getElementById("hero-slider");
@@ -46,10 +47,9 @@ async function setupHeroSlider(movies) {
             if (trailer) trailerKey = trailer.key;
         } catch (err) { console.error("Slider video error:", err); }
 
-        // BINABALIK NATIN YUNG CINEMATIC PREVIEW AT BRANDED BUTTONS BRO
         slide.innerHTML = `
             <div class="hero-video-container">
-                ${trailerKey ? `<iframe src="https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=1&controls=0&loop=1&playlist=${trailerKey}&showinfo=0&rel=0&version=3&enablejsapi=1" frameborder="0"></iframe>` : ''}
+                ${trailerKey ? `<iframe src="https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=1&controls=0&loop=1&playlist=${trailerKey}&rel=0&showinfo=0" frameborder="0"></iframe>` : ''}
             </div>
             <div class="hero-overlay"></div>
             <div class="hero-content">
@@ -63,7 +63,7 @@ async function setupHeroSlider(movies) {
                 <p>${movie.overview.substring(0, 180)}...</p>
                 <div class="hero-btns">
                     <button class="btn-watch" onclick='showDetails(${JSON.stringify(movie).replace(/'/g, "&apos;")})'>▶ Watch Now</button>
-                    <button class="btn-list" style="background: rgba(255,255,255,0.1); border: 1px solid white; color: white; padding: 12px 30px; border-radius: 5px; cursor: pointer;">+ My List</button>
+                    <button class="btn-list" style="background:rgba(255,255,255,0.1); color:white; border:1px solid white; padding:12px 30px; border-radius:5px; cursor:pointer;">+ My List</button>
                 </div>
             </div>
         `;
@@ -74,7 +74,6 @@ async function setupHeroSlider(movies) {
         dot.onclick = () => goToSlide(index);
         dotsContainer.appendChild(dot);
     }
-    // Siguraduhin na tumatakbo ang rotation
     if (window.sliderInterval) clearInterval(window.sliderInterval);
     window.sliderInterval = setInterval(nextSlide, 10000);
 }
@@ -96,7 +95,7 @@ function updateSliderUI() {
     dots.forEach((d, i) => d.classList.toggle("active", i === sliderIndex));
 }
 
-// --- 3. MOVIE CARD LOGIC (WITH SMART SHARE) ---
+// --- 3. MOVIE CARD LOGIC (TRIPLE BUTTONS) ---
 function createMovieCard(item, containerId) {
     const card = document.createElement("div");
     card.className = "movie-card";
@@ -157,7 +156,7 @@ function displayList(items, containerId) {
     });
 }
 
-// --- 4. MODAL & SERVER LOGIC ---
+// --- 4. MODAL & SEARCH LOGIC ---
 async function showDetails(item) {
     currentItem = item;
     const type = item.title ? "movie" : "tv";
@@ -290,7 +289,7 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
-// --- 5. INITIALIZATION (REPLACED WITH DEEP LINKING SUPPORT) ---
+// --- 5. INITIALIZATION ---
 async function init() {
     console.log("CINElzFlix Engine Online!"); 
     try {
@@ -299,15 +298,18 @@ async function init() {
             setupHeroSlider(movies);
             displayList(movies, "movies-list");
         }
+        
+        // TV SHOWS
         const tvData = await fetch(`${BASE_URL}?endpoint=/trending/tv/week`);
         const tvJson = await tvData.json();
         displayList(tvJson.results, "tvshows-list");
 
+        // ANIME
         const animeData = await fetch(`${BASE_URL}?endpoint=/discover/tv&with_genres=16`);
         const animeJson = await animeData.json();
         displayList(animeJson.results, "anime-list");
 
-        // --- DEEP LINKING LOGIC BRO ---
+        // DEEP LINKING
         const params = new URLSearchParams(window.location.search);
         const movieId = params.get('movie');
         const tvId = params.get('tv');
@@ -323,4 +325,3 @@ async function init() {
 }
 
 init();
-
