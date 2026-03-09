@@ -170,3 +170,57 @@ body {
     .search-box { width: 160px; }
     .search-box:focus-within { width: 220px; }
 }
+
+
+/* --- FOOTER STYLES --- */
+#site-footer {
+    background: rgba(2, 11, 26, 0.95);
+    border-top: 1px solid rgba(0, 212, 255, 0.2); /* Subtle blue VA border */
+    padding: 40px 5%;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.footer-links a {
+    color: var(--text-white);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.footer-links a:hover {
+    color: var(--primary-blue);
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.5); /* Neon text glow */
+}
+
+.disclaimer {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.75rem;
+    max-width: 800px;
+    margin: 0 auto 15px auto;
+    line-height: 1.6;
+}
+
+.copyright {
+    color: var(--primary-blue);
+    font-size: 1rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin-top: 10px;
+}
+
+.sub-footer {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: normal;
+}
