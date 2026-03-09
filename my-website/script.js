@@ -145,34 +145,47 @@ function displayBanner(item) {
     document.getElementById("banner-desc").textContent = item.overview ? item.overview.substring(0, 150) + "..." : "";
 }
 
-// --- ADVANCED MODAL LOGIC ---
 async function showDetails(item) {
     currentItem = item;
     const type = item.title ? "movie" : "tv";
     
-    // 1. Basic Info agad para hindi mukhang loading
+    // 1. Basic Info
     document.getElementById("modal-title").textContent = item.title || item.name;
     document.getElementById("modal-description").textContent = item.overview || "No description available.";
     document.getElementById("modal-image").src = `${IMG_URL}${item.poster_path}`;
     
-    // 2. Fetch Extra Details (Rating & Release Date)
+    // 2. Rating & Release Date
     const rating = item.vote_average ? `⭐ ${item.vote_average.toFixed(1)}` : "No Rating";
     const releaseDate = item.release_date || item.first_air_date || "Unknown";
     document.getElementById("modal-rating").innerHTML = `<span>${rating}</span> | <span>${releaseDate}</span>`;
 
-    // 3. I-load ang Video Server
+    // 3. I-load ang Video Player
     changeServer();
-    
-    // 4. I-open ang Modal
     document.getElementById("modal").style.display = "flex";
 
-    // 5. FETCH SIMILAR MOVIES (Eto ang pampatagal ng users, bro)
+    // 4. FETCH SIMILAR/RECOMMENDED (The Double-Check Logic)
     try {
-        const res = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/recommendations`);
-        const data = await res.json();
-        displaySimilar(data.results.slice(0, 6)); // Kunin lang ang top 6
+        // Unang subok: Recommendations (Mas accurate to)
+        let res = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/recommendations`);
+        let data = await res.json();
+        
+        // Kung walang nakuha sa recommendations, subukan ang 'similar' endpoint
+        if (!data.results || data.results.length === 0) {
+            console.log("No recommendations, trying similar...");
+            res = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/similar`);
+            data = await res.json();
+        }
+
+        // I-display lang kung may nahanap talaga
+        if (data.results && data.results.length > 0) {
+            displaySimilar(data.results.slice(0, 6)); 
+        } else {
+            // Kung wala talaga, itago muna natin yung title
+            const similarContainer = document.getElementById("similar-movies");
+            if (similarContainer) similarContainer.innerHTML = "<p style='color:gray;'>No similar titles found.</p>";
+        }
     } catch (err) {
-        console.error("Similar movies error:", err);
+        console.error("Error fetching suggestions:", err);
     }
 }
 
@@ -247,4 +260,5 @@ async function handleSearch(q) {
 }
 
 init();
+
 
