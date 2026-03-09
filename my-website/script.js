@@ -149,12 +149,12 @@ async function showDetails(item) {
     currentItem = item;
     const type = item.title ? "movie" : "tv";
     
-    // 1. Basic Info
+    // 1. Basic Info display agad
     document.getElementById("modal-title").textContent = item.title || item.name;
     document.getElementById("modal-description").textContent = item.overview || "No description available.";
     document.getElementById("modal-image").src = `${IMG_URL}${item.poster_path}`;
     
-    // 2. Rating & Release Date
+    // 2. Rating & Release Date display
     const rating = item.vote_average ? `⭐ ${item.vote_average.toFixed(1)}` : "No Rating";
     const releaseDate = item.release_date || item.first_air_date || "Unknown";
     document.getElementById("modal-rating").innerHTML = `<span>${rating}</span> | <span>${releaseDate}</span>`;
@@ -163,24 +163,36 @@ async function showDetails(item) {
     changeServer();
     document.getElementById("modal").style.display = "flex";
 
+    // --- ETO YUNG DINAGDAG NATIN NA CAST LOGIC, BRO ---
+    try {
+        const creditsRes = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/credits`);
+        const creditsData = await creditsRes.json();
+        
+        // Kunin lang ang top 5 actors
+        const castList = creditsData.cast.slice(0, 5).map(actor => actor.name).join(", ");
+        
+        // I-display sa modal
+        const castContainer = document.getElementById("modal-cast");
+        if (castContainer) {
+            castContainer.innerHTML = `<strong>Cast:</strong> ${castList || "Information not available"}`;
+        }
+    } catch (err) {
+        console.error("Cast error:", err);
+    }
+
     // 4. FETCH SIMILAR/RECOMMENDED (The Double-Check Logic)
     try {
-        // Unang subok: Recommendations (Mas accurate to)
         let res = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/recommendations`);
         let data = await res.json();
         
-        // Kung walang nakuha sa recommendations, subukan ang 'similar' endpoint
         if (!data.results || data.results.length === 0) {
-            console.log("No recommendations, trying similar...");
             res = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/similar`);
             data = await res.json();
         }
 
-        // I-display lang kung may nahanap talaga
         if (data.results && data.results.length > 0) {
             displaySimilar(data.results.slice(0, 6)); 
         } else {
-            // Kung wala talaga, itago muna natin yung title
             const similarContainer = document.getElementById("similar-movies");
             if (similarContainer) similarContainer.innerHTML = "<p style='color:gray;'>No similar titles found.</p>";
         }
@@ -260,5 +272,6 @@ async function handleSearch(q) {
 }
 
 init();
+
 
 
