@@ -95,27 +95,37 @@ function updateSliderUI() {
     dots.forEach((d, i) => d.classList.toggle("active", i === sliderIndex));
 }
 
-// --- 3. MOVIE CARD LOGIC ---
 function createMovieCard(item, containerId) {
     const card = document.createElement("div");
     card.className = "movie-card";
-    card.onclick = () => showDetails(item); 
-
+    
+    // Tinanggal natin ang onclick sa card para hindi mag-conflict sa buttons
     const img = document.createElement("img");
     img.src = `${IMG_URL}${item.poster_path}`;
     
     const overlay = document.createElement("div");
     overlay.className = "trailer-overlay";
     
-    const playBtn = document.createElement("div");
-    playBtn.className = "play-trailer-text"; 
-    playBtn.innerHTML = "PLAY TRAILER";
-    playBtn.onclick = (e) => { 
+    // BUTTON 1: PLAY TRAILER
+    const trailerBtn = document.createElement("button");
+    trailerBtn.className = "hover-btn trailer-btn";
+    trailerBtn.innerHTML = "Play Trailer";
+    trailerBtn.onclick = (e) => { 
         e.stopPropagation(); 
         playTrailer(item.id, item.title ? "movie" : "tv"); 
     };
+
+    // BUTTON 2: PLAY FULL MOVIE
+    const fullMovieBtn = document.createElement("button");
+    fullMovieBtn.className = "hover-btn movie-btn";
+    fullMovieBtn.innerHTML = "Play Full Movie";
+    fullMovieBtn.onclick = (e) => { 
+        e.stopPropagation(); 
+        showDetails(item); 
+    };
     
-    overlay.appendChild(playBtn);
+    overlay.appendChild(trailerBtn);
+    overlay.appendChild(fullMovieBtn);
     card.appendChild(img);
     card.appendChild(overlay);
     return card;
@@ -287,3 +297,4 @@ async function init() {
 }
 
 init();
+
