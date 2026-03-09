@@ -20,7 +20,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 10px 4%;
-    background: rgba(2, 11, 26, 0.85);
+    background: rgba(2, 11, 26, 0.9);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -32,7 +32,7 @@ body {
 }
 
 #site-logo {
-    height: 70px; /* Laking Moviestream vibe na 'to bro */
+    height: 70px; /* Malaki at klaro gaya ng Moviestream vibe */
     width: auto;
     object-fit: contain;
     filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.6));
@@ -52,7 +52,7 @@ body {
     outline: none;
 }
 
-/* --- HERO SLIDER --- */
+/* --- HERO SLIDER (PREVIEW PLAYBACK READY) --- */
 #hero-slider-container {
     position: relative;
     width: 100%;
@@ -115,9 +115,7 @@ body {
 }
 
 .hero-content h1 { font-size: clamp(2rem, 6vw, 4rem); margin: 10px 0; line-height: 1.1; }
-
 .hero-meta { display: flex; gap: 15px; margin-bottom: 15px; color: var(--primary-blue); font-weight: bold; }
-
 .hero-btns { display: flex; gap: 15px; margin-top: 25px; }
 
 .btn-watch { 
@@ -138,7 +136,7 @@ body {
 .dot { width: 10px; height: 10px; background: rgba(255,255,255,0.3); border-radius: 50%; cursor: pointer; }
 .dot.active { background: var(--primary-blue); width: 25px; border-radius: 10px; }
 
-/* --- GRID ROWS (2 ROWS & CLICK FIX) --- */
+/* --- GRID ROWS (FIXED FOR LOAD MORE) --- */
 .movie-row {
     display: grid !important;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -154,11 +152,10 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.4s ease;
     cursor: pointer;
-    z-index: 5; /* Para clickable agad */
+    z-index: 5;
 }
 
 .movie-card:hover { transform: translateY(-10px); border-color: var(--accent-red); }
-
 .movie-card img { width: 100%; display: block; pointer-events: none; }
 
 .trailer-overlay {
@@ -167,17 +164,13 @@ body {
     background: rgba(0,0,0,0.5);
     display: flex; justify-content: center; align-items: center;
     opacity: 0; transition: 0.3s;
-    pointer-events: none; /* CLICK WILL PASS THROUGH TO CARD */
+    pointer-events: none;
 }
 
 .movie-card:hover .trailer-overlay { opacity: 1; }
+.trailer-overlay button { pointer-events: auto; z-index: 10; }
 
-.trailer-overlay button {
-    pointer-events: auto; /* Play button remains clickable */
-    z-index: 10;
-}
-
-/* --- MODAL --- */
+/* --- MODAL PLAYER & DETAILS (POSTER FIX HERE) --- */
 .modal {
     display: none;
     position: fixed;
@@ -196,10 +189,26 @@ body {
 
 #modal-video { width: 100%; aspect-ratio: 16/9; border: none; }
 
-/* MOBILE */
+.modal-details { padding: 25px; }
+.modal-info { display: flex; gap: 30px; align-items: flex-start; }
+
+#modal-image { 
+    width: 200px; /* FIXED SIZE BRO */
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+#modal-rating { color: #ffb400; font-weight: bold; margin-bottom: 10px; }
+
+/* MOBILE RESPONSIVE */
 @media (max-width: 768px) {
     #hero-slider-container { height: 60vh; }
     .hero-content h1 { font-size: 2.5rem; }
     .movie-row { grid-template-columns: repeat(2, 1fr); }
     .search-box { width: 150px; }
+    #modal-image { display: none; } /* Hidden on mobile to save space */
+    .modal-info { flex-direction: column; text-align: center; }
 }
