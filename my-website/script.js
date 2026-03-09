@@ -95,6 +95,7 @@ function updateSliderUI() {
     dots.forEach((d, i) => d.classList.toggle("active", i === sliderIndex));
 }
 
+// --- 3. MOVIE CARD LOGIC ---
 function createMovieCard(item, containerId) {
     const card = document.createElement("div");
     card.className = "movie-card";
@@ -106,9 +107,8 @@ function createMovieCard(item, containerId) {
     const overlay = document.createElement("div");
     overlay.className = "trailer-overlay";
     
-    // BINAGO NATIN: Mula Icon, ginawa nating Text Button
     const playBtn = document.createElement("div");
-    playBtn.className = "play-trailer-text"; // New class para sa text style
+    playBtn.className = "play-trailer-text"; 
     playBtn.innerHTML = "PLAY TRAILER";
     playBtn.onclick = (e) => { 
         e.stopPropagation(); 
@@ -116,12 +116,6 @@ function createMovieCard(item, containerId) {
     };
     
     overlay.appendChild(playBtn);
-    card.appendChild(img);
-    card.appendChild(overlay);
-    return card;
-}
-    
-    overlay.appendChild(playIcon);
     card.appendChild(img);
     card.appendChild(overlay);
     return card;
@@ -293,5 +287,3 @@ async function init() {
 }
 
 init();
-
-
