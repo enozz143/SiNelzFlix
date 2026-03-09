@@ -4,6 +4,8 @@ let currentItem;
 let debounceTimer;
 let currentPage = 1; 
 let currentGenre = 'all'; 
+let sliderIndex = 0;
+let sliderItems = [];
 
 // --- 1. FETCH MOVIES ---
 async function fetchMovies(type, page = 1, genreId = 'all') {
@@ -23,7 +25,73 @@ async function fetchMovies(type, page = 1, genreId = 'all') {
     }
 }
 
-// --- 2. GENRE FILTER ---
+// --- 2. HERO SLIDER LOGIC (MOVIESTREAM247 STYLE) ---
+function setupHeroSlider(movies) {
+    sliderItems = movies.slice(0, 6); // Kunin ang top 6 movies para sa slider
+    const sliderContainer = document.getElementById("hero-slider");
+    const dotsContainer = document.getElementById("slider-dots");
+    
+    sliderContainer.innerHTML = "";
+    dotsContainer.innerHTML = "";
+
+    sliderItems.forEach((movie, index) => {
+        const slide = document.createElement("div");
+        slide.className = `hero-slide ${index === 0 ? 'active' : ''}`;
+        slide.style.backgroundImage = `url(${IMG_URL}${movie.backdrop_path})`;
+        
+        const releaseYear = movie.release_date ? movie.release_date.split('-')[0] : 'N/A';
+        
+        slide.innerHTML = `
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <div class="hero-meta">
+                    <span>⭐ ${movie.vote_average.toFixed(1)}</span>
+                    <span>•</span>
+                    <span>${releaseYear}</span>
+                    <span>•</span>
+                    <span style="border: 1px solid var(--primary-blue); padding: 2px 5px; border-radius: 3px; font-size: 0.7rem;">HD</span>
+                </div>
+                <h1>${movie.title || movie.name}</h1>
+                <p>${movie.overview.substring(0, 180)}...</p>
+                <div class="hero-btns">
+                    <button class="btn-watch" onclick='showDetails(${JSON.stringify(movie).replace(/'/g, "&apos;")})'>
+                        <span style="font-size: 1.2rem;">▶</span> Watch Now
+                    </button>
+                    <button class="btn-list">+ Add to My List</button>
+                </div>
+            </div>
+        `;
+        sliderContainer.appendChild(slide);
+
+        const dot = document.createElement("div");
+        dot.className = `dot ${index === 0 ? 'active' : ''}`;
+        dot.onclick = () => goToSlide(index);
+        dotsContainer.appendChild(dot);
+    });
+
+    // Auto-swipe every 7 seconds
+    setInterval(nextSlide, 7000);
+}
+
+function nextSlide() {
+    sliderIndex = (sliderIndex + 1) % sliderItems.length;
+    updateSliderUI();
+}
+
+function goToSlide(index) {
+    sliderIndex = index;
+    updateSliderUI();
+}
+
+function updateSliderUI() {
+    const slides = document.querySelectorAll(".hero-slide");
+    const dots = document.querySelectorAll(".dot");
+    
+    slides.forEach((s, i) => s.classList.toggle("active", i === sliderIndex));
+    dots.forEach((d, i) => d.classList.toggle("active", i === sliderIndex));
+}
+
+// --- 3. GENRE FILTER ---
 async function filterGenre(genreId) {
     currentGenre = genreId;
     currentPage = 1; 
@@ -37,12 +105,11 @@ async function filterGenre(genreId) {
     if (filteredMovies && filteredMovies.length > 0) {
         displayList(filteredMovies, "movies-list");
     } else {
-        moviesList.innerHTML = "<p style='color:white; text-align:center; width:100%;'>No movies found for this genre, bro.</p>";
+        moviesList.innerHTML = "<p style='color:white; text-align:center; width:100%;'>No movies found, bro.</p>";
     }
-    document.getElementById("load-more-btn").style.display = "inline-block";
 }
 
-// --- 3. LOAD MORE ---
+// --- 4. LOAD MORE ---
 async function loadMore() {
     currentPage++; 
     const loadBtn = document.getElementById("load-more-btn");
@@ -62,11 +129,10 @@ async function loadMore() {
     }
 }
 
+// --- 5. DISPLAY HELPERS ---
 function createMovieCard(item, containerId) {
     const card = document.createElement("div");
     card.className = "movie-card";
-    
-    // Tinanggal na natin yung inline style na min-width para Grid na ang masunod
     const img = document.createElement("img");
     img.src = `${IMG_URL}${item.poster_path}`;
     img.onclick = () => showDetails(item); 
@@ -89,24 +155,13 @@ function createMovieCard(item, containerId) {
 function displayList(items, containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
-    
-    container.innerHTML = ""; // Linisin ang listahan bago mag-load ng bago
-    
+    container.innerHTML = "";
     items.forEach(item => {
-        if (item.poster_path) {
-            container.appendChild(createMovieCard(item, containerId));
-        }
+        if (item.poster_path) container.appendChild(createMovieCard(item, containerId));
     });
 }
 
-function displayBanner(item) {
-    const banner = document.getElementById("banner");
-    banner.style.backgroundImage = `linear-gradient(to right, rgba(2,11,26,1), rgba(2,11,26,0)), url(${IMG_URL}${item.backdrop_path})`;
-    document.getElementById("banner-title").textContent = item.title || item.name;
-    document.getElementById("banner-desc").textContent = item.overview ? item.overview.substring(0, 150) + "..." : "";
-}
-
-// --- 5. MODAL LOGIC (URL SYNC + CAST + SIMILAR) ---
+// --- 6. MODAL LOGIC (URL SYNC + CAST + SIMILAR) ---
 async function showDetails(item) {
     currentItem = item;
     const type = item.title ? "movie" : "tv";
@@ -126,7 +181,6 @@ async function showDetails(item) {
     changeServer();
     document.getElementById("modal").style.display = "flex";
 
-    // Cast Logic
     try {
         const creditsRes = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/credits`);
         const creditsData = await creditsRes.json();
@@ -135,7 +189,6 @@ async function showDetails(item) {
         if (castContainer) castContainer.innerHTML = `<strong>Cast:</strong> ${castList || "N/A"}`;
     } catch (err) { console.error("Cast error:", err); }
 
-    // Similar Movies
     try {
         let res = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/recommendations`);
         let data = await res.json();
@@ -154,7 +207,6 @@ function closeModal() {
     window.history.pushState({ path: originalUrl }, '', originalUrl);
 }
 
-// --- 6. ADDITIONAL HELPERS ---
 function displaySimilar(items) {
     let similarContainer = document.getElementById("similar-movies");
     if (!similarContainer) {
@@ -166,8 +218,6 @@ function displaySimilar(items) {
         similarContainer = document.createElement("div");
         similarContainer.id = "similar-movies";
         similarContainer.className = "movie-row";
-        similarContainer.style.display = "flex";
-        similarContainer.style.overflowX = "auto";
         details.appendChild(title);
         details.appendChild(similarContainer);
     }
@@ -223,10 +273,11 @@ document.addEventListener('keydown', function(event) {
 
 // --- 8. INITIALIZATION ---
 async function init() {
+    console.log("CINElzFlix Engine Online!"); 
     try {
         const movies = await fetchMovies("movie", 1);
         if (movies && movies.length > 0) {
-            displayBanner(movies[0]);
+            setupHeroSlider(movies); // Eto ang Carousel natin, bro!
             displayList(movies, "movies-list");
         }
         const tvData = await fetch(`${BASE_URL}?endpoint=/trending/tv/week`);
@@ -240,4 +291,3 @@ async function init() {
 }
 
 init();
-
