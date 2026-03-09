@@ -264,3 +264,87 @@ select {
     z-index: 1000;
 }
 
+/* --- CINElzFlix MOVIESTREAM247 VIBE --- */
+
+/* 1. Improved Movie Row Spacing */
+.movie-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+/* 2. Glass Style Movie Card */
+.movie-card {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.movie-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+/* 3. Hover Effects */
+.movie-card:hover {
+    transform: translateY(-10px) scale(1.03);
+    border-color: #e50914; /* Netflix red border on hover */
+    box-shadow: 0 15px 40px rgba(229, 9, 20, 0.3);
+}
+
+.movie-card:hover img {
+    transform: scale(1.1);
+    filter: brightness(0.7);
+}
+
+/* 4. Play Button Overlay (Kasing-linis ng Moviestream247) */
+.trailer-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.movie-card:hover .trailer-overlay {
+    opacity: 1;
+}
+
+.trailer-overlay button {
+    padding: 10px 20px;
+    background: #e50914;
+    border: none;
+    border-radius: 50px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+.movie-card:hover .trailer-overlay button {
+    transform: translateY(0);
+}
+
+/* 5. Sticky Navbar Blur */
+#navbar {
+    background: rgba(2, 11, 26, 0.85) !important;
+    backdrop-filter: blur(10px); /* Ito ang 'Glass' effect bro */
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
