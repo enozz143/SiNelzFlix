@@ -99,7 +99,6 @@ function createMovieCard(item, containerId) {
     const card = document.createElement("div");
     card.className = "movie-card";
     
-    // Tinanggal natin ang onclick sa card para hindi mag-conflict sa buttons
     const img = document.createElement("img");
     img.src = `${IMG_URL}${item.poster_path}`;
     
@@ -118,19 +117,41 @@ function createMovieCard(item, containerId) {
     // BUTTON 2: PLAY FULL MOVIE
     const fullMovieBtn = document.createElement("button");
     fullMovieBtn.className = "hover-btn movie-btn";
-    fullMovieBtn.innerHTML = "Play Full Movie";
+    fullMovieBtn.innerHTML = "Full Movie";
     fullMovieBtn.onclick = (e) => { 
         e.stopPropagation(); 
         showDetails(item); 
     };
+
+    // NEW: SHARE BUTTON
+    const shareBtn = document.createElement("button");
+    shareBtn.className = "share-mini-btn";
+    shareBtn.innerHTML = "🔗 Share";
+    shareBtn.onclick = (e) => {
+        e.stopPropagation();
+        const movieTitle = item.title || item.name;
+        const shareUrl = window.location.origin + window.location.pathname + `?id=${item.id}`;
+        
+        if (navigator.share) {
+            navigator.share({
+                title: movieTitle,
+                text: `Panoorin natin 'to sa CINElzFlix: ${movieTitle}`,
+                url: shareUrl,
+            });
+        } else {
+            // Fallback: Copy to clipboard
+            navigator.clipboard.writeText(shareUrl);
+            alert("Link copied to clipboard, bro!");
+        }
+    };
     
     overlay.appendChild(trailerBtn);
     overlay.appendChild(fullMovieBtn);
+    overlay.appendChild(shareBtn); // Dagdag natin sa overlay
     card.appendChild(img);
     card.appendChild(overlay);
     return card;
 }
-
 function displayList(items, containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -297,4 +318,5 @@ async function init() {
 }
 
 init();
+
 
