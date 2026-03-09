@@ -31,15 +31,25 @@ body {
     box-sizing: border-box;
 }
 
+/* --- UPDATED LOGO STYLES --- */
 #site-logo {
-    height: 70px;
+    /* Taasan natin para mas klaro ang text, bro */
+    height: 80px; 
     width: auto;
-    object-fit: contain;
-    filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.6));
+    
+    /* Siguraduhin na hindi ma-stretch ang image */
+    object-fit: contain; 
+    
+    /* Konting shadow para lumutang sa dark navbar background */
+    filter: drop-shadow(0px 0px 8px rgba(0, 212, 255, 0.4)); 
+    
     transition: transform 0.3s ease;
 }
 
-#site-logo:hover { transform: scale(1.05); }
+#site-logo:hover {
+    /* Konting zoom effect pag tinapat ang mouse */
+    transform: scale(1.05); 
+}
 
 .search-box { position: relative; width: 300px; }
 #search-input {
@@ -249,3 +259,4 @@ body {
     #modal-image { display: none; }
     .modal-info { flex-direction: column; text-align: center; }
 }
+
