@@ -5,24 +5,22 @@ let debounceTimer;
 let currentPage = 1; 
 let currentGenre = 'all'; 
 
-// --- 1. FETCH MOVIES (FIXED FOR GENRES) ---
+// --- 1. FETCH MOVIES (PINALAKAS NA LOGIC) ---
 async function fetchMovies(type, page = 1, genreId = 'all') {
     try {
-        let endpoint;
         let url;
-
+        // Kapag 'all', Trending ang default display
         if (genreId === 'all') {
-            // Default Trending
-            endpoint = `/trending/${type}/week`;
-            url = `${BASE_URL}?endpoint=${endpoint}&page=${page}`;
+            url = `${BASE_URL}?endpoint=/trending/${type}/week&page=${page}`;
         } else {
-            // Discover for specific Genres
-            endpoint = `/discover/${type}`;
-            url = `${BASE_URL}?endpoint=${endpoint}&page=${page}&with_genres=${genreId}&sort_by=popularity.desc`;
+            // Kapag may Genre, Discover ang gagamitin natin (Popularity Sort)
+            url = `${BASE_URL}?endpoint=/discover/${type}&page=${page}&with_genres=${genreId}&sort_by=popularity.desc`;
         }
 
+        console.log("Fetching from URL:", url); // Makikita natin to sa F12
         const res = await fetch(url);
         const data = await res.json();
+        
         return data.results || [];
     } catch (error) {
         console.error("Fetch error, bro:", error);
@@ -30,37 +28,39 @@ async function fetchMovies(type, page = 1, genreId = 'all') {
     }
 }
 
-// --- 2. GENRE FILTER LOGIC (REWRITTEN) ---
+// --- 2. GENRE FILTER (WITH REFRESH LOGIC) ---
 async function filterGenre(genreId) {
+    console.log("Genre Selected:", genreId);
     currentGenre = genreId;
     currentPage = 1; 
 
-    // UI: Palitan ang kulay ng active button
+    // UI: Active button effect
     document.querySelectorAll('.genre-btn').forEach(btn => btn.classList.remove('active'));
-    if (event) event.target.classList.add('active');
+    if (event && event.target) {
+        event.target.classList.add('active');
+    }
 
     const moviesList = document.getElementById("movies-list");
-    moviesList.innerHTML = "<p style='color:white; text-align:center; padding:20px;'>Fetching Cinema Magic...</p>";
+    moviesList.innerHTML = "<div style='color:white; text-align:center; width:100%; padding:50px;'>Searching for Cinema Gems...</div>";
 
-    // Tawagin ang bagong listahan
+    // Kunin ang bagong batch ng movies
     const filteredMovies = await fetchMovies("movie", 1, genreId);
     
     if (filteredMovies && filteredMovies.length > 0) {
         displayList(filteredMovies, "movies-list");
     } else {
-        moviesList.innerHTML = "<p style='color:white; text-align:center;'>No movies found for this genre, bro.</p>";
+        moviesList.innerHTML = "<p style='color:white; text-align:center; width:100%;'>No movies found for this genre, bro.</p>";
     }
     
-    // Siguraduhing kita ang Load More button
-    const loadBtn = document.getElementById("load-more-btn");
-    if (loadBtn) loadBtn.style.display = "inline-block";
+    // Siguraduhin na labas ang Load More
+    document.getElementById("load-more-btn").style.display = "inline-block";
 }
 
-// --- 3. LOAD MORE LOGIC ---
+// --- 3. LOAD MORE ---
 async function loadMore() {
     currentPage++; 
     const loadBtn = document.getElementById("load-more-btn");
-    loadBtn.textContent = "Loading More...";
+    loadBtn.textContent = "Loading...";
     loadBtn.disabled = true;
 
     const moreMovies = await fetchMovies("movie", currentPage, currentGenre);
@@ -68,8 +68,9 @@ async function loadMore() {
     if (moreMovies && moreMovies.length > 0) {
         const container = document.getElementById("movies-list");
         moreMovies.forEach(item => {
-            if (!item.poster_path) return;
-            container.appendChild(createMovieCard(item, "movies-list"));
+            if (item.poster_path) {
+                container.appendChild(createMovieCard(item, "movies-list"));
+            }
         });
         loadBtn.textContent = "Load More Movies";
         loadBtn.disabled = false;
@@ -78,7 +79,7 @@ async function loadMore() {
     }
 }
 
-// --- 4. DISPLAY FUNCTIONS ---
+// --- 4. DISPLAY HELPERS ---
 function createMovieCard(item, containerId) {
     const card = document.createElement("div");
     card.className = "movie-card";
@@ -89,7 +90,7 @@ function createMovieCard(item, containerId) {
     const overlay = document.createElement("div");
     overlay.className = "trailer-overlay";
     const btn = document.createElement("button");
-    btn.innerHTML = "▶ Play Trailer";
+    btn.innerHTML = "▶ Play";
     btn.onclick = (e) => { 
         e.stopPropagation(); 
         playTrailer(item.id, item.title ? "movie" : "tv"); 
@@ -106,16 +107,10 @@ function displayList(items, containerId) {
     if (!container) return;
     container.innerHTML = "";
     items.forEach(item => {
-        if (!item.poster_path) return;
-        container.appendChild(createMovieCard(item, containerId));
+        if (item.poster_path) {
+            container.appendChild(createMovieCard(item, containerId));
+        }
     });
-}
-
-function displayBanner(item) {
-    const banner = document.getElementById("banner");
-    banner.style.backgroundImage = `linear-gradient(to right, rgba(2,11,26,1), rgba(2,11,26,0)), url(${IMG_URL}${item.backdrop_path})`;
-    document.getElementById("banner-title").textContent = item.title || item.name;
-    document.getElementById("banner-desc").textContent = item.overview ? item.overview.substring(0, 150) + "..." : "";
 }
 
 // --- 5. INITIALIZATION ---
@@ -128,20 +123,28 @@ async function init() {
             displayList(movies, "movies-list");
         }
 
-        // Lazy load TV and Anime
-        const tvItems = await fetchMovies("tv", 1);
-        displayList(tvItems, "tvshows-list");
+        // Lazy load others
+        const tvData = await fetch(`${BASE_URL}?endpoint=/trending/tv/week`);
+        const tvJson = await tvData.json();
+        displayList(tvJson.results, "tvshows-list");
 
-        const animeRes = await fetch(`${BASE_URL}?endpoint=/discover/tv&with_genres=16`);
-        const animeData = await animeRes.json();
-        displayList(animeData.results, "anime-list");
+        const animeData = await fetch(`${BASE_URL}?endpoint=/discover/tv&with_genres=16`);
+        const animeJson = await animeData.json();
+        displayList(animeJson.results, "anime-list");
 
     } catch (err) {
         console.error("Init Error:", err);
     }
 }
 
-// --- 6. MODAL & SEARCH ---
+// --- BANNER, MODAL, SEARCH (Standard) ---
+function displayBanner(item) {
+    const banner = document.getElementById("banner");
+    banner.style.backgroundImage = `linear-gradient(to right, rgba(2,11,26,1), rgba(2,11,26,0)), url(${IMG_URL}${item.backdrop_path})`;
+    document.getElementById("banner-title").textContent = item.title || item.name;
+    document.getElementById("banner-desc").textContent = item.overview ? item.overview.substring(0, 150) + "..." : "";
+}
+
 function showDetails(item) {
     currentItem = item;
     document.getElementById("modal-title").textContent = item.title || item.name;
