@@ -25,7 +25,6 @@ async function fetchMovies(type, page = 1, genreId = 'all') {
     }
 }
 
-// --- 2. HERO SLIDER LOGIC ---
 async function setupHeroSlider(movies) {
     sliderItems = movies.slice(0, 6);
     const sliderContainer = document.getElementById("hero-slider");
@@ -47,9 +46,10 @@ async function setupHeroSlider(movies) {
             if (trailer) trailerKey = trailer.key;
         } catch (err) { console.error("Slider video error:", err); }
 
+        // BINABALIK NATIN YUNG CINEMATIC PREVIEW AT BRANDED BUTTONS BRO
         slide.innerHTML = `
             <div class="hero-video-container">
-                ${trailerKey ? `<iframe src="https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=1&controls=0&loop=1&playlist=${trailerKey}&showinfo=0&rel=0" frameborder="0"></iframe>` : ''}
+                ${trailerKey ? `<iframe src="https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=1&controls=0&loop=1&playlist=${trailerKey}&showinfo=0&rel=0&version=3&enablejsapi=1" frameborder="0"></iframe>` : ''}
             </div>
             <div class="hero-overlay"></div>
             <div class="hero-content">
@@ -57,13 +57,13 @@ async function setupHeroSlider(movies) {
                     <span>⭐ ${movie.vote_average.toFixed(1)}</span>
                     <span>•</span>
                     <span>${movie.release_date ? movie.release_date.split('-')[0] : 'N/A'}</span>
-                    <span style="border: 1px solid var(--primary-blue); padding: 2px 5px; border-radius: 3px; font-size: 0.7rem;">HD PREVIEW</span>
+                    <span style="border: 1px solid var(--primary-blue); padding: 2px 5px; border-radius: 3px; font-size: 0.7rem;">CINEMATIC PREVIEW</span>
                 </div>
                 <h1>${movie.title}</h1>
                 <p>${movie.overview.substring(0, 180)}...</p>
                 <div class="hero-btns">
-                    <button class="btn-watch" onclick='showDetails(${JSON.stringify(movie).replace(/'/g, "&apos;")})'>▶ Watch Full Movie</button>
-                    <button class="btn-list">+ Add to My List</button>
+                    <button class="btn-watch" onclick='showDetails(${JSON.stringify(movie).replace(/'/g, "&apos;")})'>▶ Watch Now</button>
+                    <button class="btn-list" style="background: rgba(255,255,255,0.1); border: 1px solid white; color: white; padding: 12px 30px; border-radius: 5px; cursor: pointer;">+ My List</button>
                 </div>
             </div>
         `;
@@ -74,7 +74,9 @@ async function setupHeroSlider(movies) {
         dot.onclick = () => goToSlide(index);
         dotsContainer.appendChild(dot);
     }
-    setInterval(nextSlide, 10000);
+    // Siguraduhin na tumatakbo ang rotation
+    if (window.sliderInterval) clearInterval(window.sliderInterval);
+    window.sliderInterval = setInterval(nextSlide, 10000);
 }
 
 function nextSlide() {
@@ -321,3 +323,4 @@ async function init() {
 }
 
 init();
+
