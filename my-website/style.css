@@ -374,3 +374,33 @@ select {
         margin-bottom: 20px;
     }
 }
+
+/* --- HORIZONTAL SCROLL UPGRADE --- */
+
+.movie-row {
+    display: flex; /* Gagawing pahiga ang layout */
+    overflow-x: auto; /* Papayagan ang horizontal scroll */
+    overflow-y: hidden;
+    gap: 15px;
+    padding: 20px 10px;
+    scroll-behavior: smooth; /* Para swabe ang pag-scroll */
+    scrollbar-width: none; /* Itatago ang scrollbar sa Firefox */
+}
+
+/* Itatago ang scrollbar sa Chrome, Safari, at Edge */
+.movie-row::-webkit-scrollbar {
+    display: none;
+}
+
+/* Bagong size para sa cards kapag naka-horizontal */
+.movie-row .movie-card {
+    min-width: 160px; /* Importante: Hindi dapat liliit ang card */
+    max-width: 160px;
+    flex-shrink: 0; /* Pinipigilan ang pag-squeeze ng poster */
+}
+
+/* Optional: Fade effect sa gilid para alam ng user na may scroll pa */
+.row-container {
+    position: relative;
+    margin-bottom: 30px;
+}
