@@ -123,25 +123,28 @@ function createMovieCard(item, containerId) {
         showDetails(item); 
     };
 
-    // NEW: SHARE BUTTON
+  // UPDATED SHARE BUTTON LOGIC
     const shareBtn = document.createElement("button");
     shareBtn.className = "share-mini-btn";
     shareBtn.innerHTML = "🔗 Share";
     shareBtn.onclick = (e) => {
         e.stopPropagation();
-        const movieTitle = item.title || item.name;
-        const shareUrl = window.location.origin + window.location.pathname + `?id=${item.id}`;
+        
+        const type = item.title ? "movie" : "tv";
+        const titleSlug = (item.title || item.name).toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+        
+        // Eto ang magic link, bro! Kasama na ang ID at type
+        const shareUrl = `${window.location.origin}${window.location.pathname}?${type}=${item.id}-${titleSlug}`;
         
         if (navigator.share) {
             navigator.share({
-                title: movieTitle,
-                text: `Panoorin natin 'to sa CINElzFlix: ${movieTitle}`,
+                title: item.title || item.name,
+                text: `Panoorin natin 'to sa CINElzFlix!`,
                 url: shareUrl,
             });
         } else {
-            // Fallback: Copy to clipboard
             navigator.clipboard.writeText(shareUrl);
-            alert("Link copied to clipboard, bro!");
+            alert("Movie link copied to clipboard, bro!");
         }
     };
     
@@ -318,5 +321,6 @@ async function init() {
 }
 
 init();
+
 
 
