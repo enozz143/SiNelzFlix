@@ -62,10 +62,15 @@ async function loadMore() {
     }
 }
 
-// --- 4. DISPLAY HELPERS ---
+// --- 4. DISPLAY HELPERS (FIXED FOR HORIZONTAL) ---
 function createMovieCard(item, containerId) {
     const card = document.createElement("div");
     card.className = "movie-card";
+    
+    // ETO ANG SECRET: Pinipigilan natin na mapitpit ang card sa Flexbox
+    card.style.minWidth = "160px";
+    card.style.flexShrink = "0";
+
     const img = document.createElement("img");
     img.src = `${IMG_URL}${item.poster_path}`;
     img.onclick = () => showDetails(item); 
@@ -91,8 +96,17 @@ function displayList(items, containerId) {
     
     container.innerHTML = "";
     
-    // Siguraduhin na naka-flex style ang container para sa horizontal scroll
-    container.style.display = "flex"; 
+    // Grid para sa Search, Flex para sa Rows
+    if (containerId === "search-results-list") {
+        container.style.display = "grid";
+        container.style.gridTemplateColumns = "repeat(auto-fill, minmax(150px, 1fr))";
+        container.style.gap = "20px";
+    } else {
+        container.style.display = "flex";
+        container.style.overflowX = "auto";
+        container.style.gap = "15px";
+        container.style.paddingBottom = "15px"; // Space para sa scrollbar
+    }
     
     items.forEach(item => {
         if (item.poster_path) {
@@ -108,17 +122,15 @@ function displayBanner(item) {
     document.getElementById("banner-desc").textContent = item.overview ? item.overview.substring(0, 150) + "..." : "";
 }
 
-// --- 5. MODAL LOGIC (UPDATED WITH URL SYNC) ---
+// --- 5. MODAL LOGIC (URL SYNC + CAST + SIMILAR) ---
 async function showDetails(item) {
     currentItem = item;
     const type = item.title ? "movie" : "tv";
     
-    // --- URL SYNC LOGIC ---
     const titleSlug = (item.title || item.name).toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
     const newUrl = window.location.origin + window.location.pathname + `?${type}=${item.id}-${titleSlug}`;
     window.history.pushState({ path: newUrl }, '', newUrl);
 
-    // Basic Info Display
     document.getElementById("modal-title").textContent = item.title || item.name;
     document.getElementById("modal-description").textContent = item.overview || "No description available.";
     document.getElementById("modal-image").src = `${IMG_URL}${item.poster_path}`;
@@ -136,10 +148,10 @@ async function showDetails(item) {
         const creditsData = await creditsRes.json();
         const castList = creditsData.cast.slice(0, 5).map(actor => actor.name).join(", ");
         const castContainer = document.getElementById("modal-cast");
-        if (castContainer) castContainer.innerHTML = `<strong>Cast:</strong> ${castList || "Information not available"}`;
+        if (castContainer) castContainer.innerHTML = `<strong>Cast:</strong> ${castList || "N/A"}`;
     } catch (err) { console.error("Cast error:", err); }
 
-    // Similar Movies Logic
+    // Similar Movies
     try {
         let res = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/recommendations`);
         let data = await res.json();
@@ -147,15 +159,13 @@ async function showDetails(item) {
             res = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/similar`);
             data = await res.json();
         }
-        if (data.results && data.results.length > 0) displaySimilar(data.results.slice(0, 6)); 
+        displaySimilar(data.results.slice(0, 6)); 
     } catch (err) { console.error("Suggestions error:", err); }
 }
 
 function closeModal() {
     document.getElementById("modal").style.display = "none";
     document.getElementById("modal-video").src = "";
-    
-    // --- CLEAN URL LOGIC ---
     const originalUrl = window.location.origin + window.location.pathname;
     window.history.pushState({ path: originalUrl }, '', originalUrl);
 }
@@ -172,7 +182,8 @@ function displaySimilar(items) {
         similarContainer = document.createElement("div");
         similarContainer.id = "similar-movies";
         similarContainer.className = "movie-row";
-        similarContainer.style.gridTemplateColumns = "repeat(auto-fill, minmax(100px, 1fr))";
+        similarContainer.style.display = "flex";
+        similarContainer.style.overflowX = "auto";
         details.appendChild(title);
         details.appendChild(similarContainer);
     }
@@ -228,7 +239,6 @@ document.addEventListener('keydown', function(event) {
 
 // --- 8. INITIALIZATION ---
 async function init() {
-    console.log("CINElzFlix Engine Online!"); 
     try {
         const movies = await fetchMovies("movie", 1);
         if (movies && movies.length > 0) {
@@ -246,4 +256,3 @@ async function init() {
 }
 
 init();
-
