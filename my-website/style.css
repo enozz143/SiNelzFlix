@@ -22,224 +22,97 @@ body {
     padding: 10px 4%;
     background: rgba(2, 11, 26, 0.95);
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
+    top: 0; width: 100%; z-index: 1000;
     box-sizing: border-box;
 }
 
-#site-logo {
-    height: 85px; 
-    width: auto;
-    object-fit: contain;
-    filter: drop-shadow(0px 0px 8px rgba(0, 212, 255, 0.4));
-    transition: transform 0.3s ease;
-}
-
-#site-logo:hover { transform: scale(1.05); }
-
-.search-box { position: relative; width: 300px; }
-#search-input {
-    width: 100%;
-    padding: 10px 15px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid var(--primary-blue);
-    border-radius: 20px;
-    color: white;
-    outline: none;
-}
+#site-logo { height: 85px; width: auto; object-fit: contain; filter: drop-shadow(0px 0px 8px rgba(0, 212, 255, 0.4)); }
 
 /* --- HERO SLIDER --- */
 #hero-slider-container {
     position: relative;
-    width: 100%;
-    height: 85vh;
-    overflow: hidden;
-    background: #000;
+    width: 100%; height: 85vh;
+    overflow: hidden; background: #000;
 }
 
 .hero-slide {
     position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background-size: cover;
-    background-position: center top;
-    display: none; 
-    transition: opacity 0.8s ease-in-out;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-size: cover; background-position: center;
+    display: none; transition: opacity 0.8s ease-in-out;
 }
 
 .hero-slide.active { display: flex; align-items: center; }
 
 .hero-video-container {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: 1;
-    pointer-events: none;
-    overflow: hidden;
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
 }
 
 .hero-video-container iframe {
-    width: 100vw;
-    height: 56.25vw;
-    min-height: 100vh;
-    min-width: 177.77vh;
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0.5;
+    width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh;
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    opacity: 0.5; pointer-events: none;
 }
 
 .hero-overlay {
-    position: absolute;
-    width: 100%; height: 100%;
-    z-index: 2;
-    background: linear-gradient(to right, rgba(2, 11, 26, 0.9) 20%, rgba(2, 11, 26, 0.4) 50%, rgba(2, 11, 26, 0) 100%),
+    position: absolute; width: 100%; height: 100%; z-index: 2;
+    background: linear-gradient(to right, rgba(2, 11, 26, 0.9) 20%, rgba(2, 11, 26, 0.4) 50%, transparent 100%),
                 linear-gradient(to bottom, transparent 60%, rgba(2, 11, 26, 1) 100%);
 }
 
-.hero-content {
-    position: relative;
-    z-index: 10;
-    padding: 0 5%;
-    max-width: 800px;
+.hero-content { position: relative; z-index: 10; padding: 0 5%; max-width: 800px; }
+
+/* RED BUTTON BRANDING BRO */
+.btn-watch {
+    background: var(--accent-red);
+    color: white; border: none;
+    padding: 12px 30px; border-radius: 5px;
+    font-weight: bold; cursor: pointer;
+    transition: 0.3s; margin-right: 15px;
 }
 
-/* --- MOVIE CARD & OVERLAY BUTTONS --- */
-.movie-row {
-    display: grid !important;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 20px;
-    padding: 20px 5%;
+.btn-watch:hover { background: #ff0a16; transform: scale(1.05); }
+
+/* DOTS STYLING */
+.slider-dots {
+    position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 10px; z-index: 20;
 }
 
-.movie-card {
-    position: relative;
-    border-radius: 12px;
-    overflow: hidden;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    cursor: pointer;
-    z-index: 5;
-}
+.dot { width: 12px; height: 12px; background: rgba(255,255,255,0.3); border-radius: 50%; cursor: pointer; transition: 0.3s; }
+.dot.active { background: var(--primary-blue); width: 30px; border-radius: 10px; }
 
-.movie-card:hover { 
-    transform: scale(1.08); 
-    border-color: var(--accent-red);
-    z-index: 10;
-}
-
+/* --- MOVIE CARDS & OVERLAYS --- */
+.movie-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; padding: 20px 5%; }
+.movie-card { position: relative; border-radius: 12px; overflow: hidden; cursor: pointer; transition: 0.4s; }
+.movie-card:hover { transform: scale(1.08); border: 1px solid var(--accent-red); }
 .movie-card img { width: 100%; display: block; }
 
 .trailer-overlay {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    opacity: 0; 
-    transition: opacity 0.3s ease;
-    pointer-events: none;
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.8); display: flex; flex-direction: column;
+    justify-content: center; align-items: center; gap: 8px;
+    opacity: 0; transition: 0.3s; pointer-events: none;
 }
 
-.movie-card:hover .trailer-overlay {
-    opacity: 1;
-    pointer-events: auto;
-}
+.movie-card:hover .trailer-overlay { opacity: 1; pointer-events: auto; }
 
-.hover-btn {
-    width: 85%;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    font-weight: bold;
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
+.hover-btn { width: 85%; padding: 8px; border: none; border-radius: 5px; font-weight: bold; font-size: 0.7rem; cursor: pointer; text-transform: uppercase; }
+.trailer-btn { background: transparent; color: white; border: 2px solid white; }
+.movie-btn { background: var(--accent-red); color: white; }
+.share-mini-btn { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 5px 15px; border-radius: 20px; font-size: 0.6rem; margin-top: 5px; cursor: pointer; }
 
-.trailer-btn {
-    background: transparent;
-    color: white;
-    border: 2px solid white;
-}
-
-.trailer-btn:hover { background: white; color: black; }
-
-.movie-btn {
-    background: var(--accent-red);
-    color: white;
-}
-
-.movie-btn:hover { background: #ff0a16; transform: scale(1.05); }
-
-.share-mini-btn {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 6px 15px;
-    border-radius: 20px;
-    font-size: 0.65rem;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 5px;
-    transition: all 0.2s ease;
-}
-
-.share-mini-btn:hover { background: var(--primary-blue); border-color: var(--primary-blue); }
-
-/* --- MODAL PLAYER (WIDE FIX) --- */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 3000;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.95);
-    backdrop-filter: blur(10px);
-    justify-content: center; align-items: center;
-}
-
-.modal-content {
-    width: 95%; 
-    max-width: 1200px; /* Pinalapad ulit natin bro! */
-    background: var(--card-bg); 
-    border-radius: 15px;
-    overflow-y: auto; 
-    max-height: 95vh;
-    border: 1px solid rgba(0, 212, 255, 0.2);
-}
-
-#modal-video { 
-    width: 100%; 
-    aspect-ratio: 16 / 9; /* Cinematic format */
-    border: none;
-    background: #000;
-    display: block;
-}
-
+/* --- MODAL WIDE PLAYER --- */
+.modal { display: none; position: fixed; z-index: 3000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; }
+.modal-content { width: 95%; max-width: 1200px; background: var(--card-bg); border-radius: 15px; overflow-y: auto; max-height: 95vh; }
+#modal-video { width: 100%; aspect-ratio: 16/9; border: none; background: #000; }
 .modal-details { padding: 25px; }
-.modal-info { display: flex; gap: 30px; align-items: flex-start; }
+.modal-info { display: flex; gap: 30px; }
+#modal-image { width: 200px; border-radius: 10px; }
 
-#modal-image { 
-    width: 200px; 
-    height: auto;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
-    object-fit: cover;
-}
-
-/* MOBILE */
 @media (max-width: 768px) {
-    #hero-slider-container { height: 60vh; }
-    .movie-row { grid-template-columns: repeat(2, 1fr); }
     #modal-image { display: none; }
-    .modal-info { flex-direction: column; text-align: center; }
+    .movie-row { grid-template-columns: repeat(2, 1fr); }
 }
