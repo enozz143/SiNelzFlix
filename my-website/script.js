@@ -25,7 +25,7 @@ async function fetchMovies(type, page = 1, genreId = 'all') {
     }
 }
 
-// --- 2. HERO SLIDER LOGIC (MOVIESTREAM247 STYLE) ---
+// --- 2. HERO SLIDER LOGIC ---
 async function setupHeroSlider(movies) {
     sliderItems = movies.slice(0, 6);
     const sliderContainer = document.getElementById("hero-slider");
@@ -40,7 +40,6 @@ async function setupHeroSlider(movies) {
         slide.className = `hero-slide ${index === 0 ? 'active' : ''}`;
         slide.style.backgroundImage = `url(${IMG_URL}${movie.backdrop_path})`;
         
-        // --- FETCH TRAILER KEY PARA SA PREVIEW ---
         let trailerKey = "";
         try {
             const videoRes = await fetch(`${BASE_URL}?endpoint=/movie/${movie.id}/videos`);
@@ -76,9 +75,9 @@ async function setupHeroSlider(movies) {
         dot.onclick = () => goToSlide(index);
         dotsContainer.appendChild(dot);
     }
-
-    setInterval(nextSlide, 10000); // 10 seconds para mas matagal ang playback preview
+    setInterval(nextSlide, 10000);
 }
+
 function nextSlide() {
     sliderIndex = (sliderIndex + 1) % sliderItems.length;
     updateSliderUI();
@@ -92,54 +91,14 @@ function goToSlide(index) {
 function updateSliderUI() {
     const slides = document.querySelectorAll(".hero-slide");
     const dots = document.querySelectorAll(".dot");
-    
     slides.forEach((s, i) => s.classList.toggle("active", i === sliderIndex));
     dots.forEach((d, i) => d.classList.toggle("active", i === sliderIndex));
 }
 
-// --- 3. GENRE FILTER ---
-async function filterGenre(genreId) {
-    currentGenre = genreId;
-    currentPage = 1; 
-    document.querySelectorAll('.genre-btn').forEach(btn => btn.classList.remove('active'));
-    if (event && event.target) event.target.classList.add('active');
-
-    const moviesList = document.getElementById("movies-list");
-    moviesList.innerHTML = "<div style='color:white; text-align:center; width:100%; padding:50px;'>Searching for Cinema Gems...</div>";
-
-    const filteredMovies = await fetchMovies("movie", 1, genreId);
-    if (filteredMovies && filteredMovies.length > 0) {
-        displayList(filteredMovies, "movies-list");
-    } else {
-        moviesList.innerHTML = "<p style='color:white; text-align:center; width:100%;'>No movies found, bro.</p>";
-    }
-}
-
-// --- 4. LOAD MORE ---
-async function loadMore() {
-    currentPage++; 
-    const loadBtn = document.getElementById("load-more-btn");
-    loadBtn.textContent = "Loading...";
-    loadBtn.disabled = true;
-
-    const moreMovies = await fetchMovies("movie", currentPage, currentGenre);
-    if (moreMovies && moreMovies.length > 0) {
-        const container = document.getElementById("movies-list");
-        moreMovies.forEach(item => {
-            if (item.poster_path) container.appendChild(createMovieCard(item, "movies-list"));
-        });
-        loadBtn.textContent = "Load More Movies";
-        loadBtn.disabled = false;
-    } else {
-        loadBtn.style.display = "none"; 
-    }
-}
-
+// --- 3. DISPLAY & CARD LOGIC ---
 function createMovieCard(item, containerId) {
     const card = document.createElement("div");
     card.className = "movie-card";
-    
-    // 1. DITO DAPAT ANG CLICK: Sa mismong CARD, hindi lang sa image.
     card.onclick = () => showDetails(item); 
 
     const img = document.createElement("img");
@@ -151,9 +110,8 @@ function createMovieCard(item, containerId) {
     const btn = document.createElement("button");
     btn.innerHTML = "▶ Play";
     btn.onclick = (e) => { 
-        // 2. STOP PROPAGATION: Para hindi mag-double trigger ang click
         e.stopPropagation(); 
-        showDetails(item); // O playTrailer kung trailer lang talaga gusto mo
+        playTrailer(item.id, item.title ? "movie" : "tv"); 
     };
     
     overlay.appendChild(btn);
@@ -171,11 +129,10 @@ function displayList(items, containerId) {
     });
 }
 
-// --- 6. MODAL LOGIC (URL SYNC + CAST + SIMILAR) ---
+// --- 4. MODAL & UTILS ---
 async function showDetails(item) {
     currentItem = item;
     const type = item.title ? "movie" : "tv";
-    
     const titleSlug = (item.title || item.name).toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
     const newUrl = window.location.origin + window.location.pathname + `?${type}=${item.id}-${titleSlug}`;
     window.history.pushState({ path: newUrl }, '', newUrl);
@@ -183,7 +140,6 @@ async function showDetails(item) {
     document.getElementById("modal-title").textContent = item.title || item.name;
     document.getElementById("modal-description").textContent = item.overview || "No description available.";
     document.getElementById("modal-image").src = `${IMG_URL}${item.poster_path}`;
-    
     const rating = item.vote_average ? `⭐ ${item.vote_average.toFixed(1)}` : "No Rating";
     const releaseDate = item.release_date || item.first_air_date || "Unknown";
     document.getElementById("modal-rating").innerHTML = `<span>${rating}</span> | <span>${releaseDate}</span>`;
@@ -195,8 +151,7 @@ async function showDetails(item) {
         const creditsRes = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/credits`);
         const creditsData = await creditsRes.json();
         const castList = creditsData.cast.slice(0, 5).map(actor => actor.name).join(", ");
-        const castContainer = document.getElementById("modal-cast");
-        if (castContainer) castContainer.innerHTML = `<strong>Cast:</strong> ${castList || "N/A"}`;
+        document.getElementById("modal-cast").innerHTML = `<strong>Cast:</strong> ${castList || "N/A"}`;
     } catch (err) { console.error("Cast error:", err); }
 
     try {
@@ -273,7 +228,39 @@ async function handleSearch(q) {
     }, 500);
 }
 
-// --- 7. EVENT LISTENERS ---
+async function filterGenre(genreId) {
+    currentGenre = genreId;
+    currentPage = 1; 
+    document.querySelectorAll('.genre-btn').forEach(btn => btn.classList.remove('active'));
+    if (event && event.target) event.target.classList.add('active');
+    const moviesList = document.getElementById("movies-list");
+    moviesList.innerHTML = "<div style='color:white; text-align:center; width:100%; padding:50px;'>Searching for Cinema Gems...</div>";
+    const filteredMovies = await fetchMovies("movie", 1, genreId);
+    if (filteredMovies && filteredMovies.length > 0) {
+        displayList(filteredMovies, "movies-list");
+    } else {
+        moviesList.innerHTML = "<p style='color:white; text-align:center; width:100%;'>No movies found, bro.</p>";
+    }
+}
+
+async function loadMore() {
+    currentPage++; 
+    const loadBtn = document.getElementById("load-more-btn");
+    loadBtn.textContent = "Loading...";
+    loadBtn.disabled = true;
+    const moreMovies = await fetchMovies("movie", currentPage, currentGenre);
+    if (moreMovies && moreMovies.length > 0) {
+        const container = document.getElementById("movies-list");
+        moreMovies.forEach(item => {
+            if (item.poster_path) container.appendChild(createMovieCard(item, "movies-list"));
+        });
+        loadBtn.textContent = "Load More Movies";
+        loadBtn.disabled = false;
+    } else {
+        loadBtn.style.display = "none"; 
+    }
+}
+
 document.addEventListener('keydown', function(event) {
     if (event.key === "Escape") {
         const modal = document.getElementById("modal");
@@ -281,19 +268,17 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
-// --- 8. INITIALIZATION ---
 async function init() {
     console.log("CINElzFlix Engine Online!"); 
     try {
         const movies = await fetchMovies("movie", 1);
         if (movies && movies.length > 0) {
-            setupHeroSlider(movies); // Eto ang Carousel natin, bro!
+            setupHeroSlider(movies);
             displayList(movies, "movies-list");
         }
         const tvData = await fetch(`${BASE_URL}?endpoint=/trending/tv/week`);
         const tvJson = await tvData.json();
         displayList(tvJson.results, "tvshows-list");
-
         const animeData = await fetch(`${BASE_URL}?endpoint=/discover/tv&with_genres=16`);
         const animeJson = await animeData.json();
         displayList(animeJson.results, "anime-list");
@@ -301,5 +286,3 @@ async function init() {
 }
 
 init();
-
-
