@@ -38,8 +38,8 @@ body {
 }
 
 #site-logo:hover {
-    transform: scale(1.05); /* Lalaki nang kaunti para alam nilang clickable */
-    filter: drop-shadow(0px 0px 15px var(--accent-glow)); /* Mas mag-glow siya! */
+    transform: scale(1.05);
+    filter: drop-shadow(0px 0px 15px var(--accent-glow));
     cursor: pointer;
 }
 
@@ -174,7 +174,7 @@ body {
     padding: 8px 25px; margin: 5px;
     background: rgba(255, 255, 255, 0.05);
     color: white; border: 1px solid rgba(0, 212, 255, 0.3);
-    border-radius: 30px !important; /* Fixed Curve Bro */
+    border-radius: 30px !important; 
     cursor: pointer;
     font-family: 'Poppins', sans-serif; transition: all 0.3s ease;
 }
@@ -195,7 +195,7 @@ body {
     background: var(--primary-blue) !important;
     color: #020b1a !important;
     border: none; 
-    border-radius: 50px !important; /* Fixed Pill Shape Bro */
+    border-radius: 50px !important; 
     font-weight: bold; cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px var(--accent-glow);
@@ -222,16 +222,51 @@ body {
     padding: 8px; border-radius: 5px; margin-top: 15px;
 }
 
-/* --- FOOTER STYLES --- */
+/* --- FOOTER STYLES UPGRADED --- */
 #site-footer {
     background: rgba(2, 11, 26, 0.95);
     border-top: 1px solid rgba(0, 212, 255, 0.2);
     padding: 40px 5%; text-align: center; margin-top: 50px;
 }
 
+.footer-links {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+.footer-links a {
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    position: relative;
+}
+
 .footer-links a:hover {
     color: var(--primary-blue);
-    text-shadow: 0 0 8px var(--accent-glow);
+    text-shadow: 0 0 10px var(--accent-glow);
+    transform: translateY(-2px);
+}
+
+.footer-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: -5px;
+    left: 0;
+    background-color: var(--primary-blue);
+    transition: width 0.3s ease;
+}
+
+.footer-links a:hover::after {
+    width: 100%;
 }
 
 .copyright {
@@ -239,38 +274,32 @@ body {
     font-size: 1rem; font-weight: bold; letter-spacing: 1px;
 }
 
-/* --- MOBILE RESPONSIVE --- */
+/* --- MOBILE RESPONSIVE & MODAL FIXES --- */
 @media (max-width: 768px) {
     #modal-image { display: none; }
     .movie-row { grid-template-columns: repeat(2, 1fr); }
     .search-box { width: 160px; }
     .search-box:focus-within { width: 220px; }
-}
 
-
-/* --- MOBILE MODAL FIX BRO --- */
-@media (max-width: 768px) {
-    /* Dadagdagan natin ng space sa taas ang modal content */
     .modal-content {
-        margin-top: 50px; /* Para hindi dikit sa pinakataas ng screen */
+        margin-top: 50px; 
         width: 98%;
     }
 
-    /* Lalakihan at lalaktawan natin ang safe area sa taas */
     .close {
         position: absolute;
-        top: 15px; /* Binabaan natin para hindi matabunan ng browser bar */
+        top: 15px; 
         right: 15px;
-        font-size: 40px; /* Nilakihan para madaling pindutin */
-        color: var(--primary-blue); /* Blue na rin para terno */
-        background: rgba(0, 0, 0, 0.6); /* May background para kitang-kita */
+        font-size: 40px; 
+        color: var(--primary-blue); 
+        background: rgba(0, 0, 0, 0.6); 
         width: 50px;
         height: 50px;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 50%; /* Gawing bilog */
-        z-index: 5000; /* Siguradong nasa ibabaw */
+        border-radius: 50%; 
+        z-index: 5000; 
         line-height: 1;
         cursor: pointer;
     }
