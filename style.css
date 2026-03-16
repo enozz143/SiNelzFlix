@@ -244,3 +244,32 @@ body {
     .search-box { width: 160px; }
     .search-box:focus-within { width: 220px; }
 }
+
+
+/* --- MOBILE MODAL FIX BRO --- */
+@media (max-width: 768px) {
+    /* Dadagdagan natin ng space sa taas ang modal content */
+    .modal-content {
+        margin-top: 50px; /* Para hindi dikit sa pinakataas ng screen */
+        width: 98%;
+    }
+
+    /* Lalakihan at lalaktawan natin ang safe area sa taas */
+    .close {
+        position: absolute;
+        top: 15px; /* Binabaan natin para hindi matabunan ng browser bar */
+        right: 15px;
+        font-size: 40px; /* Nilakihan para madaling pindutin */
+        color: var(--primary-blue); /* Blue na rin para terno */
+        background: rgba(0, 0, 0, 0.6); /* May background para kitang-kita */
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%; /* Gawing bilog */
+        z-index: 5000; /* Siguradong nasa ibabaw */
+        line-height: 1;
+        cursor: pointer;
+    }
+}
