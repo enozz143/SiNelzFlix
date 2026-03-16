@@ -10,13 +10,15 @@
 <body>
 
     <nav id="navbar">
-        <div class="logo">
+    <div class="logo">
+        <a href="/" style="text-decoration: none;">
             <img src="logo.png" alt="CINElzFlix Logo" id="site-logo">
-        </div>
-        <div class="search-box">
-            <input type="text" id="search-input" placeholder="Search movies, anime..." oninput="handleSearch(this.value)">
-        </div>
-    </nav>
+        </a>
+    </div>
+    <div class="search-box">
+        <input type="text" id="search-input" placeholder="Search movies, anime..." oninput="handleSearch(this.value)">
+    </div>
+</nav>
     
     <main>
         <section id="search-results-section" style="display: none; padding-top: 100px;">
