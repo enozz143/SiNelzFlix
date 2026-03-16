@@ -138,7 +138,6 @@ body {
 .movie-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; padding: 20px 5%; }
 .movie-card { position: relative; border-radius: 12px; overflow: hidden; cursor: pointer; transition: 0.4s; border: 1px solid transparent; }
 
-/* ETO YUNG BLUE HOVER BORDER BRO */
 .movie-card:hover { 
     transform: scale(1.08); 
     border: 1px solid var(--primary-blue); 
@@ -161,18 +160,46 @@ body {
 .trailer-btn { background: transparent; color: white; border: 1.5px solid white; }
 .trailer-btn:hover { border-color: var(--primary-blue); color: var(--primary-blue); }
 
-/* FULL MOVIE BUTTON BLUE UPGRADE */
 .movie-btn { background: var(--primary-blue); color: #020b1a; }
 .movie-btn:hover { background: #fff; }
 
 .share-mini-btn { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 5px 15px; border-radius: 20px; font-size: 0.6rem; margin-top: 5px; cursor: pointer; }
 
 /* --- GENRE BUTTONS BLUE UPGRADE --- */
+.genre-container { padding: 20px 4%; text-align: center; overflow-x: auto; white-space: nowrap; margin-top: 20px; }
+
+.genre-btn {
+    padding: 8px 20px; margin: 5px;
+    background: rgba(255, 255, 255, 0.05);
+    color: white; border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 20px; cursor: pointer;
+    font-family: 'Poppins', sans-serif; transition: all 0.3s ease;
+}
+
 .genre-btn:hover, .genre-btn.active {
-    background: var(--primary-blue);
-    border-color: var(--primary-blue);
-    color: #020b1a;
+    background: var(--primary-blue) !important;
+    border-color: var(--primary-blue) !important;
+    color: #020b1a !important;
+    box-shadow: 0 0 15px var(--accent-glow) !important;
+}
+
+/* --- LOAD MORE BUTTON BLUE --- */
+.load-more-container { text-align: center; margin: 40px 0; }
+
+#load-more-btn {
+    padding: 12px 35px;
+    background: var(--primary-blue) !important;
+    color: #020b1a !important;
+    border: none; border-radius: 5px;
+    font-weight: bold; cursor: pointer;
+    transition: all 0.3s ease;
     box-shadow: 0 0 10px var(--accent-glow);
+}
+
+#load-more-btn:hover {
+    background: #fff !important;
+    transform: scale(1.05);
+    box-shadow: 0 0 20px var(--accent-glow);
 }
 
 /* --- MODAL WIDE PLAYER --- */
@@ -183,23 +210,18 @@ body {
 .modal-info { display: flex; gap: 30px; }
 #modal-image { width: 200px; border-radius: 10px; border: 1px solid var(--primary-blue); }
 
-/* SERVER SELECT BLUE */
 #server {
     background: #020b1a;
     color: var(--primary-blue);
     border: 1px solid var(--primary-blue);
-    padding: 8px;
-    border-radius: 5px;
-    margin-top: 15px;
+    padding: 8px; border-radius: 5px; margin-top: 15px;
 }
 
 /* --- FOOTER STYLES --- */
 #site-footer {
     background: rgba(2, 11, 26, 0.95);
     border-top: 1px solid rgba(0, 212, 255, 0.2);
-    padding: 40px 5%;
-    text-align: center;
-    margin-top: 50px;
+    padding: 40px 5%; text-align: center; margin-top: 50px;
 }
 
 .footer-links a:hover {
@@ -209,9 +231,7 @@ body {
 
 .copyright {
     color: var(--primary-blue);
-    font-size: 1rem;
-    font-weight: bold;
-    letter-spacing: 1px;
+    font-size: 1rem; font-weight: bold; letter-spacing: 1px;
 }
 
 /* --- MOBILE RESPONSIVE --- */
