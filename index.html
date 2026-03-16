@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CINElzFlix | Unlimited Cinema Experience</title>
-    <link rel="stylesheet" href="style.css?v=1.2">
+    <link rel="stylesheet" href="style.css?v=1.3">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
-    </head>
+</head>
 <body>
 
     <nav id="navbar">
@@ -27,8 +27,7 @@
 
         <div id="trending-section">
             <section id="hero-slider-container">
-                <div id="hero-slider">
-                    </div>
+                <div id="hero-slider"></div>
                 <div class="slider-dots" id="slider-dots"></div>
             </section>
 
@@ -44,7 +43,6 @@
             <section>
                 <h2>Trending Movies</h2>
                 <div id="movies-list" class="movie-row"></div>
-                
                 <div class="load-more-container">
                     <button id="load-more-btn" onclick="loadMore()">Load More Movies</button>
                 </div>
@@ -63,8 +61,8 @@
     </main>
 
     <div id="modal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span> 
         <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
             <div class="player-container">
                 <iframe id="modal-video" allowfullscreen></iframe>
             </div>
