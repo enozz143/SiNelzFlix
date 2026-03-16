@@ -1,18 +1,18 @@
 {
   "short_name": "CINElzFlix",
   "name": "CINElzFlix | Unlimited Cinema",
-  "icons": [
-    {
-      "src": "logo.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "logo.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ],
+ "icons": [
+  {
+    "src": "favicon.png",
+    "sizes": "192x192",
+    "type": "image/png"
+  },
+  {
+    "src": "favicon.png",
+    "sizes": "512x512",
+    "type": "image/png"
+  }
+],
   "start_url": "/",
   "background_color": "#020b1a",
   "theme_color": "#00d4ff",
