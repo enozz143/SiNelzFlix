@@ -6,56 +6,7 @@
     <title>CINElzFlix | Unlimited Cinema Experience</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
-    <style>
-        /* --- GENRE & LOAD MORE STYLES --- */
-        .genre-container {
-            padding: 20px 4%;
-            text-align: center;
-            overflow-x: auto;
-            white-space: nowrap;
-            margin-top: 20px;
-        }
-        .genre-btn {
-            padding: 8px 20px;
-            margin: 5px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 20px;
-            cursor: pointer;
-            font-family: 'Poppins', sans-serif;
-            transition: all 0.3s ease;
-        }
-        .genre-btn:hover, .genre-btn.active {
-            background: #e50914;
-            border-color: #e50914;
-            transform: translateY(-2px);
-        }
-        .load-more-container {
-            text-align: center;
-            margin: 40px 0;
-        }
-        #load-more-btn {
-            padding: 12px 35px;
-            background: #e50914;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            font-family: 'Poppins', sans-serif;
-            transition: transform 0.2s, background 0.2s;
-        }
-        #load-more-btn:hover {
-            background: #ff0a16;
-            transform: scale(1.05);
-        }
-        #load-more-btn:disabled {
-            background: #555;
-            cursor: not-allowed;
-        }
-    </style>
-</head>
+    </head>
 <body>
 
     <nav id="navbar">
@@ -71,7 +22,7 @@
         <section id="search-results-section" style="display: none; padding-top: 100px;">
             <h2 id="search-title">Search Results</h2>
             <div id="search-results-list" class="movie-row"></div>
-            <hr style="border: 1px solid #e50914; opacity: 0.2; margin: 40px 0;">
+            <hr style="border: 1px solid var(--primary-blue); opacity: 0.2; margin: 40px 0;">
         </section>
 
         <div id="trending-section">
@@ -158,4 +109,3 @@
     </footer>
 </body>
 </html>
-
