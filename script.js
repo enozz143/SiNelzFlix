@@ -7,7 +7,7 @@ let currentGenre = 'all';
 let sliderIndex = 0;
 let sliderItems = [];
 
-// --- 1. FETCH MOVIES ---
+// --- 1. fmovies ---
 async function fetchMovies(type, page = 1, genreId = 'all') {
     try {
         let url;
@@ -25,7 +25,7 @@ async function fetchMovies(type, page = 1, genreId = 'all') {
     }
 }
 
-// --- 2. HERO SLIDER LOGIC (WITH RED BUTTONS & DOTS) ---
+// --- 2. HERO SLIDER LOGIC () ---
 async function setupHeroSlider(movies) {
     sliderItems = movies.slice(0, 6);
     const sliderContainer = document.getElementById("hero-slider");
@@ -95,7 +95,7 @@ function updateSliderUI() {
     dots.forEach((d, i) => d.classList.toggle("active", i === sliderIndex));
 }
 
-// --- 3. MOVIE CARD LOGIC (TRIPLE BUTTONS) ---
+// --- 3.  ---
 function createMovieCard(item, containerId) {
     const card = document.createElement("div");
     card.className = "movie-card";
@@ -156,7 +156,7 @@ function displayList(items, containerId) {
     });
 }
 
-// --- 4. MODAL & SEARCH LOGIC ---
+// --- 4.  ---
 async function showDetails(item) {
     currentItem = item;
     const type = item.title ? "movie" : "tv";
