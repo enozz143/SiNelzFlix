@@ -38,7 +38,9 @@ body {
 }
 
 #site-logo:hover {
-    transform: scale(1.05);
+    transform: scale(1.05); /* Lalaki nang kaunti para alam nilang clickable */
+    filter: drop-shadow(0px 0px 15px var(--accent-glow)); /* Mas mag-glow siya! */
+    cursor: pointer;
 }
 
 /* --- PREMIUM SEARCH BAR --- */
