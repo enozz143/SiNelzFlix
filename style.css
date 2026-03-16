@@ -1,9 +1,9 @@
 :root {
-    --primary-blue: #00d4ff; /* Your signature brand color */
+    --primary-blue: #00d4ff; /* signature brand  */
     --dark-bg: #020b1a;
     --card-bg: #0a192f;
     --text-white: #e6f1ff;
-    --accent-glow: rgba(0, 212, 255, 0.5); /* For that neon effect */
+    --accent-glow: rgba(0, 212, 255, 0.5); /*  neon effect */
 }
 
 body {
