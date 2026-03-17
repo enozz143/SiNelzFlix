@@ -27,7 +27,7 @@ async function fetchMovies(type, page = 1, genreId = 'all') {
 
 // --- 2. DYNAMIC HERO SLIDER (AUTO-TRENDING) ---
 async function setupHeroSlider(movies) {
-    sliderItems = movies.slice(0, 6); // Top 6 trending movies
+    sliderItems = movies.slice(0, 6); // Top 6 trending movies lang
     const sliderContainer = document.getElementById("hero-slider");
     const dotsContainer = document.getElementById("slider-dots");
     
@@ -41,7 +41,6 @@ async function setupHeroSlider(movies) {
         const slide = document.createElement("div");
         slide.className = `hero-slide ${index === 0 ? 'active' : ''}`;
         
-        // Background Image with Gradient for readability
         slide.style.backgroundImage = `linear-gradient(to bottom, rgba(0,0,0,0.2), #020b1a), url(${IMG_URL}${movie.backdrop_path})`;
         
         let trailerKey = "";
@@ -81,7 +80,7 @@ async function setupHeroSlider(movies) {
     }
     
     if (window.sliderInterval) clearInterval(window.sliderInterval);
-    window.sliderInterval = setInterval(nextSlide, 10000); // Lipat slide every 10 seconds
+    window.sliderInterval = setInterval(nextSlide, 10000); 
 }
 
 function nextSlide() {
@@ -109,7 +108,7 @@ function createMovieCard(item, containerId) {
     
     const img = document.createElement("img");
     img.src = `${IMG_URL}${item.poster_path}`;
-    img.loading = "lazy"; // Performance boost!
+    img.loading = "lazy"; 
     
     const overlay = document.createElement("div");
     overlay.className = "trailer-overlay";
@@ -183,7 +182,6 @@ async function showDetails(item) {
     changeServer();
     document.getElementById("modal").style.display = "flex";
 
-    // Load Cast
     try {
         const creditsRes = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/credits`);
         const creditsData = await creditsRes.json();
@@ -191,7 +189,6 @@ async function showDetails(item) {
         document.getElementById("modal-cast").innerHTML = `<strong>Cast:</strong> ${castList || "N/A"}`;
     } catch (err) { console.error("Cast error:", err); }
 
-    // Recommendations
     try {
         let res = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/recommendations`);
         let data = await res.json();
@@ -294,7 +291,6 @@ async function loadMore() {
     }
 }
 
-// ESC Key to close modal
 document.addEventListener('keydown', function(event) {
     if (event.key === "Escape") {
         const modal = document.getElementById("modal");
@@ -306,23 +302,25 @@ document.addEventListener('keydown', function(event) {
 async function init() {
     console.log("CINElzFlix Engine Online!"); 
     try {
-        const movies = await fetchMovies("movie", 1);
-        if (movies && movies.length > 0) {
-            setupHeroSlider(movies); // Ito ang bumbuhay sa header!
-            displayList(movies, "movies-list");
+        const allMovies = await fetchMovies("movie", 1);
+        if (allMovies && allMovies.length > 0) {
+            // Unang 6 para sa SLIDER lang
+            const forSlider = allMovies.slice(0, 6);
+            setupHeroSlider(forSlider); 
+
+            // Simula sa index 6 pataas para sa GRID (Trending Movies)
+            const forGrid = allMovies.slice(6);
+            displayList(forGrid, "movies-list");
         }
         
-        // TV SHOWS
         const tvData = await fetch(`${BASE_URL}?endpoint=/trending/tv/week`);
         const tvJson = await tvData.json();
         displayList(tvJson.results, "tvshows-list");
 
-        // ANIME
         const animeData = await fetch(`${BASE_URL}?endpoint=/discover/tv&with_genres=16`);
         const animeJson = await animeData.json();
         displayList(animeJson.results, "anime-list");
 
-        // DEEP LINKING (Para sa direct sharing)
         const params = new URLSearchParams(window.location.search);
         const movieId = params.get('movie');
         const tvId = params.get('tv');
