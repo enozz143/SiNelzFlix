@@ -165,38 +165,42 @@ function displayList(items, containerId) {
 
 // --- 4. MODAL & PLAYER ---
 async function showDetails(item) {
-    currentItem = item;
+    // 1. I-reset muna natin ang luma para hindi mag-flicker yung dating movie info
+    document.getElementById("modal-title").textContent = "Loading...";
+    document.getElementById("modal-description").textContent = "";
+    document.getElementById("modal-image").src = ""; // Alisin muna yung lumang poster
+    document.getElementById("modal-cast").innerHTML = "";
+
+    // 2. I-set ang bagong Current Item (Eto yung pinaka-importante, bro!)
+    currentItem = item; 
+
     const type = item.title ? "movie" : "tv";
     const titleSlug = (item.title || item.name).toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
     const newUrl = window.location.origin + window.location.pathname + `?${type}=${item.id}-${titleSlug}`;
     window.history.pushState({ path: newUrl }, '', newUrl);
 
+    // 3. I-populate ang bagong data
     document.getElementById("modal-title").textContent = item.title || item.name;
     document.getElementById("modal-description").textContent = item.overview || "No description available.";
     document.getElementById("modal-image").src = `${IMG_URL}${item.poster_path}`;
+    
     const rating = item.vote_average ? `⭐ ${item.vote_average.toFixed(1)}` : "No Rating";
     const releaseDate = item.release_date || item.first_air_date || "Unknown";
     document.getElementById("modal-rating").innerHTML = `<span>${rating}</span> | <span>${releaseDate}</span>`;
 
+    // 4. I-trigger ang Player Update (Since updated na ang currentItem, tama na ang server nito)
     changeServer();
+
+    // 5. Buksan na ang Modal
     document.getElementById("modal").style.display = "flex";
 
+    // 6. Load Cast at Recommendations (Background update)
     try {
         const creditsRes = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/credits`);
         const creditsData = await creditsRes.json();
         const castList = creditsData.cast.slice(0, 5).map(actor => actor.name).join(", ");
         document.getElementById("modal-cast").innerHTML = `<strong>Cast:</strong> ${castList || "N/A"}`;
     } catch (err) { console.error("Cast error:", err); }
-
-    try {
-        let res = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/recommendations`);
-        let data = await res.json();
-        if (!data.results || data.results.length === 0) {
-            res = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/similar`);
-            data = await res.json();
-        }
-        displaySimilar(data.results.slice(0, 6)); 
-    } catch (err) { console.error("Suggestions error:", err); }
 }
 
 function closeModal() {
