@@ -93,6 +93,7 @@
             <div class="player-container">
                 <iframe id="modal-video" allowfullscreen></iframe>
             </div>
+            
             <div class="modal-details">
                 <div class="modal-info">
                     <img id="modal-image" src="" alt="">
@@ -101,16 +102,21 @@
                         <div id="modal-rating"></div>
                         <p id="modal-description"></p>
                         <p id="modal-cast" style="color: #ccc; font-size: 0.9rem; margin-top: 15px; font-style: italic;"></p>
+                        
                         <select id="server" onchange="changeServer()">
                             <option value="vidsrc">Server 1 (VidSrc)</option>
                             <option value="vidsrc2">Server 2 (Net)</option>
                             <option value="videasy">Server 3 (Easy)</option>
                         </select>
-                        <div class="modal-footer-mini">
-    <p>© 2026 CINElzFlix.com • Crafted by <b>Nelz</b></p>
-    <p class="mini-disclaimer">All contents are provided by non-affiliated third parties.</p>
-</div>
                     </div>
+                </div>
+
+                <div id="similar-movies-container">
+                    </div>
+
+                <div class="modal-footer-mini">
+                    <p>© 2026 CINElzFlix.com • Crafted by <b>Nelz</b></p>
+                    <p class="mini-disclaimer">All contents are provided by non-affiliated third parties.</p>
                 </div>
             </div>
         </div>
