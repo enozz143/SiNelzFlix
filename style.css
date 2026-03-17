@@ -129,19 +129,46 @@ body {
 
 .hero-content { position: relative; z-index: 15; padding: 0 8%; max-width: 850px; }
 
-/* BRAND BLUE BUTTONS BRO */
+/* ANIMATED WATCH NOW BUTTON BRO */
 .btn-watch {
+    position: relative;
     background: var(--primary-blue);
     color: #020b1a; border: none;
     padding: 12px 30px; border-radius: 5px;
     font-weight: bold; cursor: pointer;
-    transition: 0.3s; margin-right: 15px;
+    overflow: hidden; /* Para sa shimmer effect */
+    transition: all 0.3s ease;
+    margin-right: 15px;
+}
+
+/* Electric Shimmer Effect */
+.btn-watch::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255, 255, 255, 0.6),
+        transparent
+    );
+    animation: btnShimmer 3s infinite;
+}
+
+@keyframes btnShimmer {
+    0% { left: -100%; }
+    20% { left: 100%; }
+    100% { left: 100%; }
 }
 
 .btn-watch:hover { 
     background: #fff; 
-    transform: scale(1.05); 
-    box-shadow: 0 0 15px var(--accent-glow);
+    transform: scale(1.1); 
+    box-shadow: 0 0 25px var(--primary-blue);
+    color: var(--dark-bg);
 }
 
 .slider-dots {
