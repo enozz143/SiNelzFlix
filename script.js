@@ -292,25 +292,34 @@ async function loadMore() {
     }
 }
 
+// --- ESCAPE KEY LOGIC (MODDED) ---
 document.addEventListener('keydown', function(event) {
     if (event.key === "Escape") {
+        // 1. I-close ang Modal (Player) kung nakabukas
         const modal = document.getElementById("modal");
-        if (modal && modal.style.display === "flex") closeModal();
+        if (modal && modal.style.display === "flex") {
+            closeModal();
+            return; 
+        }
+
+        // 2. I-close ang Search Results at bumalik sa Trending
+        const searchResults = document.getElementById("search-results-section");
+        if (searchResults && searchResults.style.display === "block") {
+            const searchInput = document.getElementById("search-input");
+            if (searchInput) searchInput.value = "";
+            searchResults.style.display = "none";
+            document.getElementById("trending-section").style.display = "block";
+        }
     }
 });
 
-// --- 6. INITIALIZATION (THE DEV FIX) ---
+// --- 6. INITIALIZATION ---
 async function init() {
     console.log("Dev Mode: CINElzFlix Engine Online!"); 
     try {
         const movies = await fetchMovies("movie", 1);
         if (movies && movies.length > 0) {
-            // Hiwalayin ang slider items (unang 6 random) at grid items (tira)
-            // Note: setupHeroSlider will handle the randomization inside
             setupHeroSlider(movies);
-            
-            // Sa grid, i-display natin yung original order pero i-skip yung unang ilan
-            // o pwede rin i-shuffle kung gusto mo lahat random
             displayList(movies.slice(6), "movies-list");
         }
         
