@@ -79,7 +79,7 @@ body {
     color: rgba(255, 255, 255, 0.4);
 }
 
-/* --- HERO SLIDER FIXED (LAB VERSION) --- */
+/* --- HERO SLIDER FIXED (STAGING VERSION) --- */
 #hero-slider-container {
     position: relative;
     width: 100%; height: 85vh;
@@ -89,11 +89,11 @@ body {
 #hero-slider {
     position: relative;
     width: 100%; height: 100%;
-    display: block !important; /* Force block to avoid grid issues */
+    display: block !important;
 }
 
 .hero-slide {
-    position: absolute; /* Patong-patong ang movies */
+    position: absolute; 
     top: 0; left: 0; width: 100%; height: 100%;
     background-size: cover; background-position: center;
     display: flex !important; align-items: center;
@@ -152,14 +152,23 @@ body {
 .dot { width: 12px; height: 12px; background: rgba(255,255,255,0.3); border-radius: 50%; cursor: pointer; transition: 0.3s; }
 .dot.active { background: var(--primary-blue); width: 30px; border-radius: 10px; }
 
-/* --- MOVIE CARDS & HOVER EFFECTS --- */
+/* --- MOVIE CARDS & NEON GLOW MOD --- */
 .movie-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; padding: 20px 5%; }
-.movie-card { position: relative; border-radius: 12px; overflow: hidden; cursor: pointer; transition: 0.4s; border: 1px solid transparent; }
+
+.movie-card { 
+    position: relative; 
+    border-radius: 12px; 
+    overflow: hidden; 
+    cursor: pointer; 
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+    border: 1px solid transparent; 
+}
 
 .movie-card:hover { 
-    transform: scale(1.08); 
+    transform: scale(1.08) translateY(-5px); 
     border: 1px solid var(--primary-blue); 
-    box-shadow: 0 0 15px var(--accent-glow);
+    box-shadow: 0 0 20px var(--accent-glow), 0 0 40px rgba(0, 212, 255, 0.2);
+    z-index: 100;
 }
 
 .movie-card img { width: 100%; display: block; }
@@ -179,7 +188,7 @@ body {
 .trailer-btn:hover { border-color: var(--primary-blue); color: var(--primary-blue); }
 
 .movie-btn { background: var(--primary-blue); color: #020b1a; }
-.movie-btn:hover { background: #fff; }
+.movie-btn:hover { background: #fff; box-shadow: 0 0 15px var(--primary-blue); }
 
 .share-mini-btn { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 5px 15px; border-radius: 20px; font-size: 0.6rem; margin-top: 5px; cursor: pointer; }
 
