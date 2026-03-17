@@ -165,25 +165,25 @@ function displayList(items, containerId) {
 
 // --- 4. MODAL & PLAYER ---
 async function showDetails(item) {
-    // 1. RESET & CLEANUP (Para hindi mag-mix ang lumang data)
+    // 1. CLEAR OLD DATA (The Fix!)
     document.getElementById("modal-video").src = ""; 
     document.getElementById("modal-title").textContent = "Loading...";
     document.getElementById("modal-description").textContent = "";
     document.getElementById("modal-image").src = ""; 
     document.getElementById("modal-cast").innerHTML = "";
     
-    // I-clear din natin yung "You Might Also Like" container para fresh lagi
-    const existingSimilar = document.getElementById("similar-movies");
-    if (existingSimilar) existingSimilar.innerHTML = "Loading suggestions...";
+    // I-clear ang related movies container
+    let similarContainer = document.getElementById("similar-movies");
+    if (similarContainer) similarContainer.innerHTML = "<p style='color:gray; padding:20px;'>Finding related titles...</p>";
 
-    // 2. SET CURRENT ITEM
+    // 2. SET CURRENT ITEM DATA
     currentItem = item; 
     const type = item.title ? "movie" : "tv";
     const titleSlug = (item.title || item.name).toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
     const newUrl = window.location.origin + window.location.pathname + `?${type}=${item.id}-${titleSlug}`;
     window.history.pushState({ path: newUrl }, '', newUrl);
 
-    // 3. POPULATE MAIN INFO
+    // 3. FILL NEW INFO
     document.getElementById("modal-title").textContent = item.title || item.name;
     document.getElementById("modal-description").textContent = item.overview || "No description available.";
     document.getElementById("modal-image").src = `${IMG_URL}${item.poster_path}`;
@@ -196,7 +196,7 @@ async function showDetails(item) {
     changeServer();
     document.getElementById("modal").style.display = "flex";
 
-    // 5. FETCH CAST INFO
+    // 5. LOAD CAST (Background)
     try {
         const creditsRes = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/credits`);
         const creditsData = await creditsRes.json();
@@ -204,22 +204,17 @@ async function showDetails(item) {
         document.getElementById("modal-cast").innerHTML = `<strong>Cast:</strong> ${castList || "N/A"}`;
     } catch (err) { console.error("Cast error:", err); }
 
-    // 6. FETCH RELATED MOVIES (THE "YOU MIGHT ALSO LIKE" FIX)
+    // 6. LOAD RELATED MOVIES (THE RETURN!)
     try {
         let res = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/recommendations`);
         let data = await res.json();
-        
-        // Pag walang nahanap sa recommendations, try natin sa "similar"
         if (!data.results || data.results.length === 0) {
             res = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/similar`);
             data = await res.json();
         }
-        
-        // Tawagin natin yung display function para lumabas na sila sa modal
         displaySimilar(data.results.slice(0, 6)); 
     } catch (err) { 
         console.error("Suggestions error:", err); 
-        if (existingSimilar) existingSimilar.innerHTML = "No related content found.";
     }
 }
 
