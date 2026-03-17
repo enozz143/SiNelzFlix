@@ -362,3 +362,30 @@ body {
     .movie-row { grid-template-columns: repeat(2, 1fr); }
     .movie-row.horizontal-scroll .movie-card { flex: 0 0 140px; }
 }
+
+/* --- MINI MODAL FOOTER --- */
+.modal-footer-mini {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(0, 212, 255, 0.1);
+    text-align: center;
+    width: 100%;
+}
+
+.modal-footer-mini p {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin: 5px 0;
+    letter-spacing: 1px;
+}
+
+.modal-footer-mini b {
+    color: var(--primary-blue);
+    text-shadow: 0 0 8px var(--accent-glow);
+}
+
+.modal-footer-mini .mini-disclaimer {
+    font-size: 0.6rem;
+    opacity: 0.6;
+    font-style: italic;
+}
