@@ -3,7 +3,7 @@
     --dark-bg: #020b1a;
     --card-bg: #0a192f;
     --text-white: #e6f1ff;
-    --accent-glow: rgba(0, 212, 255, 0.5); /*  neon effect */
+    --accent-glow: rgba(0, 212, 255, 0.5); /* neon effect */
 }
 
 body {
@@ -79,21 +79,37 @@ body {
     color: rgba(255, 255, 255, 0.4);
 }
 
-/* --- HERO SLIDER --- */
+/* --- HERO SLIDER FIXED (LAB VERSION) --- */
 #hero-slider-container {
     position: relative;
     width: 100%; height: 85vh;
     overflow: hidden; background: #000;
 }
 
-.hero-slide {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background-size: cover; background-position: center;
-    display: none; transition: opacity 0.8s ease-in-out;
+#hero-slider {
+    position: relative;
+    width: 100%; height: 100%;
+    display: block !important; /* Force block to avoid grid issues */
 }
 
-.hero-slide.active { display: flex; align-items: center; }
+.hero-slide {
+    position: absolute; /* Patong-patong ang movies */
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-size: cover; background-position: center;
+    display: flex !important; align-items: center;
+    opacity: 0; 
+    visibility: hidden;
+    transition: opacity 1s ease-in-out;
+    z-index: 1;
+}
+
+.hero-slide.active { 
+    display: flex !important; 
+    align-items: center; 
+    opacity: 1; 
+    visibility: visible;
+    z-index: 10;
+}
 
 .hero-video-container {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
@@ -102,16 +118,16 @@ body {
 .hero-video-container iframe {
     width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh;
     position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    opacity: 0.5; pointer-events: none;
+    opacity: 0.4; pointer-events: none;
 }
 
 .hero-overlay {
-    position: absolute; width: 100%; height: 100%; z-index: 2;
-    background: linear-gradient(to right, rgba(2, 11, 26, 0.9) 20%, rgba(2, 11, 26, 0.4) 50%, transparent 100%),
-                linear-gradient(to bottom, transparent 60%, rgba(2, 11, 26, 1) 100%);
+    position: absolute; width: 100%; height: 100%; z-index: 11;
+    background: linear-gradient(to right, rgba(2, 11, 26, 0.95) 15%, rgba(2, 11, 26, 0.4) 50%, transparent 100%),
+                linear-gradient(to bottom, transparent 50%, rgba(2, 11, 26, 1) 100%);
 }
 
-.hero-content { position: relative; z-index: 10; padding: 0 5%; max-width: 800px; }
+.hero-content { position: relative; z-index: 15; padding: 0 8%; max-width: 850px; }
 
 /* BRAND BLUE BUTTONS BRO */
 .btn-watch {
@@ -252,21 +268,6 @@ body {
     color: var(--primary-blue);
     text-shadow: 0 0 10px var(--accent-glow);
     transform: translateY(-2px);
-}
-
-.footer-links a::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 1px;
-    bottom: -5px;
-    left: 0;
-    background-color: var(--primary-blue);
-    transition: width 0.3s ease;
-}
-
-.footer-links a:hover::after {
-    width: 100%;
 }
 
 .copyright {
