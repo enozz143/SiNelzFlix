@@ -280,32 +280,42 @@ async function filterGenre(genreId) {
 async function loadMore() {
     currentPage++; 
     const loadBtn = document.getElementById("load-more-btn");
-    const trendingRow = document.getElementById("movies-list"); // Target natin yung trending row
+    const trendingRow = document.getElementById("movies-list");
+    const trendingSection = trendingRow.parentElement; // Trending Section
     
-    loadBtn.textContent = "Loading...";
+    loadBtn.textContent = "Loading Results...";
     loadBtn.disabled = true;
 
-    // KEY FIX: Alisin ang horizontal-scroll class para maging grid ulit, bro!
-    if (trendingRow.classList.contains("horizontal-scroll")) {
-        trendingRow.classList.remove("horizontal-scroll");
-    }
+    // 1. ITAGO ANG IBANG CATEGORIES (Para hindi na kailangan mag-scroll pataas)
+    // Hahanapin natin lahat ng section sa loob ng trending-section div
+    const allSections = document.querySelectorAll('#trending-section section.category-section');
+    allSections.forEach(sec => {
+        // Itatago lahat maliban sa unang section (Trending)
+        if (!sec.contains(trendingRow)) {
+            sec.style.display = "none";
+        }
+    });
+
+    // 2. I-CONVERT SA GRID YUNG TRENDING ROW
+    trendingRow.classList.remove("horizontal-scroll");
+    
+    // 3. I-SCROLL ANG USER PATAAS SA START NG GRID (Smooth move bro)
+    trendingSection.scrollIntoView({ behavior: 'smooth' });
 
     const moreMovies = await fetchMovies("movie", currentPage, currentGenre);
     
     if (moreMovies && moreMovies.length > 0) {
         moreMovies.forEach(item => {
             if (item.poster_path) {
-                // I-append natin yung mga bagong movies sa trending row
                 trendingRow.appendChild(createMovieCard(item, "movies-list"));
             }
         });
-        loadBtn.textContent = "Explore More Movies";
+        loadBtn.textContent = "Show Even More";
         loadBtn.disabled = false;
     } else {
         loadBtn.style.display = "none"; 
     }
 }
-
 document.addEventListener('keydown', function(event) {
     if (event.key === "Escape") {
         const modal = document.getElementById("modal");
