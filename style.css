@@ -365,11 +365,10 @@ body {
 
 /* --- MINI MODAL FOOTER --- */
 .modal-footer-mini {
-    margin-top: 40px;
-    padding-top: 20px;
+    margin-top: 50px; /* Dagdag space para hindi siksikan sa Related Movies */
+    padding-bottom: 20px;
     border-top: 1px solid rgba(0, 212, 255, 0.1);
     text-align: center;
-    width: 100%;
 }
 
 .modal-footer-mini p {
