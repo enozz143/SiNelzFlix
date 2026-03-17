@@ -280,17 +280,24 @@ async function filterGenre(genreId) {
 async function loadMore() {
     currentPage++; 
     const loadBtn = document.getElementById("load-more-btn");
+    const trendingRow = document.getElementById("movies-list"); // Target natin yung trending row
+    
     loadBtn.textContent = "Loading...";
     loadBtn.disabled = true;
-    
-    // Pag nag "Explore More", i-convert natin yung Trending row into a full Grid
-    const container = document.getElementById("movies-list");
-    container.classList.remove("horizontal-scroll");
+
+    // KEY FIX: Alisin ang horizontal-scroll class para maging grid ulit, bro!
+    if (trendingRow.classList.contains("horizontal-scroll")) {
+        trendingRow.classList.remove("horizontal-scroll");
+    }
 
     const moreMovies = await fetchMovies("movie", currentPage, currentGenre);
+    
     if (moreMovies && moreMovies.length > 0) {
         moreMovies.forEach(item => {
-            if (item.poster_path) container.appendChild(createMovieCard(item, "movies-list"));
+            if (item.poster_path) {
+                // I-append natin yung mga bagong movies sa trending row
+                trendingRow.appendChild(createMovieCard(item, "movies-list"));
+            }
         });
         loadBtn.textContent = "Explore More Movies";
         loadBtn.disabled = false;
