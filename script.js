@@ -7,7 +7,7 @@ let currentGenre = 'all';
 let sliderIndex = 0;
 let sliderItems = [];
 
-// --- 1. fmovies ---
+// --- 1. DATA FETCHING ---
 async function fetchMovies(type, page = 1, genreId = 'all') {
     try {
         let url;
@@ -25,11 +25,14 @@ async function fetchMovies(type, page = 1, genreId = 'all') {
     }
 }
 
-// --- 2. HERO SLIDER LOGIC () ---
+// --- 2. HERO SLIDER LOGIC ---
 async function setupHeroSlider(movies) {
     sliderItems = movies.slice(0, 6);
     const sliderContainer = document.getElementById("hero-slider");
     const dotsContainer = document.getElementById("slider-dots");
+    
+    if (!sliderContainer) return;
+    
     sliderContainer.innerHTML = "";
     dotsContainer.innerHTML = "";
 
@@ -37,6 +40,8 @@ async function setupHeroSlider(movies) {
         const movie = sliderItems[index];
         const slide = document.createElement("div");
         slide.className = `hero-slide ${index === 0 ? 'active' : ''}`;
+        
+        // Dynamic background
         slide.style.backgroundImage = `url(${IMG_URL}${movie.backdrop_path})`;
         
         let trailerKey = "";
@@ -79,6 +84,7 @@ async function setupHeroSlider(movies) {
 }
 
 function nextSlide() {
+    if (sliderItems.length === 0) return;
     sliderIndex = (sliderIndex + 1) % sliderItems.length;
     updateSliderUI();
 }
@@ -95,13 +101,14 @@ function updateSliderUI() {
     dots.forEach((d, i) => d.classList.toggle("active", i === sliderIndex));
 }
 
-// --- 3.  ---
+// --- 3. MOVIE CARDS ---
 function createMovieCard(item, containerId) {
     const card = document.createElement("div");
     card.className = "movie-card";
     
     const img = document.createElement("img");
     img.src = `${IMG_URL}${item.poster_path}`;
+    img.loading = "lazy";
     
     const overlay = document.createElement("div");
     overlay.className = "trailer-overlay";
@@ -156,7 +163,7 @@ function displayList(items, containerId) {
     });
 }
 
-// --- 4.  ---
+// --- 4. MODAL & PLAYER ---
 async function showDetails(item) {
     currentItem = item;
     const type = item.title ? "movie" : "tv";
@@ -239,6 +246,7 @@ async function playTrailer(id, type) {
     }
 }
 
+// --- 5. SEARCH & FILTERS ---
 async function handleSearch(q) {
     if (!q.trim()) {
         document.getElementById("search-results-section").style.display = "none";
@@ -289,14 +297,18 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
-// --- 5. INITIALIZATION ---
+// --- 6. INITIALIZATION (THE DEV FIX) ---
 async function init() {
-    console.log("CINElzFlix Engine Online!"); 
+    console.log("Dev Mode: CINElzFlix Engine Online!"); 
     try {
         const movies = await fetchMovies("movie", 1);
         if (movies && movies.length > 0) {
-            setupHeroSlider(movies);
-            displayList(movies, "movies-list");
+            // Hiwalayin ang slider items (unang 6) at grid items (tira)
+            const sliderData = movies.slice(0, 6);
+            const gridData = movies.slice(6);
+            
+            setupHeroSlider(sliderData);
+            displayList(gridData, "movies-list");
         }
         
         // TV SHOWS
