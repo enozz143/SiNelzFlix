@@ -43,7 +43,7 @@ body {
     cursor: pointer;
 }
 
-/* --- PREMIUM SEARCH BAR WITH NEON PULSE --- */
+/* --- PREMIUM SEARCH BAR --- */
 .search-box { 
     position: relative; 
     width: 250px; 
@@ -79,10 +79,6 @@ body {
     0% { box-shadow: 0 0 5px rgba(0, 212, 255, 0.4); }
     50% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.8), 0 0 30px rgba(0, 212, 255, 0.2); }
     100% { box-shadow: 0 0 5px rgba(0, 212, 255, 0.4); }
-}
-
-#search-input::placeholder {
-    color: rgba(255, 255, 255, 0.4);
 }
 
 /* --- HERO SLIDER --- */
@@ -182,7 +178,7 @@ body {
 .dot { width: 12px; height: 12px; background: rgba(255,255,255,0.3); border-radius: 50%; cursor: pointer; transition: 0.3s; }
 .dot.active { background: var(--primary-blue); width: 30px; border-radius: 10px; }
 
-/* --- NETFLIX-STYLE HORIZONTAL ROWS --- */
+/* --- MOVIE ROWS (GRID BY DEFAULT) --- */
 .category-section h2 {
     padding-left: 5%;
     margin-bottom: 10px;
@@ -190,10 +186,19 @@ body {
     font-weight: bold;
 }
 
+.movie-row { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
+    gap: 20px; 
+    padding: 20px 5%; 
+}
+
+/* --- HORIZONTAL ROW MOD (ONLY WHEN CLASS IS PRESENT) --- */
 .movie-row.horizontal-scroll {
-    display: flex; /* Isang linya lang bro */
+    display: flex; /* Override grid to flex */
+    grid-template-columns: none; 
     flex-wrap: nowrap;
-    overflow-x: auto; /* Enable scroll sa gilid */
+    overflow-x: auto; 
     overflow-y: hidden;
     gap: 20px;
     padding: 10px 5% 30px 5%;
@@ -204,10 +209,9 @@ body {
 /* Custom Scrollbar */
 .movie-row.horizontal-scroll::-webkit-scrollbar { height: 4px; }
 .movie-row.horizontal-scroll::-webkit-scrollbar-thumb { background: var(--primary-blue); border-radius: 10px; }
-.movie-row.horizontal-scroll::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
 
 .movie-row.horizontal-scroll .movie-card {
-    flex: 0 0 180px; /* Fixed size para hindi mag-collapse yung card */
+    flex: 0 0 180px; /* Fixed size para hindi maging higante */
 }
 
 /* --- MOVIE CARDS & NEON GLOW --- */
@@ -280,7 +284,7 @@ body {
     box-shadow: 0 4px 15px var(--accent-glow);
 }
 
-/* --- MODAL PLAYER & RESPONSIVE CLOSE FIX --- */
+/* --- MODAL PLAYER --- */
 .modal { display: none; position: fixed; z-index: 3000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; }
 .modal-content { width: 95%; max-width: 1200px; background: var(--card-bg); border-radius: 15px; overflow-y: auto; max-height: 95vh; border: 1px solid rgba(0, 212, 255, 0.2); position: relative; }
 #modal-video { width: 100%; aspect-ratio: 16/9; border: none; background: #000; }
@@ -304,59 +308,12 @@ body {
     transition: all 0.3s ease;
 }
 
-/* DESKTOP ONLY CLOSE FIX */
 @media (min-width: 1024px) {
-    .close {
-        top: 20px;
-        right: 25px;
-        font-size: 35px;
-        width: 45px;
-        height: 45px;
-        color: var(--text-white);
-    }
-    .close:hover {
-        color: var(--primary-blue);
-        transform: rotate(90deg) scale(1.2);
-        background: rgba(0, 212, 255, 0.2);
-        box-shadow: 0 0 15px var(--accent-glow);
-    }
+    .close { top: 20px; right: 25px; font-size: 35px; width: 45px; height: 45px; color: var(--text-white); }
+    .close:hover { color: var(--primary-blue); transform: rotate(90deg) scale(1.2); background: rgba(0, 212, 255, 0.2); box-shadow: 0 0 15px var(--accent-glow); }
 }
 
-/* Mobile specific tweaks */
 @media (max-width: 768px) {
-    .close { border: 1px solid var(--primary-blue); }
-    #modal-image { display: none; }
-    .movie-row.horizontal-scroll .movie-card {
-        flex: 0 0 140px; /* Mas maliit sa mobile para marami makita sa screen */
-    }
-    .search-box { width: 160px; }
+    .movie-row { grid-template-columns: repeat(2, 1fr); }
+    .movie-row.horizontal-scroll .movie-card { flex: 0 0 140px; }
 }
-
-#modal-image { width: 200px; border-radius: 10px; border: 1px solid var(--primary-blue); }
-
-/* --- FOOTER STYLES --- */
-#site-footer {
-    background: rgba(2, 11, 26, 0.95);
-    border-top: 1px solid rgba(0, 212, 255, 0.2);
-    padding: 40px 5%; text-align: center; margin-top: 50px;
-}
-
-.footer-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 25px; margin-bottom: 25px; }
-
-.footer-links a {
-    color: rgba(255, 255, 255, 0.6);
-    text-decoration: none;
-    font-size: 0.8rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-}
-
-.footer-links a:hover {
-    color: var(--primary-blue);
-    text-shadow: 0 0 10px var(--accent-glow);
-    transform: translateY(-2px);
-}
-
-.copyright { color: var(--primary-blue); font-size: 1rem; font-weight: bold; letter-spacing: 1px; }
