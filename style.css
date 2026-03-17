@@ -129,32 +129,24 @@ body {
 
 .hero-content { position: relative; z-index: 15; padding: 0 8%; max-width: 850px; }
 
-/* ANIMATED WATCH NOW BUTTON BRO */
+/* ANIMATED WATCH NOW BUTTON */
 .btn-watch {
     position: relative;
     background: var(--primary-blue);
     color: #020b1a; border: none;
     padding: 12px 30px; border-radius: 5px;
     font-weight: bold; cursor: pointer;
-    overflow: hidden; /* Para sa shimmer effect */
+    overflow: hidden;
     transition: all 0.3s ease;
     margin-right: 15px;
 }
 
-/* Electric Shimmer Effect */
 .btn-watch::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        120deg,
-        transparent,
-        rgba(255, 255, 255, 0.6),
-        transparent
-    );
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.6), transparent);
     animation: btnShimmer 3s infinite;
 }
 
@@ -214,12 +206,33 @@ body {
 .trailer-btn { background: transparent; color: white; border: 1.5px solid white; }
 .trailer-btn:hover { border-color: var(--primary-blue); color: var(--primary-blue); }
 
-.movie-btn { background: var(--primary-blue); color: #020b1a; }
-.movie-btn:hover { background: #fff; box-shadow: 0 0 15px var(--primary-blue); }
+/* ANIMATED FULL MOVIE BUTTON */
+.movie-btn { 
+    position: relative;
+    background: var(--primary-blue); 
+    color: #020b1a; 
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.movie-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: btnShimmer 4s infinite;
+}
+
+.movie-btn:hover { 
+    background: #fff; 
+    box-shadow: 0 0 15px var(--primary-blue); 
+    transform: scale(1.05);
+}
 
 .share-mini-btn { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 5px 15px; border-radius: 20px; font-size: 0.6rem; margin-top: 5px; cursor: pointer; }
 
-/* --- GENRE BUTTONS PREMIUM BLUE --- */
+/* --- GENRE BUTTONS --- */
 .genre-container { padding: 20px 4%; text-align: center; overflow-x: auto; white-space: nowrap; margin-top: 20px; }
 
 .genre-btn {
@@ -239,7 +252,7 @@ body {
     transform: translateY(-2px);
 }
 
-/* --- LOAD MORE BUTTON BLUE PILL --- */
+/* --- LOAD MORE BUTTON --- */
 .load-more-container { text-align: center; margin: 40px 0; }
 
 #load-more-btn {
@@ -274,7 +287,7 @@ body {
     padding: 8px; border-radius: 5px; margin-top: 15px;
 }
 
-/* --- FOOTER STYLES UPGRADED --- */
+/* --- FOOTER STYLES --- */
 #site-footer {
     background: rgba(2, 11, 26, 0.95);
     border-top: 1px solid rgba(0, 212, 255, 0.2);
@@ -311,7 +324,7 @@ body {
     font-size: 1rem; font-weight: bold; letter-spacing: 1px;
 }
 
-/* --- MOBILE RESPONSIVE & MODAL FIXES --- */
+/* --- MOBILE RESPONSIVE --- */
 @media (max-width: 768px) {
     #modal-image { display: none; }
     .movie-row { grid-template-columns: repeat(2, 1fr); }
