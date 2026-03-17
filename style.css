@@ -212,7 +212,7 @@ body {
 .movie-row.horizontal-scroll::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
 
 .movie-row.horizontal-scroll .movie-card {
-    flex: 0 0 180px; /* Sakto sa row bro */
+    flex: 0 0 180px; 
 }
 
 /* --- MOVIE CARDS & NEON GLOW --- */
@@ -285,7 +285,7 @@ body {
     box-shadow: 0 4px 15px var(--accent-glow);
 }
 
-/* --- MODAL PLAYER & RESPONSIVE CLOSE --- */
+/* --- MODAL PLAYER --- */
 .modal { display: none; position: fixed; z-index: 3000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; }
 .modal-content { width: 95%; max-width: 1200px; background: var(--card-bg); border-radius: 15px; overflow-y: auto; max-height: 95vh; border: 1px solid rgba(0, 212, 255, 0.2); position: relative; }
 #modal-video { width: 100%; aspect-ratio: 16/9; border: none; background: #000; }
@@ -314,70 +314,73 @@ body {
     .close:hover { color: var(--primary-blue); transform: rotate(90deg) scale(1.2); background: rgba(0, 212, 255, 0.2); box-shadow: 0 0 15px var(--accent-glow); }
 }
 
-/* --- PREMIUM FOOTER SECTION --- */
+/* --- PRESERVED NEON FOOTER DESIGN --- */
 #site-footer {
     background: rgba(2, 11, 26, 0.98);
     border-top: 1px solid rgba(0, 212, 255, 0.2);
-    padding: 60px 5% 40px 5%;
+    padding: 50px 5%;
     text-align: center;
     margin-top: 80px;
 }
-
-.footer-container { max-width: 1000px; margin: 0 auto; }
 
 .footer-links {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 25px;
-    margin-bottom: 30px;
+    gap: 20px;
+    margin-bottom: 25px;
 }
 
 .footer-links a {
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--primary-blue); /* Balik Bold Blue, Bro! */
     text-decoration: none;
     font-size: 0.85rem;
-    font-weight: 500;
+    font-weight: bold;
     transition: all 0.3s ease;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
+    letter-spacing: 1px;
 }
 
 .footer-links a:hover {
-    color: var(--primary-blue);
-    text-shadow: 0 0 10px var(--accent-glow);
+    color: #fff;
+    text-shadow: 0 0 10px var(--primary-blue);
+    transform: translateY(-3px);
 }
 
 .disclaimer {
+    color: rgba(255, 255, 255, 0.5);
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.4);
-    line-height: 1.6;
-    max-width: 700px;
-    margin: 0 auto 30px auto;
+    max-width: 800px;
+    margin: 0 auto 20px auto;
+    line-height: 1.5;
 }
 
 .copyright {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 0.9rem;
-    letter-spacing: 1px;
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* Nelz Signature Glow */
+#site-footer span b {
+    color: var(--primary-blue);
+    text-shadow: 0 0 10px var(--accent-glow);
+    text-transform: uppercase;
 }
 
 .sub-footer {
     display: block;
-    margin-top: 15px;
-    font-size: 0.75rem;
-    color: var(--primary-blue);
+    margin-top: 10px;
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 2px;
     text-transform: uppercase;
-    letter-spacing: 3px;
-    opacity: 0.7;
 }
 
 /* Mobile Tweaks */
 @media (max-width: 768px) {
     .movie-row { grid-template-columns: repeat(2, 1fr); }
     .movie-row.horizontal-scroll .movie-card { flex: 0 0 140px; }
-    #site-footer { padding: 40px 8%; }
-    .footer-links { gap: 15px; }
     #modal-image { display: none; }
 }
 
