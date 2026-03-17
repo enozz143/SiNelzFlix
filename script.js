@@ -7,7 +7,7 @@ let currentGenre = 'all';
 let sliderIndex = 0;
 let sliderItems = [];
 
-// --- 1. fmovies ---
+// --- 1. FETCH DATA ---
 async function fetchMovies(type, page = 1, genreId = 'all') {
     try {
         let url;
@@ -25,11 +25,14 @@ async function fetchMovies(type, page = 1, genreId = 'all') {
     }
 }
 
-// --- 2. HERO SLIDER LOGIC () ---
+// --- 2. DYNAMIC HERO SLIDER (AUTO-TRENDING) ---
 async function setupHeroSlider(movies) {
-    sliderItems = movies.slice(0, 6);
+    sliderItems = movies.slice(0, 6); // Top 6 trending movies
     const sliderContainer = document.getElementById("hero-slider");
     const dotsContainer = document.getElementById("slider-dots");
+    
+    if (!sliderContainer) return;
+
     sliderContainer.innerHTML = "";
     dotsContainer.innerHTML = "";
 
@@ -37,7 +40,9 @@ async function setupHeroSlider(movies) {
         const movie = sliderItems[index];
         const slide = document.createElement("div");
         slide.className = `hero-slide ${index === 0 ? 'active' : ''}`;
-        slide.style.backgroundImage = `url(${IMG_URL}${movie.backdrop_path})`;
+        
+        // Background Image with Gradient for readability
+        slide.style.backgroundImage = `linear-gradient(to bottom, rgba(0,0,0,0.2), #020b1a), url(${IMG_URL}${movie.backdrop_path})`;
         
         let trailerKey = "";
         try {
@@ -57,7 +62,7 @@ async function setupHeroSlider(movies) {
                     <span>⭐ ${movie.vote_average.toFixed(1)}</span>
                     <span>•</span>
                     <span>${movie.release_date ? movie.release_date.split('-')[0] : 'N/A'}</span>
-                    <span style="border: 1px solid var(--primary-blue); padding: 2px 5px; border-radius: 3px; font-size: 0.7rem;">CINEMATIC PREVIEW</span>
+                    <span style="border: 1px solid #00d4ff; padding: 2px 5px; border-radius: 3px; font-size: 0.7rem;">TRENDING NOW</span>
                 </div>
                 <h1>${movie.title}</h1>
                 <p>${movie.overview.substring(0, 180)}...</p>
@@ -74,11 +79,13 @@ async function setupHeroSlider(movies) {
         dot.onclick = () => goToSlide(index);
         dotsContainer.appendChild(dot);
     }
+    
     if (window.sliderInterval) clearInterval(window.sliderInterval);
-    window.sliderInterval = setInterval(nextSlide, 10000);
+    window.sliderInterval = setInterval(nextSlide, 10000); // Lipat slide every 10 seconds
 }
 
 function nextSlide() {
+    if (sliderItems.length === 0) return;
     sliderIndex = (sliderIndex + 1) % sliderItems.length;
     updateSliderUI();
 }
@@ -95,13 +102,14 @@ function updateSliderUI() {
     dots.forEach((d, i) => d.classList.toggle("active", i === sliderIndex));
 }
 
-// --- 3.  ---
+// --- 3. MOVIE CARDS & LISTS ---
 function createMovieCard(item, containerId) {
     const card = document.createElement("div");
     card.className = "movie-card";
     
     const img = document.createElement("img");
     img.src = `${IMG_URL}${item.poster_path}`;
+    img.loading = "lazy"; // Performance boost!
     
     const overlay = document.createElement("div");
     overlay.className = "trailer-overlay";
@@ -156,7 +164,7 @@ function displayList(items, containerId) {
     });
 }
 
-// --- 4.  ---
+// --- 4. MODAL & PLAYER LOGIC ---
 async function showDetails(item) {
     currentItem = item;
     const type = item.title ? "movie" : "tv";
@@ -167,6 +175,7 @@ async function showDetails(item) {
     document.getElementById("modal-title").textContent = item.title || item.name;
     document.getElementById("modal-description").textContent = item.overview || "No description available.";
     document.getElementById("modal-image").src = `${IMG_URL}${item.poster_path}`;
+    
     const rating = item.vote_average ? `⭐ ${item.vote_average.toFixed(1)}` : "No Rating";
     const releaseDate = item.release_date || item.first_air_date || "Unknown";
     document.getElementById("modal-rating").innerHTML = `<span>${rating}</span> | <span>${releaseDate}</span>`;
@@ -174,6 +183,7 @@ async function showDetails(item) {
     changeServer();
     document.getElementById("modal").style.display = "flex";
 
+    // Load Cast
     try {
         const creditsRes = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/credits`);
         const creditsData = await creditsRes.json();
@@ -181,6 +191,7 @@ async function showDetails(item) {
         document.getElementById("modal-cast").innerHTML = `<strong>Cast:</strong> ${castList || "N/A"}`;
     } catch (err) { console.error("Cast error:", err); }
 
+    // Recommendations
     try {
         let res = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/recommendations`);
         let data = await res.json();
@@ -239,6 +250,7 @@ async function playTrailer(id, type) {
     }
 }
 
+// --- 5. SEARCH & FILTER ---
 async function handleSearch(q) {
     if (!q.trim()) {
         document.getElementById("search-results-section").style.display = "none";
@@ -282,6 +294,7 @@ async function loadMore() {
     }
 }
 
+// ESC Key to close modal
 document.addEventListener('keydown', function(event) {
     if (event.key === "Escape") {
         const modal = document.getElementById("modal");
@@ -289,13 +302,13 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
-// --- 5. INITIALIZATION ---
+// --- 6. INITIALIZATION ---
 async function init() {
     console.log("CINElzFlix Engine Online!"); 
     try {
         const movies = await fetchMovies("movie", 1);
         if (movies && movies.length > 0) {
-            setupHeroSlider(movies);
+            setupHeroSlider(movies); // Ito ang bumbuhay sa header!
             displayList(movies, "movies-list");
         }
         
@@ -309,7 +322,7 @@ async function init() {
         const animeJson = await animeData.json();
         displayList(animeJson.results, "anime-list");
 
-        // DEEP LINKING
+        // DEEP LINKING (Para sa direct sharing)
         const params = new URLSearchParams(window.location.search);
         const movieId = params.get('movie');
         const tvId = params.get('tv');
