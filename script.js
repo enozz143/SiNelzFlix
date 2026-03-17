@@ -25,9 +25,12 @@ async function fetchMovies(type, page = 1, genreId = 'all') {
     }
 }
 
-// --- 2. HERO SLIDER LOGIC ---
+// --- 2. HERO SLIDER LOGIC (NOW WITH RANDOMIZER) ---
 async function setupHeroSlider(movies) {
-    sliderItems = movies.slice(0, 6);
+    // RANDOMIZER: I-shuffle natin yung movies para bawat refresh iba ang bida
+    const shuffledMovies = movies.sort(() => 0.5 - Math.random());
+    sliderItems = shuffledMovies.slice(0, 6);
+    
     const sliderContainer = document.getElementById("hero-slider");
     const dotsContainer = document.getElementById("slider-dots");
     
@@ -41,7 +44,6 @@ async function setupHeroSlider(movies) {
         const slide = document.createElement("div");
         slide.className = `hero-slide ${index === 0 ? 'active' : ''}`;
         
-        // Dynamic background
         slide.style.backgroundImage = `url(${IMG_URL}${movie.backdrop_path})`;
         
         let trailerKey = "";
@@ -303,12 +305,13 @@ async function init() {
     try {
         const movies = await fetchMovies("movie", 1);
         if (movies && movies.length > 0) {
-            // Hiwalayin ang slider items (unang 6) at grid items (tira)
-            const sliderData = movies.slice(0, 6);
-            const gridData = movies.slice(6);
+            // Hiwalayin ang slider items (unang 6 random) at grid items (tira)
+            // Note: setupHeroSlider will handle the randomization inside
+            setupHeroSlider(movies);
             
-            setupHeroSlider(sliderData);
-            displayList(gridData, "movies-list");
+            // Sa grid, i-display natin yung original order pero i-skip yung unang ilan
+            // o pwede rin i-shuffle kung gusto mo lahat random
+            displayList(movies.slice(6), "movies-list");
         }
         
         // TV SHOWS
