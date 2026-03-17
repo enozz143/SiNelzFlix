@@ -1,22 +1,23 @@
 {
   "short_name": "CINElzFlix",
   "name": "CINElzFlix | Unlimited Cinema",
- "icons": [
-  {
-    "src": "favicon.png",
-    "sizes": "192x192",
-    "type": "image/png"
-  },
-  {
-    "src": "favicon.png",
-    "sizes": "512x512",
-    "type": "image/png"
-  }
-],
-  "start_url": "/",
+  "description": "Unlimited Cinema Experience at your fingertips.",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/index.html",
   "background_color": "#020b1a",
   "theme_color": "#00d4ff",
   "display": "standalone",
-  "scope": "/",
-  "description": "Unlimited Cinema Experience at your fingertips."
+  "scope": "/"
 }
