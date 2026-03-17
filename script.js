@@ -226,22 +226,21 @@ function closeModal() {
 }
 
 function displaySimilar(items) {
-    let similarContainer = document.getElementById("similar-movies");
-    if (!similarContainer) {
-        const details = document.querySelector(".modal-details");
-        const title = document.createElement("h3");
-        title.textContent = "You Might Also Like";
-        title.style.margin = "20px 0 10px 0";
-        title.style.color = "#fff";
-        similarContainer = document.createElement("div");
-        similarContainer.id = "similar-movies";
-        similarContainer.className = "movie-row";
-        details.appendChild(title);
-        details.appendChild(similarContainer);
-    }
-    similarContainer.innerHTML = "";
+    // Hanapin natin yung parking lot na ginawa natin sa HTML
+    let container = document.getElementById("similar-movies-container");
+    if (!container) return;
+
+    // Linisin muna ang loob at lagyan ng title
+    container.innerHTML = `
+        <h3 style="margin: 20px 0 10px 0; color: #fff;">You Might Also Like</h3>
+        <div id="similar-movies" class="movie-row"></div>
+    `;
+
+    let similarList = document.getElementById("similar-movies");
     items.forEach(item => {
-        if (item.poster_path) similarContainer.appendChild(createMovieCard(item, "similar-movies"));
+        if (item.poster_path) {
+            similarList.appendChild(createMovieCard(item, "similar-movies"));
+        }
     });
 }
 
