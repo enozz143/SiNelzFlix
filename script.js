@@ -266,17 +266,31 @@ async function handleSearch(q) {
 async function filterGenre(genreId) {
     currentGenre = genreId;
     currentPage = 1; 
+    
+    // UI Update sa Buttons
     document.querySelectorAll('.genre-btn').forEach(btn => btn.classList.remove('active'));
     if (event && event.target) event.target.classList.add('active');
     
-    // Pag nag-filter, ibalik natin sa Grid view para makita lahat ng results
-    const container = document.getElementById("movies-list");
-    container.classList.remove("horizontal-scroll");
+    const trendingRow = document.getElementById("movies-list");
     
+    // ITAGO ULIT ANG IBANG CATEGORIES pag nag-filter
+    const allSections = document.querySelectorAll('#trending-section section.category-section');
+    allSections.forEach(sec => {
+        if (!sec.contains(trendingRow)) {
+            sec.style.display = genreId === 'all' ? "block" : "none";
+        }
+    });
+
+    // Balik sa Grid View
+    if (genreId !== 'all') {
+        trendingRow.classList.remove("horizontal-scroll");
+    } else {
+        trendingRow.classList.add("horizontal-scroll");
+    }
+
     const filteredMovies = await fetchMovies("movie", 1, genreId);
     displayList(filteredMovies, "movies-list");
 }
-
 async function loadMore() {
     currentPage++; 
     const loadBtn = document.getElementById("load-more-btn");
