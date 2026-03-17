@@ -45,12 +45,12 @@
 
         // --- AUTHENTICATION ---
         function checkAccess() {
-            const pass = prompt("Bro, anong password natin? 🗝️");
-            if (pass === MY_PASSWORD) {
+            const pass = prompt("If you are the ADMIN, Please Enter correct PASSWORD");
+            if (pass === Department143#) {
                 document.body.style.display = "block"; // Show page
-                alert("Welcome back, Nelz! Access Granted.");
+                alert("Welcome back, Admin! Access Granted.");
             } else {
-                alert("Wrong password, bro. Balik ka na sa site!");
+                alert("Wrong password!");
                 window.location.href = "index.html"; // Kick them out
             }
         }
