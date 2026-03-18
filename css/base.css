@@ -1,1 +1,52 @@
+/* --- 1. GLOBAL VARIABLES --- */
+:root {
+    --primary-blue: #00d4ff; 
+    --dark-bg: #020b1a;
+    --card-bg: #0a192f;
+    --text-white: #e6f1ff;
+    --accent-glow: rgba(0, 212, 255, 0.5); 
+}
 
+/* --- 2. GLOBAL RESET & BODY --- */
+body {
+    background-color: var(--dark-bg);
+    color: var(--text-white);
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+/* --- 3. CUSTOM NEON SCROLLBAR --- */
+/* Eto yung nagpapa-pogi sa scrollbar ng browser mo */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--dark-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-blue);
+    border-radius: 10px;
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #fff;
+}
+
+/* --- 4. SELECTION COLOR --- */
+/* Kulay pag ni-highlight mo yung text sa site */
+::selection {
+    background: var(--primary-blue);
+    color: var(--dark-bg);
+}
+
+/* --- 5. IMAGE RESET --- */
+img {
+    max-width: 100%;
+    display: block;
+}
