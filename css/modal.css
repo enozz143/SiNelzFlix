@@ -5,13 +5,33 @@
     z-index: 5000; 
     top: 0; left: 0; 
     width: 100%; 
-    height: 100%; 
-    /* Gamit tayo ng dvh (dynamic viewport height) para iwas tabon sa address bar */
-    height: 100dvh; 
-    background: rgba(0,0,0,0.98); /* Mas madilim para focus sa movie */
+    height: 100dvh; /* Dynamic viewport height para iwas tabon sa address bar */
+    background: rgba(0,0,0,0.98); 
     justify-content: center; 
-    align-items: flex-start; /* Palitan ang center ng flex-start para magsimula sa top */
-    padding-top: env(safe-area-inset-top); /* Proteksyon sa mga may notch na phone */
+    align-items: flex-start; 
+    padding-top: env(safe-area-inset-top); 
+}
+
+/* --- NEW: MODAL HEADER BRANDING (Para sa Logo) --- */
+.modal-header-branding {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(2, 11, 26, 0.9), transparent);
+    z-index: 5500;
+    pointer-events: none; /* Para hindi ma-block ang clicks sa paligid */
+}
+
+.modal-logo-mini {
+    height: 35px;
+    width: auto;
+    filter: drop-shadow(0px 0px 8px var(--accent-glow));
+    opacity: 0.9;
 }
 
 .modal-content { 
@@ -20,11 +40,11 @@
     background: var(--card-bg); 
     border-radius: 15px; 
     overflow-y: auto; 
-    /* Limitahan ang height para laging kita ang content */
     max-height: 90dvh; 
-    margin-top: 20px; /* Bigyan ng onting gap sa taas para sa close button */
+    margin-top: 20px; 
     border: 1px solid rgba(0, 212, 255, 0.2); 
     position: relative; 
+    z-index: 5100;
 }
 
 .player-container { 
@@ -80,11 +100,15 @@
 .close {
     position: absolute;
     top: 15px; right: 15px;
-    font-size: 40px; color: var(--primary-blue); 
+    font-size: 40px; 
+    color: var(--primary-blue); 
     background: rgba(0, 0, 0, 0.6); 
     width: 50px; height: 50px;
     display: flex; align-items: center; justify-content: center;
-    border-radius: 50%; z-index: 6000; line-height: 1; cursor: pointer;
+    border-radius: 50%; 
+    z-index: 6000; 
+    line-height: 1; 
+    cursor: pointer;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -123,19 +147,41 @@
 
 /* Mobile Tweaks */
 @media (max-width: 768px) {
+    .modal-header-branding {
+        height: 50px;
+        background: rgba(2, 11, 26, 0.95);
+        border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+    }
+    
+    .modal-logo-mini {
+        height: 28px;
+    }
+
     .close { 
-        top: 10px; 
+        top: 5px; 
         right: 10px; 
         width: 40px; 
         height: 40px; 
         font-size: 30px; 
-        background: rgba(0, 212, 255, 0.3); /* Mas visible na neon blue */
-        backdrop-filter: blur(5px);
+        background: transparent;
     }
     
     .modal-content {
-        width: 100%; /* Full width na sa mobile para mas malaki ang player */
-        border-radius: 0; /* Alisin ang radius sa mobile para clean */
-        margin-top: 50px; /* Space para sa close button sa labas */
+        width: 100%; 
+        border-radius: 0; 
+        margin-top: 50px; /* Space para sa branding header */
+        max-height: calc(100dvh - 50px);
+    }
+    
+    .modal-info {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 20px;
+    }
+
+    #modal-image {
+        width: 150px;
+        min-width: 150px;
     }
 }
