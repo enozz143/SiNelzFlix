@@ -1,4 +1,4 @@
-/* --- MOVIE ROWS & HEADINGS --- */
+/* --- MOVIE ROWS BASE --- */
 section h2 {
     padding-left: 5%;
     margin-top: 50px;
@@ -17,7 +17,7 @@ section h2 {
     padding: 20px 5%; 
 }
 
-/* --- HORIZONTAL SCROLL (NETFLIX STYLE) --- */
+/* Horizontal Scroll for Mobile/Specific Sections */
 .movie-row.horizontal-scroll {
     display: flex; 
     grid-template-columns: none; 
@@ -58,7 +58,7 @@ section h2 {
 
 .movie-card img { width: 100%; display: block; border-radius: 11px; }
 
-/* --- TRAILER OVERLAY ON HOVER --- */
+/* --- TRAILER OVERLAY (Hover Effects) --- */
 .trailer-overlay {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0, 0, 0, 0.85); display: flex; flex-direction: column;
@@ -67,6 +67,11 @@ section h2 {
 }
 
 .movie-card:hover .trailer-overlay { opacity: 1; pointer-events: auto; }
+
+.hover-btn { width: 85%; padding: 8px; border: none; border-radius: 5px; font-weight: bold; font-size: 0.7rem; cursor: pointer; text-transform: uppercase; }
+
+.trailer-btn { background: transparent; color: white; border: 1.5px solid white; }
+.trailer-btn:hover { border-color: var(--primary-blue); color: var(--primary-blue); }
 
 /* --- GENRE BUTTONS --- */
 .genre-container { padding: 20px 4%; text-align: center; overflow-x: auto; white-space: nowrap; margin-top: 20px; }
@@ -77,7 +82,7 @@ section h2 {
     color: white; border: 1px solid rgba(0, 212, 255, 0.3);
     border-radius: 30px !important; 
     cursor: pointer;
-    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif; transition: all 0.3s ease;
 }
 
 .genre-btn:hover, .genre-btn.active {
@@ -88,36 +93,22 @@ section h2 {
     transform: translateY(-2px);
 }
 
-/* --- LOADING SPINNER --- */
-.spinner-overlay {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: var(--dark-bg);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
+/* --- LOAD MORE BUTTON --- */
+.load-more-container { text-align: center; margin: 40px 0; }
+
+#load-more-btn {
+    padding: 14px 40px;
+    background: var(--primary-blue) !important;
+    color: #020b1a !important;
+    border: none; 
+    border-radius: 50px !important; 
+    font-weight: bold; cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px var(--accent-glow);
 }
 
-.spinner {
-    width: 60px; height: 60px;
-    border: 5px solid rgba(0, 212, 255, 0.1);
-    border-top: 5px solid var(--primary-blue);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    box-shadow: 0 0 15px var(--accent-glow);
-}
-
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-.fade-out { opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
-
-/* --- FOOTER --- */
-#site-footer {
-    background: rgba(2, 11, 26, 0.98);
-    border-top: 1px solid rgba(0, 212, 255, 0.2);
-    padding: 50px 5%;
-    text-align: center;
-    margin-top: 80px;
+/* Mobile Tweaks */
+@media (max-width: 768px) {
+    .movie-row { grid-template-columns: repeat(2, 1fr); }
+    .movie-row.horizontal-scroll .movie-card { flex: 0 0 140px; }
 }
