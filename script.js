@@ -411,3 +411,11 @@ async function init() {
 }
 
 init();
+
+
+window.addEventListener('load', () => {
+    const spinner = document.getElementById('loading-spinner');
+    setTimeout(() => {
+        spinner.classList.add('fade-out');
+    }, 1000); // May 1 second delay para ramdam ang ganda ng spinner
+});
