@@ -16,31 +16,16 @@ body {
 
 /* --- NAVBAR & LOGO --- */
 #navbar {
+    padding: 5px 4%; /* Binabaan natin ang 5px para manipis */
+    height: 70px;    /* Sinet natin ang height para kontrolado ang kapal */
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    /* Binawasan natin ang padding sa 2px (top/bottom) 
-       para sumakto lang siya sa height ng logo at search box */
-    padding: 2px 4%; 
-    background: rgba(2, 11, 26, 0.95);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(0, 212, 255, 0.2);
-    position: fixed;
-    top: 0; 
-    width: 100%; 
-    z-index: 2000;
-    box-sizing: border-box;
-    /* Sinisiguro natin na walang minimum height na humaharang */
-    min-height: auto; 
+    justify-content: space-between;
 }
 
-#site-logo { 
-    height: 120px;
-    width: auto; 
-    object-fit: contain; 
-    filter: drop-shadow(0px 0px 10px var(--accent-glow)); 
-    mix-blend-mode: screen;
-    transition: transform 0.3s ease; 
+#site-logo {
+    height: 50px; /* Dito mo makukuha yung nipis, bro! */
+    width: auto;
 }
 
 #site-logo { 
