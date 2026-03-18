@@ -49,8 +49,8 @@ body {
 /* --- PREMIUM SEARCH BAR --- */
 .search-box { 
     position: relative; 
-    width: 250px; 
-    transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+    width: 250px; /* Saktong laki lang para sa desktop */
+    margin-right: 10px; /* Konting gap sa dulo ng screen */
 }
 
 .search-box:focus-within {
