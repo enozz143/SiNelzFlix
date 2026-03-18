@@ -1,13 +1,13 @@
 /* --- NAVBAR & LOGO --- */
 #navbar {
-    height: 75px; 
-    background: rgba(2, 11, 26, 0.7); 
+    height: 85px; /* Dinagdagan natin ng konti para mas malaki ang logo */
+    background: rgba(2, 11, 26, 0.85); /* Mas solid na background para iwas "ghosting" ng logo */
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
-    border-bottom: 1px solid rgba(0, 212, 255, 0.15);
+    border-bottom: 2px solid rgba(0, 212, 255, 0.3); /* Mas matapang na neon line */
     display: flex;
-    align-items: center;
-    justify-content: space-between; /* Eto ang maghihiwalay sa logo at search */
+    align-items: stretch; /* Isasagad natin yung logo container hanggang dulo */
+    justify-content: space-between;
     padding: 0 5%;
     position: fixed;
     top: 0; 
@@ -16,24 +16,35 @@
     box-sizing: border-box;
 }
 
+/* Container ng logo para walang padding */
+.logo {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
 #site-logo { 
-    height: 60px; 
+    height: 100%; /* Gamitin ang buong height ng navbar */
+    max-height: 85px; /* Limit para hindi mag-overflow */
     width: auto; 
     object-fit: contain; 
-    filter: drop-shadow(0px 0px 10px var(--accent-glow)); 
+    padding: 5px 0; /* Onting hinga lang para hindi dikit na dikit sa border */
+    filter: drop-shadow(0px 0px 12px var(--accent-glow)); 
     mix-blend-mode: screen;
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s ease;
     cursor: pointer;
+    display: block; /* Para mawala ang extra gap sa baba */
 }
 
 #site-logo:hover {
-    transform: scale(1.1);
-    filter: drop-shadow(0px 0px 18px var(--primary-blue));
+    transform: scale(1.05); /* Slightly smaller scale para hindi maputol ang glow */
+    filter: drop-shadow(0px 0px 20px var(--primary-blue));
 }
 
 /* --- PREMIUM SEARCH BAR --- */
 .search-box { 
     position: relative; 
+    align-self: center; /* Panatilihin sa gitna kahit lumaki ang navbar */
     width: 250px; 
     margin-right: 10px; 
 }
@@ -71,6 +82,15 @@
 
 /* Mobile Tweaks for Navbar */
 @media (max-width: 768px) {
-    #navbar { height: 65px; padding: 0 3%; }
-    #site-logo { height: 45px; }
+    #navbar { 
+        height: 75px; /* Mas malaki na rin sa mobile */
+        padding: 0 3%; 
+    }
+    #site-logo { 
+        height: 70px; /* Sagad na sagad na rin sa mobile! */
+        padding: 2px 0;
+    }
+    .search-box:focus-within {
+        width: 200px; /* Mas maliit lang expansion sa mobile para hindi matabunan ang logo */
+    }
 }
