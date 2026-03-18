@@ -19,13 +19,19 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 5px 4%;
+    /* Binawasan natin ang padding sa 2px (top/bottom) 
+       para sumakto lang siya sa height ng logo at search box */
+    padding: 2px 4%; 
     background: rgba(2, 11, 26, 0.95);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(0, 212, 255, 0.2);
     position: fixed;
-    top: 0; width: 100%; z-index: 2000; /* Taasan natin para laging nasa taas */
+    top: 0; 
+    width: 100%; 
+    z-index: 2000;
     box-sizing: border-box;
+    /* Sinisiguro natin na walang minimum height na humaharang */
+    min-height: auto; 
 }
 
 #site-logo { 
@@ -37,10 +43,13 @@ body {
     transition: transform 0.3s ease; 
 }
 
-#site-logo:hover {
-    transform: scale(1.05);
-    filter: drop-shadow(0px 0px 15px var(--accent-glow));
-    cursor: pointer;
+#site-logo { 
+    height: 90px; /* From 120px, ginawa nating 90px para mas sleek ang navbar */
+    width: auto; 
+    object-fit: contain; 
+    filter: drop-shadow(0px 0px 10px var(--accent-glow)); 
+    mix-blend-mode: screen;
+    transition: transform 0.3s ease; 
 }
 
 /* --- PREMIUM SEARCH BAR --- */
