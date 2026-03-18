@@ -1,1 +1,122 @@
+/* --- CINEMATIC MODAL PLAYER --- */
+.modal { 
+    display: none; 
+    position: fixed; 
+    z-index: 5000; 
+    top: 0; left: 0; 
+    width: 100%; height: 100%; 
+    background: rgba(0,0,0,0.95); 
+    justify-content: center; 
+    align-items: center; 
+}
 
+.modal-content { 
+    width: 95%; 
+    max-width: 1200px; 
+    background: var(--card-bg); 
+    border-radius: 15px; 
+    overflow-y: auto; 
+    max-height: 95vh; 
+    border: 1px solid rgba(0, 212, 255, 0.2); 
+    position: relative; 
+}
+
+/* --- PLAYER SECTION --- */
+.player-container { 
+    width: 100%; 
+    background: #000; 
+    line-height: 0; 
+}
+
+#modal-video { 
+    width: 100%; 
+    aspect-ratio: 16 / 9; 
+    border: none; 
+}
+
+/* --- MODAL INFO (Poster & Details) --- */
+.modal-info {
+    display: flex;
+    flex-direction: row; 
+    gap: 30px;
+    align-items: flex-start;
+    padding: 30px;
+}
+
+#modal-image {
+    width: 200px; 
+    min-width: 200px;
+    border-radius: 12px;
+    border: 2px solid var(--primary-blue);
+    box-shadow: 0 0 15px var(--accent-glow);
+    object-fit: cover;
+}
+
+.modal-info > div { 
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 15px; 
+}
+
+#modal-title { 
+    font-size: 2rem; 
+    margin: 0; 
+    color: var(--primary-blue); 
+    text-shadow: 0 0 10px var(--accent-glow); 
+}
+
+#modal-description { 
+    line-height: 1.6; 
+    color: var(--text-white); 
+    font-size: 1rem; 
+}
+
+/* --- THE SPINNING CLOSE BUTTON --- */
+.close {
+    position: absolute;
+    top: 15px; right: 15px;
+    font-size: 40px; 
+    color: var(--primary-blue); 
+    background: rgba(0, 0, 0, 0.6); 
+    width: 50px; height: 50px;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    border-radius: 50%; 
+    z-index: 6000; 
+    line-height: 1; 
+    cursor: pointer;
+    /* Eto yung transition para sa spin */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@media (min-width: 1024px) {
+    .close { 
+        top: 20px; right: 25px; 
+        font-size: 35px; width: 45px; height: 45px; 
+        color: var(--text-white); 
+    }
+    
+    .close:hover { 
+        color: var(--primary-blue); 
+        /* THE SPIN EFFECT */
+        transform: rotate(90deg) scale(1.2); 
+        background: rgba(0, 212, 255, 0.2); 
+        box-shadow: 0 0 15px var(--accent-glow); 
+    }
+}
+
+/* --- MINI FOOTER SA LOOB NG MODAL --- */
+.modal-footer-mini {
+    margin-top: 50px; 
+    padding-bottom: 20px;
+    border-top: 1px solid rgba(0, 212, 255, 0.1);
+    text-align: center;
+}
+
+.modal-footer-mini p { 
+    font-size: 0.75rem; 
+    color: rgba(255, 255, 255, 0.4); 
+    margin: 5px 0; 
+}
