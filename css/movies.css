@@ -70,8 +70,47 @@ section h2 {
 
 .hover-btn { width: 85%; padding: 8px; border: none; border-radius: 5px; font-weight: bold; font-size: 0.7rem; cursor: pointer; text-transform: uppercase; }
 
+/* --- BUTTON STYLES (NEON BLUE) --- */
 .trailer-btn { background: transparent; color: white; border: 1.5px solid white; }
 .trailer-btn:hover { border-color: var(--primary-blue); color: var(--primary-blue); }
+
+.movie-btn {
+    position: relative;
+    overflow: hidden;
+    background: var(--primary-blue);
+    color: #020b1a;
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 85%;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+}
+
+.movie-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    animation: btnShimmer 4s infinite;
+}
+
+.movie-btn:hover {
+    background: #fff;
+    box-shadow: 0 0 15px var(--primary-blue);
+    transform: scale(1.05);
+    color: var(--dark-bg);
+}
+
+@keyframes btnShimmer {
+    0% { left: -100%; }
+    20% { left: 100%; }
+    100% { left: 100%; }
+}
 
 /* --- GENRE BUTTONS --- */
 .genre-container { padding: 20px 4%; text-align: center; overflow-x: auto; white-space: nowrap; margin-top: 20px; }
