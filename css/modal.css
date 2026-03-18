@@ -28,10 +28,10 @@
 }
 
 .modal-logo-mini {
-    height: 35px;
+    height: 50px; /* Nilakihan natin, bro! */
     width: auto;
-    filter: drop-shadow(0px 0px 8px var(--accent-glow));
-    opacity: 0.9;
+    filter: drop-shadow(0px 0px 12px var(--accent-glow)); /* Mas malakas na glow */
+    opacity: 1; /* Full visibility na */
 }
 
 .modal-content { 
@@ -148,29 +148,23 @@
 /* Mobile Tweaks */
 @media (max-width: 768px) {
     .modal-header-branding {
-        height: 50px;
-        background: rgba(2, 11, 26, 0.95);
-        border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+        height: 70px; /* Dinagdagan natin yung space ng bar */
+        background: rgba(2, 11, 26, 0.98);
+        border-bottom: 2px solid var(--primary-blue); /* Mas matapang na border line */
     }
     
     .modal-logo-mini {
-        height: 28px;
+        height: 40px; /* From 28px to 40px para mabasa na! */
     }
 
-    .close { 
-        top: 5px; 
-        right: 10px; 
-        width: 40px; 
-        height: 40px; 
-        font-size: 30px; 
-        background: transparent;
+    .modal-content {
+        margin-top: 70px !important; /* Adjust din natin 'to para hindi matakpan */
+        max-height: calc(100dvh - 70px);
     }
     
-    .modal-content {
-        width: 100%; 
-        border-radius: 0; 
-        margin-top: 50px; /* Space para sa branding header */
-        max-height: calc(100dvh - 50px);
+    .close {
+        top: 15px; /* Inadjust ko para pantay sa mas malaking logo natin */
+        right: 15px;
     }
     
     .modal-info {
