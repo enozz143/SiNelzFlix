@@ -62,23 +62,34 @@
                 <button class="genre-btn" onclick="filterGenre(878)">Sci-Fi</button>
             </div>
 
-            <section>
-                <h2>Trending Movies</h2>
-                <div id="movies-list" class="movie-row"></div>
-                <div class="load-more-container">
-                    <button id="load-more-btn" onclick="loadMore()">Load More Movies</button>
-                </div>
+            <section class="category-section">
+                <h2>📺 Trending Movies</h2>
+                <div id="movies-list" class="movie-row horizontal-scroll"></div>
             </section>
 
-            <section>
-                <h2>TV Shows</h2>
-                <div id="tvshows-list" class="movie-row"></div>
+            <section class="category-section">
+                <h2>🔥 Upcoming Blockbusters</h2>
+                <div id="upcoming-list" class="movie-row horizontal-scroll"></div>
             </section>
 
-            <section>
-                <h2>Anime World</h2>
-                <div id="anime-list" class="movie-row"></div>
+            <section class="category-section">
+                <h2>🎬 TV Shows</h2>
+                <div id="tvshows-list" class="movie-row horizontal-scroll"></div>
             </section>
+
+            <section class="category-section">
+                <h2>⭐ Anime World</h2>
+                <div id="anime-list" class="movie-row horizontal-scroll"></div>
+            </section>
+
+            <section class="category-section">
+                <h2>🏆 Top Rated Classics</h2>
+                <div id="top-rated-list" class="movie-row horizontal-scroll"></div>
+            </section>
+
+            <div class="load-more-container">
+                <button id="load-more-btn" onclick="loadMore()">Explore More Movies</button>
+            </div>
         </div>
     </main>
 
@@ -88,6 +99,7 @@
             <div class="player-container">
                 <iframe id="modal-video" allowfullscreen></iframe>
             </div>
+            
             <div class="modal-details">
                 <div class="modal-info">
                     <img id="modal-image" src="" alt="">
@@ -96,6 +108,7 @@
                         <div id="modal-rating"></div>
                         <p id="modal-description"></p>
                         <p id="modal-cast" style="color: #ccc; font-size: 0.9rem; margin-top: 15px; font-style: italic;"></p>
+                        
                         <select id="server" onchange="changeServer()">
                             <option value="vidsrc">Server 1 (VidSrc)</option>
                             <option value="vidsrc2">Server 2 (Net)</option>
@@ -103,18 +116,26 @@
                         </select>
                     </div>
                 </div>
+
+                <div id="similar-movies-container"></div>
+
+                <div class="modal-footer-mini">
+                    <p>© 2026 CINElzFlix.com • Crafted by <b>Nelz</b></p>
+                    <p class="mini-disclaimer">All contents are provided by non-affiliated third parties.</p>
+                </div>
             </div>
         </div>
     </div>
 
     <script src="script.js"></script>
     
-    <script>
-      /* if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js');
-      }
-      */
-    </script>
+   <script>
+  /* Service Worker disabled to prevent app installation prompt
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js');
+  }
+  */
+</script>
     
     <footer id="site-footer">
         <div class="footer-container">

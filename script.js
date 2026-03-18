@@ -25,10 +25,9 @@ async function fetchMovies(type, page = 1, genreId = 'all') {
     }
 }
 
-// --- 2. HERO SLIDER LOGIC (NOW WITH RANDOMIZER) ---
+// --- 2. HERO SLIDER LOGIC ---
 async function setupHeroSlider(movies) {
-    // RANDOMIZER: I-shuffle natin yung movies para bawat refresh iba ang bida
-    const shuffledMovies = movies.sort(() => 0.5 - Math.random());
+    const shuffledMovies = [...movies].sort(() => 0.5 - Math.random());
     sliderItems = shuffledMovies.slice(0, 6);
     
     const sliderContainer = document.getElementById("hero-slider");
@@ -43,7 +42,6 @@ async function setupHeroSlider(movies) {
         const movie = sliderItems[index];
         const slide = document.createElement("div");
         slide.className = `hero-slide ${index === 0 ? 'active' : ''}`;
-        
         slide.style.backgroundImage = `url(${IMG_URL}${movie.backdrop_path})`;
         
         let trailerKey = "";
@@ -167,22 +165,38 @@ function displayList(items, containerId) {
 
 // --- 4. MODAL & PLAYER ---
 async function showDetails(item) {
-    currentItem = item;
+    // 1. CLEAR OLD DATA (The Fix!)
+    document.getElementById("modal-video").src = ""; 
+    document.getElementById("modal-title").textContent = "Loading...";
+    document.getElementById("modal-description").textContent = "";
+    document.getElementById("modal-image").src = ""; 
+    document.getElementById("modal-cast").innerHTML = "";
+    
+    // I-clear ang related movies container
+    let similarContainer = document.getElementById("similar-movies");
+    if (similarContainer) similarContainer.innerHTML = "<p style='color:gray; padding:20px;'>Finding related titles...</p>";
+
+    // 2. SET CURRENT ITEM DATA
+    currentItem = item; 
     const type = item.title ? "movie" : "tv";
     const titleSlug = (item.title || item.name).toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
     const newUrl = window.location.origin + window.location.pathname + `?${type}=${item.id}-${titleSlug}`;
     window.history.pushState({ path: newUrl }, '', newUrl);
 
+    // 3. FILL NEW INFO
     document.getElementById("modal-title").textContent = item.title || item.name;
     document.getElementById("modal-description").textContent = item.overview || "No description available.";
     document.getElementById("modal-image").src = `${IMG_URL}${item.poster_path}`;
+    
     const rating = item.vote_average ? `⭐ ${item.vote_average.toFixed(1)}` : "No Rating";
     const releaseDate = item.release_date || item.first_air_date || "Unknown";
     document.getElementById("modal-rating").innerHTML = `<span>${rating}</span> | <span>${releaseDate}</span>`;
 
+    // 4. OPEN MODAL & START PLAYER
     changeServer();
     document.getElementById("modal").style.display = "flex";
 
+    // 5. LOAD CAST (Background)
     try {
         const creditsRes = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/credits`);
         const creditsData = await creditsRes.json();
@@ -190,6 +204,7 @@ async function showDetails(item) {
         document.getElementById("modal-cast").innerHTML = `<strong>Cast:</strong> ${castList || "N/A"}`;
     } catch (err) { console.error("Cast error:", err); }
 
+    // 6. LOAD RELATED MOVIES (THE RETURN!)
     try {
         let res = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/recommendations`);
         let data = await res.json();
@@ -198,7 +213,9 @@ async function showDetails(item) {
             data = await res.json();
         }
         displaySimilar(data.results.slice(0, 6)); 
-    } catch (err) { console.error("Suggestions error:", err); }
+    } catch (err) { 
+        console.error("Suggestions error:", err); 
+    }
 }
 
 function closeModal() {
@@ -209,22 +226,21 @@ function closeModal() {
 }
 
 function displaySimilar(items) {
-    let similarContainer = document.getElementById("similar-movies");
-    if (!similarContainer) {
-        const details = document.querySelector(".modal-details");
-        const title = document.createElement("h3");
-        title.textContent = "You Might Also Like";
-        title.style.margin = "20px 0 10px 0";
-        title.style.color = "#fff";
-        similarContainer = document.createElement("div");
-        similarContainer.id = "similar-movies";
-        similarContainer.className = "movie-row";
-        details.appendChild(title);
-        details.appendChild(similarContainer);
-    }
-    similarContainer.innerHTML = "";
+    // Hanapin natin yung parking lot na ginawa natin sa HTML
+    let container = document.getElementById("similar-movies-container");
+    if (!container) return;
+
+    // Linisin muna ang loob at lagyan ng title
+    container.innerHTML = `
+        <h3 style="margin: 20px 0 10px 0; color: #fff;">You Might Also Like</h3>
+        <div id="similar-movies" class="movie-row"></div>
+    `;
+
+    let similarList = document.getElementById("similar-movies");
     items.forEach(item => {
-        if (item.poster_path) similarContainer.appendChild(createMovieCard(item, "similar-movies"));
+        if (item.poster_path) {
+            similarList.appendChild(createMovieCard(item, "similar-movies"));
+        }
     });
 }
 
@@ -268,67 +284,122 @@ async function handleSearch(q) {
 async function filterGenre(genreId) {
     currentGenre = genreId;
     currentPage = 1; 
+    
+    // UI Update sa Buttons
     document.querySelectorAll('.genre-btn').forEach(btn => btn.classList.remove('active'));
     if (event && event.target) event.target.classList.add('active');
+    
+    const trendingRow = document.getElementById("movies-list");
+    
+    // ITAGO ULIT ANG IBANG CATEGORIES pag nag-filter
+    const allSections = document.querySelectorAll('#trending-section section.category-section');
+    allSections.forEach(sec => {
+        if (!sec.contains(trendingRow)) {
+            sec.style.display = genreId === 'all' ? "block" : "none";
+        }
+    });
+
+    // Balik sa Grid View
+    if (genreId !== 'all') {
+        trendingRow.classList.remove("horizontal-scroll");
+    } else {
+        trendingRow.classList.add("horizontal-scroll");
+    }
+
     const filteredMovies = await fetchMovies("movie", 1, genreId);
     displayList(filteredMovies, "movies-list");
 }
-
 async function loadMore() {
     currentPage++; 
     const loadBtn = document.getElementById("load-more-btn");
-    loadBtn.textContent = "Loading...";
+    const trendingRow = document.getElementById("movies-list");
+    const trendingSection = trendingRow.parentElement; // Trending Section
+    
+    loadBtn.textContent = "Loading Results...";
     loadBtn.disabled = true;
+
+    // 1. ITAGO ANG IBANG CATEGORIES (Para hindi na kailangan mag-scroll pataas)
+    // Hahanapin natin lahat ng section sa loob ng trending-section div
+    const allSections = document.querySelectorAll('#trending-section section.category-section');
+    allSections.forEach(sec => {
+        // Itatago lahat maliban sa unang section (Trending)
+        if (!sec.contains(trendingRow)) {
+            sec.style.display = "none";
+        }
+    });
+
+    // 2. I-CONVERT SA GRID YUNG TRENDING ROW
+    trendingRow.classList.remove("horizontal-scroll");
+    
+    // 3. I-SCROLL ANG USER PATAAS SA START NG GRID (Smooth move bro)
+    trendingSection.scrollIntoView({ behavior: 'smooth' });
+
     const moreMovies = await fetchMovies("movie", currentPage, currentGenre);
+    
     if (moreMovies && moreMovies.length > 0) {
-        const container = document.getElementById("movies-list");
         moreMovies.forEach(item => {
-            if (item.poster_path) container.appendChild(createMovieCard(item, "movies-list"));
+            if (item.poster_path) {
+                trendingRow.appendChild(createMovieCard(item, "movies-list"));
+            }
         });
-        loadBtn.textContent = "Load More Movies";
+        loadBtn.textContent = "Show Even More";
         loadBtn.disabled = false;
     } else {
         loadBtn.style.display = "none"; 
     }
 }
-
 document.addEventListener('keydown', function(event) {
     if (event.key === "Escape") {
         const modal = document.getElementById("modal");
-        if (modal && modal.style.display === "flex") closeModal();
+        if (modal && modal.style.display === "flex") {
+            closeModal();
+            return; 
+        }
+        const searchResults = document.getElementById("search-results-section");
+        if (searchResults && searchResults.style.display === "block") {
+            const searchInput = document.getElementById("search-input");
+            if (searchInput) searchInput.value = "";
+            searchResults.style.display = "none";
+            document.getElementById("trending-section").style.display = "block";
+        }
     }
 });
 
-// --- 6. INITIALIZATION (THE DEV FIX) ---
+// --- 6. INITIALIZATION (THE ROW ENGINE) ---
 async function init() {
-    console.log("Dev Mode: CINElzFlix Engine Online!"); 
+    console.log("Dev Mode: CINElzFlix Row Engine Online!"); 
     try {
+        // 1. Trending Movies
         const movies = await fetchMovies("movie", 1);
         if (movies && movies.length > 0) {
-            // Hiwalayin ang slider items (unang 6 random) at grid items (tira)
-            // Note: setupHeroSlider will handle the randomization inside
             setupHeroSlider(movies);
-            
-            // Sa grid, i-display natin yung original order pero i-skip yung unang ilan
-            // o pwede rin i-shuffle kung gusto mo lahat random
-            displayList(movies.slice(6), "movies-list");
+            displayList(movies, "movies-list");
         }
         
-        // TV SHOWS
+        // 2. Upcoming Movies
+        const upcomingData = await fetch(`${BASE_URL}?endpoint=/movie/upcoming`);
+        const upcomingJson = await upcomingData.json();
+        displayList(upcomingJson.results, "upcoming-list");
+
+        // 3. TV Shows
         const tvData = await fetch(`${BASE_URL}?endpoint=/trending/tv/week`);
         const tvJson = await tvData.json();
         displayList(tvJson.results, "tvshows-list");
 
-        // ANIME
+        // 4. Anime (Genre 16)
         const animeData = await fetch(`${BASE_URL}?endpoint=/discover/tv&with_genres=16`);
         const animeJson = await animeData.json();
         displayList(animeJson.results, "anime-list");
 
-        // DEEP LINKING
+        // 5. Top Rated Movies
+        const topRatedData = await fetch(`${BASE_URL}?endpoint=/movie/top_rated`);
+        const topRatedJson = await topRatedData.json();
+        displayList(topRatedJson.results, "top-rated-list");
+
+        // Deep Linking
         const params = new URLSearchParams(window.location.search);
         const movieId = params.get('movie');
         const tvId = params.get('tv');
-
         if (movieId || tvId) {
             const id = (movieId || tvId).split('-')[0];
             const type = movieId ? 'movie' : 'tv';
