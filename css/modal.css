@@ -12,26 +12,26 @@
     padding-top: env(safe-area-inset-top); 
 }
 
-/* --- NEW: MODAL HEADER BRANDING (Para sa Logo) --- */
+/* --- MODAL HEADER BRANDING (Para sa Logo) --- */
 .modal-header-branding {
+    display: none; /* Hidden by default sa desktop */
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 60px;
-    display: flex;
+    height: 70px;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(to bottom, rgba(2, 11, 26, 0.9), transparent);
+    background: rgba(2, 11, 26, 0.98);
+    border-bottom: 2px solid var(--primary-blue);
     z-index: 5500;
-    pointer-events: none; /* Para hindi ma-block ang clicks sa paligid */
 }
 
 .modal-logo-mini {
-    height: 50px; /* Nilakihan natin, bro! */
+    height: 50px; 
     width: auto;
-    filter: drop-shadow(0px 0px 12px var(--accent-glow)); /* Mas malakas na glow */
-    opacity: 1; /* Full visibility na */
+    filter: drop-shadow(0px 0px 12px var(--accent-glow)); 
+    opacity: 1; 
 }
 
 .modal-content { 
@@ -112,6 +112,7 @@
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
+/* --- DESKTOP TWEAKS (Combined) --- */
 @media (min-width: 1024px) {
     .close { 
         top: 20px; right: 25px; 
@@ -124,6 +125,9 @@
         transform: rotate(90deg) scale(1.2); 
         background: rgba(0, 212, 255, 0.2); 
         box-shadow: 0 0 15px var(--accent-glow); 
+    }
+    .modal-content {
+        margin-top: 60px; /* Space para hindi matabunan ng close button ang player sa PC */
     }
 }
 
@@ -145,26 +149,30 @@
     text-shadow: 0 0 8px var(--accent-glow); 
 }
 
-/* Mobile Tweaks */
+/* --- MOBILE TWEAKS --- */
 @media (max-width: 768px) {
     .modal-header-branding {
-        height: 70px; /* Dinagdagan natin yung space ng bar */
+        display: flex; /* Lalabas lang sa mobile */
+        height: 70px; 
         background: rgba(2, 11, 26, 0.98);
-        border-bottom: 2px solid var(--primary-blue); /* Mas matapang na border line */
+        border-bottom: 2px solid var(--primary-blue); 
     }
     
     .modal-logo-mini {
-        height: 40px; /* From 28px to 40px para mabasa na! */
+        height: 40px; 
     }
 
-    .modal-content {
-        margin-top: 70px !important; /* Adjust din natin 'to para hindi matakpan */
+   .modal-content {
+        margin-top: 70px !important; 
+        width: 100%;
         max-height: calc(100dvh - 70px);
+        border-radius: 0;
     }
     
-    .close {
-        top: 15px; /* Inadjust ko para pantay sa mas malaking logo natin */
-        right: 15px;
+   .close { 
+        top: 15px; 
+        right: 15px; 
+        background: transparent; 
     }
     
     .modal-info {
