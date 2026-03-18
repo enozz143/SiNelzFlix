@@ -21,7 +21,6 @@
     position: relative; 
 }
 
-/* --- PLAYER SECTION --- */
 .player-container { 
     width: 100%; 
     background: #000; 
@@ -34,7 +33,6 @@
     border: none; 
 }
 
-/* --- MODAL INFO (Poster & Details) --- */
 .modal-info {
     display: flex;
     flex-direction: row; 
@@ -72,51 +70,53 @@
     font-size: 1rem; 
 }
 
-/* --- THE SPINNING CLOSE BUTTON --- */
+/* SPINNING CLOSE BUTTON */
 .close {
     position: absolute;
     top: 15px; right: 15px;
-    font-size: 40px; 
-    color: var(--primary-blue); 
+    font-size: 40px; color: var(--primary-blue); 
     background: rgba(0, 0, 0, 0.6); 
     width: 50px; height: 50px;
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-    border-radius: 50%; 
-    z-index: 6000; 
-    line-height: 1; 
-    cursor: pointer;
-    /* Eto yung transition para sa spin */
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; z-index: 6000; line-height: 1; cursor: pointer;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 @media (min-width: 1024px) {
     .close { 
         top: 20px; right: 25px; 
-        font-size: 35px; width: 45px; height: 45px; 
+        font-size: 35px; 
+        width: 45px; height: 45px; 
         color: var(--text-white); 
     }
-    
     .close:hover { 
         color: var(--primary-blue); 
-        /* THE SPIN EFFECT */
         transform: rotate(90deg) scale(1.2); 
         background: rgba(0, 212, 255, 0.2); 
         box-shadow: 0 0 15px var(--accent-glow); 
     }
 }
 
-/* --- MINI FOOTER SA LOOB NG MODAL --- */
+/* --- MINI MODAL FOOTER --- */
 .modal-footer-mini {
     margin-top: 50px; 
     padding-bottom: 20px;
     border-top: 1px solid rgba(0, 212, 255, 0.1);
     text-align: center;
 }
-
 .modal-footer-mini p { 
     font-size: 0.75rem; 
     color: rgba(255, 255, 255, 0.4); 
     margin: 5px 0; 
+    letter-spacing: 1px; 
+}
+.modal-footer-mini b { 
+    color: var(--primary-blue); 
+    text-shadow: 0 0 8px var(--accent-glow); 
+}
+
+/* Mobile Tweaks */
+@media (max-width: 768px) {
+    .modal-info { flex-direction: column; align-items: center; text-align: center; }
+    #modal-image { width: 150px; min-width: 150px; }
 }
