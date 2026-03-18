@@ -16,25 +16,34 @@ body {
 
 /* --- NAVBAR & LOGO --- */
 #navbar {
-    padding: 5px 4%; /* Binabaan natin ang 5px para manipis */
-    height: 70px;    /* Sinet natin ang height para kontrolado ang kapal */
+    height: 70px; /* FIXED HEIGHT para siguradong manipis */
+    background: rgba(2, 11, 26, 0.7); /* Binabaan natin ang 0.95 sa 0.7 para "silip" ang likod */
+    backdrop-filter: blur(15px); /* Eto yung nagpapa-glass effect */
+    -webkit-backdrop-filter: blur(15px); /* Support para sa ibang browsers */
+    border-bottom: 1px solid rgba(0, 212, 255, 0.15); /* Konting border glow */
     display: flex;
     align-items: center;
-    justify-content: space-between;
-}
-
-#site-logo {
-    height: 50px; /* Dito mo makukuha yung nipis, bro! */
-    width: auto;
+    padding: 0 4%;
+    position: fixed;
+    top: 0; width: 100%; z-index: 2000;
 }
 
 #site-logo { 
-    height: 90px; /* From 120px, ginawa nating 90px para mas sleek ang navbar */
+    height: 60px; /* Eto yung nipis na gusto natin */
     width: auto; 
     object-fit: contain; 
     filter: drop-shadow(0px 0px 10px var(--accent-glow)); 
     mix-blend-mode: screen;
-    transition: transform 0.3s ease; 
+    
+    /* ETO ANG IMPORTANTE: TRANSITION PARA SMOOTH ANG ENLARGE */
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s ease;
+    cursor: pointer;
+}
+
+/* ETO YUNG MAG-EENLARGE PAG NI-HOVER */
+#site-logo:hover {
+    transform: scale(1.1); /* Laki nang konti (110%) */
+    filter: drop-shadow(0px 0px 18px var(--primary-blue)); /* Mas matingkad na glow pag naka-hover */
 }
 
 /* --- PREMIUM SEARCH BAR --- */
