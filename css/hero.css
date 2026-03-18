@@ -1,1 +1,111 @@
+/* --- HERO SLIDER CONTAINER --- */
+#hero-slider-container {
+    position: relative;
+    width: 100%; 
+    height: 85vh; /* 85% ng screen height */
+    overflow: hidden; 
+    background: #000;
+    margin-top: 0; /* Simula agad sa ilalim ng navbar */
+}
 
+#hero-slider {
+    position: relative;
+    width: 100%; height: 100%;
+    display: block !important;
+}
+
+/* --- INDIVIDUAL SLIDES --- */
+.hero-slide {
+    position: absolute; 
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-size: cover; 
+    background-position: center;
+    display: flex !important; 
+    align-items: center;
+    opacity: 0; 
+    visibility: hidden;
+    transition: opacity 1s ease-in-out;
+    z-index: 1;
+}
+
+.hero-slide.active { 
+    opacity: 1; 
+    visibility: visible;
+    z-index: 10;
+}
+
+/* --- VIDEO BACKGROUND --- */
+.hero-video-container {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
+}
+
+.hero-video-container iframe {
+    width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh;
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    opacity: 0.4; pointer-events: none;
+}
+
+/* --- CINEMATIC OVERLAY --- */
+.hero-overlay {
+    position: absolute; width: 100%; height: 100%; z-index: 11;
+    background: linear-gradient(to right, rgba(2, 11, 26, 0.95) 15%, rgba(2, 11, 26, 0.4) 50%, transparent 100%),
+                linear-gradient(to bottom, transparent 50%, rgba(2, 11, 26, 1) 100%);
+}
+
+.hero-content { 
+    position: relative; 
+    z-index: 15; 
+    padding: 0 8%; 
+    max-width: 850px; 
+}
+
+/* --- SHIMMER BUTTONS (WATCH NOW) --- */
+.btn-watch {
+    background: var(--primary-blue);
+    color: #020b1a; border: none;
+    padding: 12px 30px; border-radius: 5px;
+    font-weight: bold; cursor: pointer;
+    transition: all 0.3s ease;
+    margin-right: 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-watch::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    animation: btnShimmer 3s infinite;
+}
+
+@keyframes btnShimmer {
+    0% { left: -100%; }
+    20% { left: 100%; }
+    100% { left: 100%; }
+}
+
+.btn-watch:hover { 
+    background: #fff; 
+    transform: scale(1.1); 
+    box-shadow: 0 0 25px var(--primary-blue);
+    color: var(--dark-bg);
+}
+
+/* --- SLIDER DOTS --- */
+.slider-dots {
+    position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 10px; z-index: 20;
+}
+
+.dot { 
+    width: 12px; height: 12px; 
+    background: rgba(255,255,255,0.3); 
+    border-radius: 50%; cursor: pointer; transition: 0.3s; 
+}
+
+.dot.active { 
+    background: var(--primary-blue); 
+    width: 30px; border-radius: 10px; 
+}
