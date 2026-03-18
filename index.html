@@ -30,6 +30,11 @@
 </head>
 <body>
 
+<div id="loading-spinner" class="spinner-overlay">
+    <div class="spinner"></div>
+    <p>Loading Cinema Experience...</p>
+</div>
+
     <nav id="navbar">
         <div class="logo">
             <a href="/" style="text-decoration: none;">
@@ -95,7 +100,12 @@
     </main>
 
     <div id="modal" class="modal">
+        <div class="modal-header-branding">
+            <img src="logo.png" alt="CINElzFlix" class="modal-logo-mini">
+        </div>
+
         <span class="close" onclick="closeModal()">&times;</span> 
+
         <div class="modal-content">
             <div class="player-container">
                 <iframe id="modal-video" allowfullscreen></iframe>
@@ -129,14 +139,6 @@
     </div>
 
     <script src="script.js"></script>
-    
-   <script>
-  /* Service Worker disabled to prevent app installation prompt
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js');
-  }
-  */
-</script>
     
     <footer id="site-footer">
         <div class="footer-container">

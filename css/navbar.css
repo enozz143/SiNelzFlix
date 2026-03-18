@@ -1,0 +1,96 @@
+/* --- NAVBAR & LOGO --- */
+#navbar {
+    height: 85px; /* Dinagdagan natin ng konti para mas malaki ang logo */
+    background: rgba(2, 11, 26, 0.85); /* Mas solid na background para iwas "ghosting" ng logo */
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-bottom: 2px solid rgba(0, 212, 255, 0.3); /* Mas matapang na neon line */
+    display: flex;
+    align-items: stretch; /* Isasagad natin yung logo container hanggang dulo */
+    justify-content: space-between;
+    padding: 0 5%;
+    position: fixed;
+    top: 0; 
+    width: 100%; 
+    z-index: 2000;
+    box-sizing: border-box;
+}
+
+/* Container ng logo para walang padding */
+.logo {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+#site-logo { 
+    height: 100%; /* Gamitin ang buong height ng navbar */
+    max-height: 85px; /* Limit para hindi mag-overflow */
+    width: auto; 
+    object-fit: contain; 
+    padding: 5px 0; /* Onting hinga lang para hindi dikit na dikit sa border */
+    filter: drop-shadow(0px 0px 12px var(--accent-glow)); 
+    mix-blend-mode: screen;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s ease;
+    cursor: pointer;
+    display: block; /* Para mawala ang extra gap sa baba */
+}
+
+#site-logo:hover {
+    transform: scale(1.05); /* Slightly smaller scale para hindi maputol ang glow */
+    filter: drop-shadow(0px 0px 20px var(--primary-blue));
+}
+
+/* --- PREMIUM SEARCH BAR --- */
+.search-box { 
+    position: relative; 
+    align-self: center; /* Panatilihin sa gitna kahit lumaki ang navbar */
+    width: 250px; 
+    margin-right: 10px; 
+}
+
+.search-box:focus-within {
+    width: 320px; 
+}
+
+#search-input {
+    width: 100%;
+    padding: 10px 20px 10px 40px; 
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.3); 
+    border-radius: 30px; 
+    color: var(--text-white);
+    font-size: 0.9rem;
+    outline: none;
+    transition: all 0.3s ease;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2300d4ff' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 15px center;
+}
+
+#search-input:focus {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--primary-blue);
+    animation: searchPulse 2s infinite; 
+}
+
+@keyframes searchPulse {
+    0% { box-shadow: 0 0 5px rgba(0, 212, 255, 0.4); }
+    50% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.8), 0 0 30px rgba(0, 212, 255, 0.2); }
+    100% { box-shadow: 0 0 5px rgba(0, 212, 255, 0.4); }
+}
+
+/* Mobile Tweaks for Navbar */
+@media (max-width: 768px) {
+    #navbar { 
+        height: 75px; /* Mas malaki na rin sa mobile */
+        padding: 0 3%; 
+    }
+    #site-logo { 
+        height: 70px; /* Sagad na sagad na rin sa mobile! */
+        padding: 2px 0;
+    }
+    .search-box:focus-within {
+        width: 200px; /* Mas maliit lang expansion sa mobile para hindi matabunan ang logo */
+    }
+}

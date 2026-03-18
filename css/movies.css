@@ -1,0 +1,185 @@
+/* --- MOVIE ROWS BASE --- */
+section h2 {
+    padding-left: 5%;
+    margin-top: 50px;
+    margin-bottom: 25px;
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: var(--text-white);
+    position: relative;
+    z-index: 5;
+}
+
+.movie-row { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
+    gap: 20px; 
+    padding: 20px 5%; 
+}
+
+/* Horizontal Scroll for Mobile/Specific Sections */
+.movie-row.horizontal-scroll {
+    display: flex; 
+    grid-template-columns: none; 
+    flex-wrap: nowrap;
+    overflow-x: auto; 
+    overflow-y: visible; 
+    gap: 25px;
+    padding: 35px 5% 45px 5%; 
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+.movie-row.horizontal-scroll::-webkit-scrollbar { height: 4px; }
+.movie-row.horizontal-scroll::-webkit-scrollbar-thumb { background: var(--primary-blue); border-radius: 10px; }
+.movie-row.horizontal-scroll::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
+
+.movie-row.horizontal-scroll .movie-card {
+    flex: 0 0 180px; 
+}
+
+/* --- MOVIE CARDS & NEON GLOW MAGIC --- */
+.movie-card { 
+    position: relative; 
+    border-radius: 12px; 
+    overflow: hidden; 
+    cursor: pointer; 
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+    border: 1px solid transparent; 
+    z-index: 10;
+}
+
+/* The Glossy Kintab Effect */
+.movie-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: skewX(-25deg);
+    transition: 0.5s;
+    z-index: 15;
+}
+
+.movie-card:hover { 
+    transform: scale(1.15) translateY(-10px); 
+    border: 1px solid var(--primary-blue); 
+    box-shadow: 0 0 25px var(--accent-glow), 0 0 50px rgba(0, 212, 255, 0.2);
+    z-index: 1000 !important; /* Para laging nasa ibabaw pag nag-zoom */
+}
+
+.movie-card:hover::after {
+    left: 125%; /* Hahataw yung kintab pag naka-hover */
+}
+
+.movie-card img { 
+    width: 100%; 
+    display: block; 
+    border-radius: 11px; 
+    transition: filter 0.3s ease;
+}
+
+.movie-card:hover img {
+    filter: brightness(1.1) contrast(1.1);
+}
+
+/* --- TRAILER OVERLAY --- */
+.trailer-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.85); display: flex; flex-direction: column;
+    justify-content: center; align-items: center; gap: 8px;
+    opacity: 0; transition: 0.3s; pointer-events: none;
+    z-index: 20;
+}
+
+.movie-card:hover .trailer-overlay { opacity: 1; pointer-events: auto; }
+
+.hover-btn { width: 85%; padding: 8px; border: none; border-radius: 5px; font-weight: bold; font-size: 0.7rem; cursor: pointer; text-transform: uppercase; }
+
+/* --- BUTTON STYLES (NEON BLUE) --- */
+.trailer-btn { background: transparent; color: white; border: 1.5px solid white; transition: 0.3s; }
+.trailer-btn:hover { border-color: var(--primary-blue); color: var(--primary-blue); }
+
+.movie-btn {
+    position: relative;
+    overflow: hidden;
+    background: var(--primary-blue);
+    color: #020b1a;
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 85%;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+}
+
+.movie-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    animation: btnShimmer 4s infinite;
+}
+
+.movie-btn:hover {
+    background: #fff;
+    box-shadow: 0 0 15px var(--primary-blue);
+    transform: scale(1.05);
+    color: var(--dark-bg);
+}
+
+@keyframes btnShimmer {
+    0% { left: -100%; }
+    20% { left: 100%; }
+    100% { left: 100%; }
+}
+
+/* --- GENRE BUTTONS --- */
+.genre-container { padding: 20px 4%; text-align: center; overflow-x: auto; white-space: nowrap; margin-top: 20px; }
+
+.genre-btn {
+    padding: 8px 25px; margin: 5px;
+    background: rgba(255, 255, 255, 0.05);
+    color: white; border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 30px !important; 
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif; transition: all 0.3s ease;
+}
+
+.genre-btn:hover, .genre-btn.active {
+    background: var(--primary-blue) !important;
+    border-color: var(--primary-blue) !important;
+    color: #020b1a !important;
+    box-shadow: 0 0 15px var(--accent-glow) !important;
+    transform: translateY(-2px);
+}
+
+/* --- LOAD MORE BUTTON --- */
+.load-more-container { text-align: center; margin: 40px 0; }
+
+#load-more-btn {
+    padding: 14px 40px;
+    background: var(--primary-blue) !important;
+    color: #020b1a !important;
+    border: none; 
+    border-radius: 50px !important; 
+    font-weight: bold; cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px var(--accent-glow);
+}
+
+/* Mobile Tweaks */
+@media (max-width: 768px) {
+    .movie-row { grid-template-columns: repeat(2, 1fr); }
+    .movie-row.horizontal-scroll .movie-card { flex: 0 0 140px; }
+    
+    /* Touch support: Tanggalin ang zoom sa mobile para iwas lagg */
+    .movie-card:hover {
+        transform: scale(1.05) translateY(-5px);
+    }
+}
