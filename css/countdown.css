@@ -1,1 +1,46 @@
+/* css/countdown.css */
+#countdown-banner {
+    margin: 40px 2%;
+}
 
+.countdown-card {
+    background: linear-gradient(135deg, #001219 0%, #003049 100%);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 20px;
+    padding: 50px 20px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 212, 255, 0.1);
+}
+
+#timer {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 30px 0;
+    flex-wrap: wrap;
+}
+
+.time-box {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 20px;
+    border-radius: 12px;
+    min-width: 90px;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    backdrop-filter: blur(5px);
+}
+
+.time-box span {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #00d4ff;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+.time-box small {
+    color: #888;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+}
