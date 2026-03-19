@@ -1,6 +1,14 @@
-@import url('css/base.css');
-@import url('css/navbar.css');
-@import url('css/hero.css');
-@import url('css/movies.css');
-@import url('css/modal.css');
-@import url('css/footer.css'); /* <--- Add this line, bro! */
+/* style.css (Root) */
+
+/* 1. Global Variables & Reset */
+@import url('./css/base.css');
+
+/* 2. Components */
+@import url('./css/navbar.css');
+@import url('./css/hero.css');
+@import url('./css/movies.css');
+@import url('./css/modal.css');
+@import url('./css/countdown.css');
+
+/* 3. Footer & Utilities */
+@import url('./css/footer.css');
