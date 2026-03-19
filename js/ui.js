@@ -2,6 +2,10 @@
 import { IMG_URL, fetchMovies } from './api.js';
 import { showDetails, playTrailer } from './modal.js';
 
+let currentPage = 1;
+let currentGenre = 'all';
+let debounceTimer;
+
 /**
  * --- MOVIE CARDS & LISTS ---
  */
@@ -90,9 +94,8 @@ export function displaySimilar(items) {
 window.displaySimilar = displaySimilar;
 
 /**
- * --- SEARCH & FILTERS ---
+ * --- SEARCH, FILTERS & LOAD MORE ---
  */
-let debounceTimer;
 export async function handleSearch(q) {
     if (!q.trim()) {
         document.getElementById("search-results-section").style.display = "none";
@@ -107,4 +110,64 @@ export async function handleSearch(q) {
         document.getElementById("trending-section").style.display = "none";
         displayList(data.results, "search-results-list");
     }, 500);
+}
+
+export async function filterGenre(genreId) {
+    currentGenre = genreId;
+    currentPage = 1; 
+    
+    document.querySelectorAll('.genre-btn').forEach(btn => btn.classList.remove('active'));
+    if (event && event.target) event.target.classList.add('active');
+    
+    const trendingRow = document.getElementById("movies-list");
+    const allSections = document.querySelectorAll('#trending-section section.category-section');
+    
+    allSections.forEach(sec => {
+        if (!sec.contains(trendingRow)) {
+            sec.style.display = genreId === 'all' ? "block" : "none";
+        }
+    });
+
+    if (genreId !== 'all') {
+        trendingRow.classList.remove("horizontal-scroll");
+    } else {
+        trendingRow.classList.add("horizontal-scroll");
+    }
+
+    const filteredMovies = await fetchMovies("movie", 1, genreId);
+    displayList(filteredMovies, "movies-list");
+}
+
+export async function loadMore() {
+    currentPage++; 
+    const loadBtn = document.getElementById("load-more-btn");
+    const trendingRow = document.getElementById("movies-list");
+    const trendingSection = trendingRow.parentElement; 
+    
+    loadBtn.textContent = "Loading Results...";
+    loadBtn.disabled = true;
+
+    const allSections = document.querySelectorAll('#trending-section section.category-section');
+    allSections.forEach(sec => {
+        if (!sec.contains(trendingRow)) {
+            sec.style.display = "none";
+        }
+    });
+
+    trendingRow.classList.remove("horizontal-scroll");
+    trendingSection.scrollIntoView({ behavior: 'smooth' });
+
+    const moreMovies = await fetchMovies("movie", currentPage, currentGenre);
+    
+    if (moreMovies && moreMovies.length > 0) {
+        moreMovies.forEach(item => {
+            if (item.poster_path) {
+                trendingRow.appendChild(createMovieCard(item));
+            }
+        });
+        loadBtn.textContent = "Show Even More";
+        loadBtn.disabled = false;
+    } else {
+        loadBtn.style.display = "none"; 
+    }
 }
