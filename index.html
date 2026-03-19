@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head> 
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
@@ -24,10 +23,10 @@
 </head>
 <body>
 
-<div id="loading-spinner" class="spinner-overlay">
-    <div class="spinner"></div>
-    <p>Loading Cinema Experience...</p>
-</div>
+    <div id="loading-spinner" class="spinner-overlay">
+        <div class="spinner"></div>
+        <p>Loading Cinema Experience...</p>
+    </div>
 
     <nav id="navbar">
         <div class="logo">
@@ -55,11 +54,11 @@
 
             <div class="genre-container">
                 <button class="genre-btn active" onclick="filterGenre('all')">All</button>
-                <button class="genre-btn" onclick="filterGenre(28)">Action</button>
-                <button class="genre-btn" onclick="filterGenre(35)">Comedy</button>
-                <button class="genre-btn" onclick="filterGenre(27)">Horror</button>
-                <button class="genre-btn" onclick="filterGenre(10749)">Romance</button>
-                <button class="genre-btn" onclick="filterGenre(878)">Sci-Fi</button>
+                <button class="genre-btn" onclick="filterGenre('28')">Action</button>
+                <button class="genre-btn" onclick="filterGenre('35')">Comedy</button>
+                <button class="genre-btn" onclick="filterGenre('27')">Horror</button>
+                <button class="genre-btn" onclick="filterGenre('10749')">Romance</button>
+                <button class="genre-btn" onclick="filterGenre('878')">Sci-Fi</button>
             </div>
 
             <section class="category-section">
@@ -107,7 +106,7 @@
             
             <div class="modal-details">
                 <div class="modal-info">
-                    <img id="modal-image" src="" alt="">
+                    <img id="modal-image" src="" alt="Poster">
                     <div>
                         <h2 id="modal-title"></h2>
                         <div id="modal-rating"></div>
@@ -132,8 +131,6 @@
         </div>
     </div>
 
-    <script type="module" src="script.js"></script>
-    
     <footer id="site-footer">
         <div class="footer-container">
             <div class="footer-links">
@@ -157,12 +154,15 @@
         </div>
     </footer>
 
+    <script type="module" src="script.js"></script>
+    
     <script>
+        // Anti-Inspect and Copy
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.onkeydown = function(e) {
-            if(event.keyCode == 123) return false;
-            if(e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'C'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0))) return false;
-            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
+            if(e.keyCode == 123) return false;
+            if(e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 67 || e.keyCode == 74)) return false;
+            if(e.ctrlKey && e.keyCode == 85) return false;
         };
         document.onselectstart = () => false;
     </script>
