@@ -3,6 +3,7 @@ import { BASE_URL, fetchMovies } from './js/api.js';
 import { setupHeroSlider, nextSlide, goToSlide } from './js/slider.js';
 import { displayList, handleSearch, filterGenre, loadMore } from './js/ui.js';
 import { showDetails, closeModal, changeServer } from './js/modal.js';
+import { initCountdown } from './js/countdown.js'; // NEW: Import for the timer
 
 // --- BRIDGE TO HTML ---
 // Ine-expose natin ang mga functions sa 'window' object 
@@ -13,8 +14,8 @@ window.changeServer = changeServer;
 window.nextSlide = nextSlide;
 window.goToSlide = goToSlide;
 window.handleSearch = handleSearch;
-window.filterGenre = filterGenre; // FIX: Para gumana ang Genre Buttons
-window.loadMore = loadMore;       // FIX: Para gumana ang Explore More
+window.filterGenre = filterGenre; 
+window.loadMore = loadMore;       
 window.BASE_URL = BASE_URL; 
 
 /**
@@ -23,6 +24,9 @@ window.BASE_URL = BASE_URL;
 async function init() {
     console.log("🚀 CINElzFlix Engine is now LIVE, bro!"); 
     try {
+        // 0. Initialize Countdown Timer
+        initCountdown();
+
         // 1. Load Trending & Setup Hero
         const movies = await fetchMovies("movie", 1);
         if (movies && movies.length > 0) {
