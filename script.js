@@ -1,18 +1,20 @@
 // script.js (Root Directory)
 import { BASE_URL, fetchMovies } from './js/api.js';
 import { setupHeroSlider, nextSlide, goToSlide } from './js/slider.js';
-import { displayList, handleSearch } from './js/ui.js';
+import { displayList, handleSearch, filterGenre, loadMore } from './js/ui.js';
 import { showDetails, closeModal, changeServer } from './js/modal.js';
 
 // --- BRIDGE TO HTML ---
-// Dahil ang ES Modules ay private, kailangan nating i-expose 
-// ang mga functions sa 'window' para gumana ang onclick sa HTML.
+// Ine-expose natin ang mga functions sa 'window' object 
+// para mabasa sila ng 'onclick' attributes sa iyong HTML.
 window.showDetails = showDetails;
 window.closeModal = closeModal;
 window.changeServer = changeServer;
 window.nextSlide = nextSlide;
 window.goToSlide = goToSlide;
 window.handleSearch = handleSearch;
+window.filterGenre = filterGenre; // FIX: Para gumana ang Genre Buttons
+window.loadMore = loadMore;       // FIX: Para gumana ang Explore More
 window.BASE_URL = BASE_URL; 
 
 /**
@@ -37,9 +39,13 @@ async function init() {
         ];
 
         for (const cat of categories) {
-            const res = await fetch(`${BASE_URL}?endpoint=${cat.endpoint}`);
-            const data = await res.json();
-            displayList(data.results, cat.container);
+            try {
+                const res = await fetch(`${BASE_URL}?endpoint=${cat.endpoint}`);
+                const data = await res.json();
+                displayList(data.results, cat.container);
+            } catch (catErr) {
+                console.error(`Error loading category ${cat.container}:`, catErr);
+            }
         }
 
         // 3. Deep Linking Support (Para sa Share links)
@@ -65,7 +71,21 @@ async function init() {
 document.addEventListener('keydown', (e) => {
     if (e.key === "Escape") {
         const modal = document.getElementById("modal");
-        if (modal && modal.style.display === "flex") closeModal();
+        const searchResults = document.getElementById("search-results-section");
+        
+        // Close modal if open
+        if (modal && modal.style.display === "flex") {
+            closeModal();
+            return;
+        }
+        
+        // Clear search if open
+        if (searchResults && searchResults.style.display === "block") {
+            const searchInput = document.getElementById("search-input");
+            if (searchInput) searchInput.value = "";
+            searchResults.style.display = "none";
+            document.getElementById("trending-section").style.display = "block";
+        }
     }
 });
 
