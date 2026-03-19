@@ -18,7 +18,7 @@
     
     <meta name="theme-color" content="#00d4ff">
 
-    <link rel="stylesheet" href="style.css?v=1.4">
+    <link rel="stylesheet" href="style.css?v=1.5">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -50,6 +50,22 @@
             <section id="hero-slider-container">
                 <div id="hero-slider"></div>
                 <div class="slider-dots" id="slider-dots"></div>
+            </section>
+
+            <section id="countdown-banner" class="category-section" style="display: none;">
+                <div class="countdown-card">
+                    <div class="countdown-content">
+                        <span class="badge">🔥 COMING SOON</span>
+                        <h2 id="countdown-event-title">Loading Event...</h2>
+                        <div id="timer">
+                            <div class="time-box"><span id="days">00</span><small>Days</small></div>
+                            <div class="time-box"><span id="hours">00</span><small>Hrs</small></div>
+                            <div class="time-box"><span id="minutes">00</span><small>Min</small></div>
+                            <div class="time-box"><span id="seconds">00</span><small>Sec</small></div>
+                        </div>
+                        <button class="btn-remind" onclick="alert('Bro, we will notify you once it drops!')">Notify Me</button>
+                    </div>
+                </div>
             </section>
 
             <div class="genre-container">
