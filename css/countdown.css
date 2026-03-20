@@ -1,6 +1,8 @@
 /* css/countdown.css */
 #countdown-banner {
     margin: 40px 2%;
+    display: flex; /* Idinagdag para ma-center ang card sa screen */
+    justify-content: center;
 }
 
 .countdown-card {
@@ -8,9 +10,28 @@
     border: 1px solid rgba(0, 212, 255, 0.3);
     border-radius: 20px;
     padding: 50px 20px;
+    
+    /* 🔥 FIX: Ginawa nating Flex Column para lahat ng nasa loob mag-align sa gitna */
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
     text-align: center;
+    
+    width: 100%;
+    max-width: 1000px; /* Optional: para hindi masyadong lapad sa ultra-wide screens */
     position: relative;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 212, 255, 0.1);
+}
+
+/* 🔥 FIX: Explicit styling para sa Title */
+#countdown-event-title {
+    width: 100%;
+    margin: 15px 0 25px 0;
+    font-size: 2.5rem; /* Pwede mong i-adjust base sa trip mo */
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+    display: block;
 }
 
 /* Badge with Pulse Effect */
@@ -22,7 +43,7 @@
     font-weight: bold;
     font-size: 0.8rem;
     display: inline-block;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     animation: pulse-glow 2s infinite;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -32,8 +53,9 @@
     display: flex;
     justify-content: center;
     gap: 15px;
-    margin: 30px 0;
+    margin: 10px 0 30px 0;
     flex-wrap: wrap;
+    width: 100%;
 }
 
 .time-box {
@@ -43,6 +65,9 @@
     min-width: 90px;
     border: 1px solid rgba(0, 212, 255, 0.2);
     backdrop-filter: blur(5px);
+    display: flex; /* Para center din yung text sa loob ng box */
+    flex-direction: column;
+    align-items: center;
 }
 
 .time-box span {
@@ -72,7 +97,7 @@
     letter-spacing: 2px;
     cursor: pointer;
     transition: all 0.4s ease;
-    margin-top: 20px;
+    margin-top: 10px;
     box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
 }
 
@@ -83,10 +108,6 @@
     transform: translateY(-3px);
 }
 
-.btn-remind:active {
-    transform: translateY(1px);
-}
-
 /* Animations */
 @keyframes pulse-glow {
     0% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.7); }
@@ -95,7 +116,10 @@
 }
 
 /* Mobile Responsiveness */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
+    #countdown-event-title {
+        font-size: 1.8rem;
+    }
     .time-box {
         min-width: 75px;
         padding: 15px 10px;
