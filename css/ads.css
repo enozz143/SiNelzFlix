@@ -1,19 +1,43 @@
-/* css/ads.css */
-.ad-spacer {
+/* ads.css - CinelzFlix Ad Styling */
+
+.ad-spacer, .native-ad-container {
     margin: 40px auto;
     max-width: 1200px;
     padding: 0 15px;
     overflow: hidden;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-#adsterra-native-ads {
+#adsterra-native-ads, #adsterra-native-slot {
     width: 100%;
     background: rgba(0, 0, 0, 0.2);
     border-radius: 15px;
     border: 1px dashed rgba(0, 212, 255, 0.1); /* Subtle indicator lang */
     padding: 10px;
     min-height: 150px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+/* 🔥 MOBILE FIX: Pinipilit nating maging Horizontal Row imbis na Vertical */
+@media screen and (max-width: 768px) {
+    #adsterra-native-ads, #adsterra-native-slot {
+        flex-direction: row !important; /* Row, hindi Column */
+        overflow-x: auto !important;    /* Swipeable pakanan */
+        overflow-y: hidden;
+        justify-content: flex-start !important; 
+        padding: 15px !important;
+        gap: 12px;
+        -webkit-overflow-scrolling: touch; /* Smooth swipe sa iPhone */
+    }
+
+    /* Target natin yung mga boxes sa loob para hindi sila mag-shrink */
+    #adsterra-native-ads div, #adsterra-native-slot div {
+        min-width: 150px !important; 
+        flex: 0 0 auto !important;
+    }
 }
