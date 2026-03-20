@@ -1,13 +1,13 @@
 /* css/countdown.css */
 
-/* 1. Ang Main Wrapper - Kailangan 100% width para hindi sya ma-ipit sa gilid */
+/* 1. Ang Main Wrapper */
 #countdown-banner {
     width: 100%;
     margin: 40px 0;
     display: flex !important;
-    justify-content: center !important; /* Gitna horizontally */
+    justify-content: center !important;
     align-items: center;
-    padding: 0 20px; /* Padding para hindi dikit sa gilid sa mobile */
+    padding: 0 15px;
     box-sizing: border-box;
 }
 
@@ -21,8 +21,6 @@
     max-width: 1000px;
     position: relative;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 212, 255, 0.1);
-    
-    /* Siguraduhin na ang lahat sa loob ay center din */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -30,7 +28,7 @@
     text-align: center;
 }
 
-/* 3. Ang Inner Content - Dahil ito yung may .countdown-content sa HTML mo */
+/* 3. Ang Inner Content */
 .countdown-content {
     width: 100%;
     display: flex;
@@ -39,7 +37,7 @@
     justify-content: center;
 }
 
-/* 4. Title Styling - Pinalitan ko ng clamp para responsive ang size */
+/* 4. Title Styling */
 #countdown-event-title {
     width: 100%;
     margin: 15px 0 25px 0;
@@ -49,13 +47,13 @@
     text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
 }
 
-/* 5. Timer Container */
+/* 5. Timer Container - Desktop view default */
 #timer {
     display: flex;
-    justify-content: center; /* Center ang mga boxes */
+    justify-content: center;
     gap: 15px;
     margin: 10px 0 30px 0;
-    flex-wrap: wrap; /* Para mag-stack sa mobile */
+    flex-wrap: wrap;
     width: 100%;
 }
 
@@ -87,7 +85,7 @@
     letter-spacing: 1px;
 }
 
-/* Badge at Buttons - Ni-retain ko yung style mo pero siniguradong center sila */
+/* Badge at Buttons */
 .badge {
     background: #00d4ff;
     color: #000;
@@ -115,6 +113,44 @@
     background: #00d4ff;
     color: #000;
     box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+}
+
+/* --- MOBILE OPTIMIZATION --- */
+@media (max-width: 768px) {
+    .countdown-card {
+        padding: 30px 15px; /* Pinagliit ang padding para hindi mahaba */
+    }
+
+    #countdown-event-title {
+        font-size: 1.5rem; /* Mas siksik na title */
+        margin: 10px 0 20px 0;
+    }
+
+    #timer {
+        display: grid; /* Ginawang grid para 2x2 */
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        max-width: 280px; /* Nilimit ang width para center tignan */
+        margin: 0 auto 20px auto;
+    }
+
+    .time-box {
+        min-width: unset;
+        padding: 12px 5px;
+    }
+
+    .time-box span {
+        font-size: 1.6rem; /* Mas maliit na numbers */
+    }
+
+    .time-box small {
+        font-size: 0.6rem;
+    }
+
+    .btn-remind {
+        padding: 10px 25px;
+        font-size: 0.8rem;
+    }
 }
 
 @keyframes pulse-glow {
