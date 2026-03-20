@@ -1,8 +1,8 @@
 /* css/countdown.css */
 #countdown-banner {
     margin: 40px 2%;
-    display: flex; /* Idinagdag para ma-center ang card sa screen */
-    justify-content: center;
+    display: flex;
+    justify-content: center; /* I-center ang card sa screen */
 }
 
 .countdown-card {
@@ -10,43 +10,34 @@
     border: 1px solid rgba(0, 212, 255, 0.3);
     border-radius: 20px;
     padding: 50px 20px;
-    
-    /* 🔥 FIX: Ginawa nating Flex Column para lahat ng nasa loob mag-align sa gitna */
-    display: flex;
-    flex-direction: column;
-    align-items: center; 
-    text-align: center;
-    
     width: 100%;
-    max-width: 1000px; /* Optional: para hindi masyadong lapad sa ultra-wide screens */
+    max-width: 1000px;
     position: relative;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 212, 255, 0.1);
+    
+    /* 🔥 FIX: Ito ang mag-ce-center sa .countdown-content */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-/* 🔥 FIX: Explicit styling para sa Title */
+/* 🔥 FIX: Bagong style para sa inner wrapper */
+.countdown-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column; /* Pila pababa */
+    align-items: center;    /* Center lahat ng laman nito */
+    text-align: center;
+}
+
 #countdown-event-title {
     width: 100%;
     margin: 15px 0 25px 0;
-    font-size: 2.5rem; /* Pwede mong i-adjust base sa trip mo */
+    font-size: 2.5rem;
     font-weight: 700;
     color: #ffffff;
-    text-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
     display: block;
-}
-
-/* Badge with Pulse Effect */
-.badge {
-    background: #00d4ff;
-    color: #000;
-    padding: 6px 16px;
-    border-radius: 50px;
-    font-weight: bold;
-    font-size: 0.8rem;
-    display: inline-block;
-    margin-bottom: 10px;
-    animation: pulse-glow 2s infinite;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
 }
 
 #timer {
@@ -65,7 +56,7 @@
     min-width: 90px;
     border: 1px solid rgba(0, 212, 255, 0.2);
     backdrop-filter: blur(5px);
-    display: flex; /* Para center din yung text sa loob ng box */
+    display: flex;
     flex-direction: column;
     align-items: center;
 }
@@ -85,7 +76,22 @@
     letter-spacing: 1px;
 }
 
-/* 🔥 The "Notify Me" Button Styling */
+/* Badge with Pulse Effect */
+.badge {
+    background: #00d4ff;
+    color: #000;
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    display: inline-block;
+    margin-bottom: 10px;
+    animation: pulse-glow 2s infinite;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Button Styling */
 .btn-remind {
     background: transparent;
     border: 2px solid #00d4ff;
