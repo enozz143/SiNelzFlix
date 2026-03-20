@@ -109,13 +109,5 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-window.addEventListener('load', () => {
-    const spinner = document.getElementById('loading-spinner');
-    if (spinner) {
-        setTimeout(() => {
-            spinner.classList.add('fade-out');
-        }, 1000);
-    }
-});
 
 init();
