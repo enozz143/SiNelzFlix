@@ -23,7 +23,11 @@ export async function setupHeroSlider(movies) {
         const movie = sliderItems[index];
         const slide = document.createElement("div");
         slide.className = `hero-slide ${index === 0 ? 'active' : ''}`;
-        slide.style.backgroundImage = `url(${IMG_URL}${movie.backdrop_path})`;
+        
+        /* 🔥 FIX: TINANGGAL ANG BACKGROUND IMAGE 
+           Dito natin tinanggal yung .style.backgroundImage para hindi 
+           na humarang yung poster sa video playback mo.
+        */
         
         let trailerKey = "";
         try {
@@ -33,9 +37,13 @@ export async function setupHeroSlider(movies) {
             if (trailer) trailerKey = trailer.key;
         } catch (err) { console.error("Slider video error:", err); }
 
+        /* 🔥 OPTIMIZATION: Inayos ang iframe parameters 
+           - mute=1 (Required para sa autoplay sa Chrome)
+           - playlist=${trailerKey} (Required para sa loop)
+        */
         slide.innerHTML = `
             <div class="hero-video-container">
-                ${trailerKey ? `<iframe src="https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=1&controls=0&loop=1&playlist=${trailerKey}&rel=0&showinfo=0" frameborder="0"></iframe>` : ''}
+                ${trailerKey ? `<iframe src="https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=1&controls=0&loop=1&playlist=${trailerKey}&rel=0&showinfo=0&modestbranding=1&iv_load_policy=3" frameborder="0" allow="autoplay; encrypted-media"></iframe>` : ''}
             </div>
             <div class="hero-overlay"></div>
             <div class="hero-content">
@@ -43,13 +51,13 @@ export async function setupHeroSlider(movies) {
                     <span>⭐ ${movie.vote_average.toFixed(1)}</span>
                     <span>•</span>
                     <span>${movie.release_date ? movie.release_date.split('-')[0] : 'N/A'}</span>
-                    <span style="border: 1px solid var(--primary-blue); padding: 2px 5px; border-radius: 3px; font-size: 0.7rem;">CINEMATIC PREVIEW</span>
+                    <span style="border: 1px solid var(--primary-blue, #00d4ff); padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold;">CINEMATIC PREVIEW</span>
                 </div>
                 <h1>${movie.title}</h1>
                 <p>${movie.overview.substring(0, 180)}...</p>
                 <div class="hero-btns">
                     <button class="btn-watch" onclick='showDetails(${JSON.stringify(movie).replace(/'/g, "&apos;")})'>▶ Watch Now</button>
-                    <button class="btn-list" style="background:rgba(255,255,255,0.1); color:white; border:1px solid white; padding:12px 30px; border-radius:5px; cursor:pointer;">+ My List</button>
+                    <button class="btn-list" style="background:rgba(255,255,255,0.1); color:white; border:1px solid white; padding:12px 30px; border-radius:5px; cursor:pointer; font-weight: bold; transition: 0.3s;">+ My List</button>
                 </div>
             </div>
         `;
@@ -57,7 +65,6 @@ export async function setupHeroSlider(movies) {
 
         const dot = document.createElement("div");
         dot.className = `dot ${index === 0 ? 'active' : ''}`;
-        // Gagamitin natin ang window reference para ma-access ng HTML onclick
         dot.onclick = () => window.goToSlide(index);
         dotsContainer.appendChild(dot);
     }
