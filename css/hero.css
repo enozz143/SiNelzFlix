@@ -1,21 +1,27 @@
-/* --- HERO SLIDER --- */
+/* --- HERO SLIDER FIXED BY GEMINI --- */
 #hero-slider-container {
     position: relative;
-    width: 100%; height: 85vh;
-    overflow: hidden; background: #000;
+    width: 100%; 
+    height: 85vh;
+    overflow: hidden; 
+    background: #000;
 }
 
 #hero-slider {
     position: relative;
-    width: 100%; height: 100%;
+    width: 100%; 
+    height: 100%;
     display: block !important;
 }
 
 .hero-slide {
     position: absolute; 
-    top: 0; left: 0; width: 100%; height: 100%;
-    background-size: cover; background-position: center;
-    display: flex !important; align-items: center;
+    top: 0; left: 0; 
+    width: 100%; height: 100%;
+    /* FIX: Tinanggal ang background-image setup para video lang ang lumitaw */
+    background: transparent !important; 
+    display: flex !important; 
+    align-items: center;
     opacity: 0; 
     visibility: hidden;
     transition: opacity 1s ease-in-out;
@@ -23,33 +29,57 @@
 }
 
 .hero-slide.active { 
-    display: flex !important; 
-    align-items: center; 
     opacity: 1; 
     visibility: visible;
     z-index: 10;
 }
 
+/* Container ng Video Preview */
 .hero-video-container {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
+    position: absolute; 
+    top: 0; left: 0; 
+    width: 100%; height: 100%; 
+    z-index: 1;
+    background: #000;
 }
 
 .hero-video-container iframe {
-    width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh;
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    opacity: 0.4; pointer-events: none;
+    /* Ang calculation na ito ay para maging "cover" ang youtube video */
+    width: 100vw; 
+    height: 56.25vw; 
+    min-height: 100vh; 
+    min-width: 177.77vh;
+    position: absolute; 
+    top: 50%; left: 50%; 
+    transform: translate(-50%, -50%);
+    
+    /* FIX: Tinaasan ang opacity (0.8) para malinaw ang playback, brightness for cinematic feel */
+    opacity: 0.8; 
+    pointer-events: none;
+    filter: brightness(0.9) contrast(1.1);
 }
 
+/* FIX: In-adjust ang gradient para mas madilim sa text area pero kitang-kita ang video sa gitna/kanan */
 .hero-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to right, rgba(0,0,0,0.8) 20%, transparent 100%);
-    /* Ang gradient na ito ay para lang mabasa ang "The Housemaid" na text */
+    background: linear-gradient(to right, 
+        rgba(0,0,0,0.9) 0%, 
+        rgba(0,0,0,0.6) 30%, 
+        rgba(0,0,0,0) 70%
+    );
+    z-index: 2;
 }
-.hero-content { position: relative; z-index: 15; padding: 0 8%; max-width: 850px; }
+
+.hero-content { 
+    position: relative; 
+    z-index: 15; 
+    padding: 0 8%; 
+    max-width: 850px; 
+}
 
 /* --- SHIMMER BUTTONS & ANIMATIONS --- */
 .btn-watch, .movie-btn {
@@ -62,7 +92,7 @@
     position: absolute;
     top: 0; left: -100%;
     width: 100%; height: 100%;
-    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.4), transparent);
 }
 
 .btn-watch::before { animation: btnShimmer 3s infinite; }
@@ -70,31 +100,54 @@
 
 @keyframes btnShimmer {
     0% { left: -100%; }
-    20% { left: 100%; }
+    30% { left: 100%; }
     100% { left: 100%; }
 }
 
 .btn-watch {
-    background: var(--primary-blue);
-    color: #020b1a; border: none;
-    padding: 12px 30px; border-radius: 5px;
-    font-weight: bold; cursor: pointer;
+    background: var(--primary-blue, #00d4ff);
+    color: #020b1a; 
+    border: none;
+    padding: 12px 35px; 
+    border-radius: 5px;
+    font-weight: bold; 
+    cursor: pointer;
     transition: all 0.3s ease;
     margin-right: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .btn-watch:hover { 
     background: #fff; 
-    transform: scale(1.1); 
-    box-shadow: 0 0 25px var(--primary-blue);
-    color: var(--dark-bg);
+    transform: translateY(-3px) scale(1.05); 
+    box-shadow: 0 10px 20px rgba(0, 212, 255, 0.4);
+    color: #000;
 }
 
 /* --- SLIDER DOTS --- */
 .slider-dots {
-    position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
-    display: flex; gap: 10px; z-index: 20;
+    position: absolute; 
+    bottom: 30px; 
+    left: 50%; 
+    transform: translateX(-50%);
+    display: flex; 
+    gap: 12px; 
+    z-index: 20;
 }
 
-.dot { width: 12px; height: 12px; background: rgba(255,255,255,0.3); border-radius: 50%; cursor: pointer; transition: 0.3s; }
-.dot.active { background: var(--primary-blue); width: 30px; border-radius: 10px; }
+.dot { 
+    width: 10px; 
+    height: 10px; 
+    background: rgba(255,255,255,0.3); 
+    border-radius: 50%; 
+    cursor: pointer; 
+    transition: all 0.3s ease; 
+}
+
+.dot.active { 
+    background: var(--primary-blue, #00d4ff); 
+    width: 25px; 
+    border-radius: 10px;
+    box-shadow: 0 0 10px var(--primary-blue, #00d4ff);
+}
