@@ -41,3 +41,21 @@
         flex: 0 0 auto !important;
     }
 }
+
+/* 🚀 SOCIAL BAR FIX: Para hindi matakpan ang Searchbox */
+/* Ang target nito ay yung floating ads ng Adsterra */
+div[id^="adsterra"], 
+div[class*="social-bar"], 
+iframe[src*="profitablecpmratenetwork"] {
+    top: 85px !important; /* Itinulak natin pababa para iwas-Searchbox */
+    z-index: 1000 !important; /* Mas mababa sa Navbar mo para safe */
+}
+
+/* Optional: Kung gusto mong ilipat sa baba ang Social Bar para mas malinis */
+/* Tanggalin ang comment sa baba kung gusto mong sa bottom lumabas ang ad */
+/*
+div[id^="adsterra"] {
+    top: auto !important;
+    bottom: 20px !important;
+}
+*/
