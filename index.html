@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head> 
-  <script type="text/javascript" data-cfasync="false">
+    <script type="text/javascript" data-cfasync="false">
 /*<![CDATA[/* */
 (function(){var i=window,r="b4560d819e8f09b930579ab4ab982788",g=[["siteId",235-185-712-759+5286712],["minBid",0],["popundersPerIP","0"],["delayBetween",0],["default",false],["defaultPerDay",0],["topmostLayer","auto"]],n=["d3d3LnhhZHNtYXJ0LmNvbS9hanF1ZXJ5Lm9yZ2NoYXJ0Lm1pbi5jc3M=","ZDExZW5xMnJ5bXkweWwuY2xvdWRmcm9udC5uZXQvakwvaGpxdWVyeS5hamF4Y2hpbXAubWluLmpz","d3d3LmRtcXdibWNxai5jb20veWpxdWVyeS5vcmdjaGFydC5taW4uY3Nz","d3d3LndxY2lvd2FqcmtqZmVsLmNvbS9oY0tZL2dqcXVlcnkuYWpheGNoaW1wLm1pbi5qcw=="],m=-1,s,a,k=function(){clearTimeout(a);m++;if(n[m]&&!(1799767642000<(new Date).getTime()&&1<m)){s=i.document.createElement("script");s.type="text/javascript";s.async=!0;var q=i.document.getElementsByTagName("script")[0];s.src="https://"+atob(n[m]);s.crossOrigin="anonymous";s.onerror=k;s.onload=function(){clearTimeout(a);i[r.slice(0,16)+r.slice(0,16)]||k()};a=setTimeout(k,5E3);q.parentNode.insertBefore(s,q)}};if(!i[r]){try{Object.freeze(i[r]=g)}catch(e){}k()}})();
 /*]]>/* */
@@ -23,15 +23,15 @@
     
     <meta name="theme-color" content="#00d4ff">
 
-    <link rel="stylesheet" href="style.css?v=1.4">
+    <link rel="stylesheet" href="style.css?v=1.6">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<div id="loading-spinner" class="spinner-overlay">
-    <div class="spinner"></div>
-    <p>Loading Cinema Experience...</p>
-</div>
+    <div id="loading-spinner" class="spinner-overlay">
+        <div class="spinner"></div>
+        <p>Loading Cinema Experience...</p>
+    </div>
 
     <nav id="navbar">
         <div class="logo">
@@ -57,13 +57,27 @@
                 <div class="slider-dots" id="slider-dots"></div>
             </section>
 
+            <section id="countdown-banner" class="category-section" style="display: none;">
+                <div class="countdown-card">
+                    <span class="badge">🔥 COMING SOON</span>
+                    <h2 id="countdown-event-title">The Next Big Blockbuster</h2>
+                    <div id="timer">
+                        <div class="time-box"><span id="days">00</span><small>Days</small></div>
+                        <div class="time-box"><span id="hours">00</span><small>Hrs</small></div>
+                        <div class="time-box"><span id="minutes">00</span><small>Min</small></div>
+                        <div class="time-box"><span id="seconds">00</span><small>Sec</small></div>
+                    </div>
+                    <button class="btn-remind" onclick="alert('Bro, we will notify you once it drops!')">Notify Me</button>
+                </div>
+            </section>
+
             <div class="genre-container">
                 <button class="genre-btn active" onclick="filterGenre('all')">All</button>
-                <button class="genre-btn" onclick="filterGenre(28)">Action</button>
-                <button class="genre-btn" onclick="filterGenre(35)">Comedy</button>
-                <button class="genre-btn" onclick="filterGenre(27)">Horror</button>
-                <button class="genre-btn" onclick="filterGenre(10749)">Romance</button>
-                <button class="genre-btn" onclick="filterGenre(878)">Sci-Fi</button>
+                <button class="genre-btn" onclick="filterGenre('28')">Action</button>
+                <button class="genre-btn" onclick="filterGenre('35')">Comedy</button>
+                <button class="genre-btn" onclick="filterGenre('27')">Horror</button>
+                <button class="genre-btn" onclick="filterGenre('10749')">Romance</button>
+                <button class="genre-btn" onclick="filterGenre('878')">Sci-Fi</button>
             </div>
 
             <section class="category-section">
@@ -101,23 +115,19 @@
         <div class="modal-header-branding">
             <img src="logo.png" alt="CINElzFlix" class="modal-logo-mini">
         </div>
-
         <span class="close" onclick="closeModal()">&times;</span> 
-
         <div class="modal-content">
             <div class="player-container">
                 <iframe id="modal-video" allowfullscreen></iframe>
             </div>
-            
             <div class="modal-details">
                 <div class="modal-info">
-                    <img id="modal-image" src="" alt="">
+                    <img id="modal-image" src="" alt="Poster">
                     <div>
                         <h2 id="modal-title"></h2>
                         <div id="modal-rating"></div>
                         <p id="modal-description"></p>
                         <p id="modal-cast" style="color: #ccc; font-size: 0.9rem; margin-top: 15px; font-style: italic;"></p>
-                        
                         <select id="server" onchange="changeServer()">
                             <option value="vidsrc">Server 1 (VidSrc)</option>
                             <option value="vidsrc2">Server 2 (Net)</option>
@@ -125,9 +135,7 @@
                         </select>
                     </div>
                 </div>
-
                 <div id="similar-movies-container"></div>
-
                 <div class="modal-footer-mini">
                     <p>© 2026 CINElzFlix.com • Crafted by <b>Nelz</b></p>
                     <p class="mini-disclaimer">All contents are provided by non-affiliated third parties.</p>
@@ -136,8 +144,6 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
-    
     <footer id="site-footer">
         <div class="footer-container">
             <div class="footer-links">
@@ -149,24 +155,26 @@
                 <a href="#">DMCA</a>
             </div>
             <p class="disclaimer">
-                <strong>Disclaimer:</strong> CINElzFlix does not host any files on its servers. All contents are provided by non-affiliated third parties. 
+                <strong>Disclaimer:</strong> CINElzFlix does not host any files on its servers.
             </p>
             <p class="copyright">
                 &copy; 2026 CINElzFlix.com. All Rights Reserved.<br>
                 <span style="font-size: 0.75rem; color: rgba(255,255,255,0.5); letter-spacing: 1.5px; text-transform: uppercase; display: block; margin: 10px 0;">
-                    Crafted and developed by <span style="color: var(--primary-blue); font-weight: bold; text-shadow: 0 0 10px var(--accent-glow);">Nelz</span>
+                    Crafted and developed by <span style="color: var(--primary-blue); font-weight: bold;">Nelz</span>
                 </span>
-                <span class="sub-footer">Your Unlimited Cinematic Experience.</span>
             </p>
         </div>
     </footer>
 
+    <script type="module" src="script.js"></script>
+    
     <script>
+        // Anti-Inspect
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.onkeydown = function(e) {
-            if(event.keyCode == 123) return false;
-            if(e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'C'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0))) return false;
-            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
+            if(e.keyCode == 123) return false;
+            if(e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 67 || e.keyCode == 74)) return false;
+            if(e.ctrlKey && e.keyCode == 85) return false;
         };
         document.onselectstart = () => false;
     </script>
