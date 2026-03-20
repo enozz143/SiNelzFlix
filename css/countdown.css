@@ -53,7 +53,7 @@
     justify-content: center;
     gap: 15px;
     margin: 10px 0 30px 0;
-    flex-wrap: wrap;
+    flex-wrap: nowrap; /* Siniguro na hindi mag-wrap sa desktop */
     width: 100%;
 }
 
@@ -115,41 +115,56 @@
     box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
 }
 
-/* --- MOBILE OPTIMIZATION --- */
+/* --- MOBILE OPTIMIZATION (1x4 Layout) --- */
 @media (max-width: 768px) {
+    #countdown-banner {
+        margin: 20px 0; /* Binawasan ang margin para mas dikit sa content */
+    }
+
     .countdown-card {
-        padding: 30px 15px; /* Pinagliit ang padding para hindi mahaba */
+        padding: 25px 10px; /* Mas siksik na card padding */
+        border-radius: 15px;
     }
 
     #countdown-event-title {
-        font-size: 1.5rem; /* Mas siksik na title */
-        margin: 10px 0 20px 0;
+        font-size: 1.3rem; /* Mas maliit na title para magkasya */
+        margin: 5px 0 15px 0;
     }
 
     #timer {
-        display: grid; /* Ginawang grid para 2x2 */
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-        max-width: 280px; /* Nilimit ang width para center tignan */
-        margin: 0 auto 20px auto;
+        display: flex !important; /* Force flex para maging row */
+        flex-direction: row !important;
+        justify-content: center;
+        gap: 6px; /* Maliit na gap para hindi mag-overflow */
+        max-width: 100%;
+        margin: 0 auto 15px auto;
+        flex-wrap: nowrap; /* Bawal bumaba ang boxes */
     }
 
     .time-box {
-        min-width: unset;
-        padding: 12px 5px;
+        min-width: 60px; /* Sapat lang para sa apat na column */
+        flex: 1; /* Pantay-pantay ang width */
+        padding: 10px 2px;
+        background: rgba(0, 0, 0, 0.6);
     }
 
     .time-box span {
-        font-size: 1.6rem; /* Mas maliit na numbers */
+        font-size: 1.1rem; /* In-adjust ang size para sa 1x4 layout */
     }
 
     .time-box small {
-        font-size: 0.6rem;
+        font-size: 0.55rem;
+        letter-spacing: 0;
+    }
+
+    .badge {
+        font-size: 0.7rem;
+        padding: 4px 12px;
     }
 
     .btn-remind {
-        padding: 10px 25px;
-        font-size: 0.8rem;
+        padding: 8px 20px;
+        font-size: 0.75rem;
     }
 }
 
