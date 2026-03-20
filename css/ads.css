@@ -1,0 +1,19 @@
+/* css/ads.css */
+.ad-spacer {
+    margin: 40px auto;
+    max-width: 1200px;
+    padding: 0 15px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#adsterra-native-ads {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    border: 1px dashed rgba(0, 212, 255, 0.1); /* Subtle indicator lang */
+    padding: 10px;
+    min-height: 150px;
+}
