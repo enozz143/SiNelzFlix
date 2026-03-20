@@ -1,12 +1,12 @@
 /* --- NAVBAR & LOGO --- */
 #navbar {
-    height: 85px; /* Dinagdagan natin ng konti para mas malaki ang logo */
-    background: rgba(2, 11, 26, 0.85); /* Mas solid na background para iwas "ghosting" ng logo */
+    height: 85px; 
+    background: rgba(2, 11, 26, 0.85); 
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
-    border-bottom: 2px solid rgba(0, 212, 255, 0.3); /* Mas matapang na neon line */
+    border-bottom: 2px solid rgba(0, 212, 255, 0.3); 
     display: flex;
-    align-items: stretch; /* Isasagad natin yung logo container hanggang dulo */
+    align-items: stretch; 
     justify-content: space-between;
     padding: 0 5%;
     position: fixed;
@@ -16,7 +16,6 @@
     box-sizing: border-box;
 }
 
-/* Container ng logo para walang padding */
 .logo {
     display: flex;
     align-items: center;
@@ -24,29 +23,30 @@
 }
 
 #site-logo { 
-    height: 100%; /* Gamitin ang buong height ng navbar */
-    max-height: 85px; /* Limit para hindi mag-overflow */
+    height: 100%; 
+    max-height: 85px; 
     width: auto; 
     object-fit: contain; 
-    padding: 5px 0; /* Onting hinga lang para hindi dikit na dikit sa border */
+    padding: 5px 0; 
     filter: drop-shadow(0px 0px 12px var(--accent-glow)); 
     mix-blend-mode: screen;
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s ease;
     cursor: pointer;
-    display: block; /* Para mawala ang extra gap sa baba */
+    display: block; 
 }
 
 #site-logo:hover {
-    transform: scale(1.05); /* Slightly smaller scale para hindi maputol ang glow */
+    transform: scale(1.05); 
     filter: drop-shadow(0px 0px 20px var(--primary-blue));
 }
 
 /* --- PREMIUM SEARCH BAR --- */
 .search-box { 
     position: relative; 
-    align-self: center; /* Panatilihin sa gitna kahit lumaki ang navbar */
+    align-self: center; 
     width: 250px; 
     margin-right: 10px; 
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth transition para sa mobile */
 }
 
 .search-box:focus-within {
@@ -80,17 +80,43 @@
     100% { box-shadow: 0 0 5px rgba(0, 212, 255, 0.4); }
 }
 
-/* Mobile Tweaks for Navbar */
-@media (max-width: 768px) {
+/* --- 🔥 MOBILE UPDATED (600px and below) --- */
+@media (max-width: 600px) {
     #navbar { 
-        height: 75px; /* Mas malaki na rin sa mobile */
-        padding: 0 3%; 
+        height: 70px; 
+        padding: 0 15px; 
     }
+    
     #site-logo { 
-        height: 70px; /* Sagad na sagad na rin sa mobile! */
-        padding: 2px 0;
+        height: 55px; /* Liitan natin konti para may space sa taas/baba */
+        max-height: 55px;
     }
+
+    .search-box {
+        width: 40px; /* Mukhang icon lang sa simula */
+        margin-right: 0;
+        overflow: hidden;
+    }
+
+    /* Ito yung magic: hahaba lang siya pag clinick */
     .search-box:focus-within {
-        width: 200px; /* Mas maliit lang expansion sa mobile para hindi matabunan ang logo */
+        width: 170px; /* Sapat na haba para hindi mabangga ang logo */
+        background: rgba(0, 0, 0, 0.9);
+        border-radius: 20px;
+    }
+
+    #search-input {
+        padding: 8px 10px 8px 35px;
+        font-size: 0.85rem;
+        background-position: 10px center; /* I-adjust ang glass icon */
+    }
+
+    /* Optional: Itago ang placeholder sa mobile para malinis */
+    #search-input::placeholder {
+        color: transparent;
+    }
+    
+    .search-box:focus-within #search-input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
     }
 }
