@@ -3,11 +3,21 @@ import { BASE_URL, fetchMovies } from './js/api.js';
 import { setupHeroSlider, nextSlide, goToSlide } from './js/slider.js';
 import { displayList, handleSearch, filterGenre, loadMore } from './js/ui.js';
 import { showDetails, closeModal, changeServer } from './js/modal.js';
-import { initCountdown } from './js/countdown.js'; // NEW: Import for the timer
+import { initCountdown } from './js/countdown.js';
+
+// --- HELPER: SKELETON LOADER ---
+function showSkeletons(containerId, count = 10) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
+    let skeletonHTML = '';
+    for (let i = 0; i < count; i++) {
+        skeletonHTML += `<div class="skeleton skeleton-card"></div>`;
+    }
+    container.innerHTML = skeletonHTML;
+}
 
 // --- BRIDGE TO HTML ---
-// Ine-expose natin ang mga functions sa 'window' object 
-// para mabasa sila ng 'onclick' attributes sa iyong HTML.
 window.showDetails = showDetails;
 window.closeModal = closeModal;
 window.changeServer = changeServer;
@@ -27,6 +37,13 @@ async function init() {
         // 0. Initialize Countdown Timer
         initCountdown();
 
+        // --- START LOADING SKELETONS ---
+        showSkeletons("movies-list", 8);
+        showSkeletons("upcoming-list", 6);
+        showSkeletons("tvshows-list", 6);
+        showSkeletons("anime-list", 6);
+        showSkeletons("top-rated-list", 6);
+
         // 1. Load Trending & Setup Hero
         const movies = await fetchMovies("movie", 1);
         if (movies && movies.length > 0) {
@@ -42,17 +59,19 @@ async function init() {
             { endpoint: '/movie/top_rated', container: 'top-rated-list' }
         ];
 
+        // Sabay-sabay nating i-fetch pero naka-skeleton bawat isa
         for (const cat of categories) {
             try {
                 const res = await fetch(`${BASE_URL}?endpoint=${cat.endpoint}`);
                 const data = await res.json();
+                // Pag dating ng data, mapapalitan na yung skeletons
                 displayList(data.results, cat.container);
             } catch (catErr) {
                 console.error(`Error loading category ${cat.container}:`, catErr);
             }
         }
 
-        // 3. Deep Linking Support (Para sa Share links)
+        // 3. Deep Linking Support
         const params = new URLSearchParams(window.location.search);
         const movieId = params.get('movie');
         const tvId = params.get('tv');
@@ -71,19 +90,16 @@ async function init() {
 
 // --- GLOBAL EVENT LISTENERS ---
 
-// Para sa keyboard shortcuts (ESC key)
 document.addEventListener('keydown', (e) => {
     if (e.key === "Escape") {
         const modal = document.getElementById("modal");
         const searchResults = document.getElementById("search-results-section");
         
-        // Close modal if open
         if (modal && modal.style.display === "flex") {
             closeModal();
             return;
         }
         
-        // Clear search if open
         if (searchResults && searchResults.style.display === "block") {
             const searchInput = document.getElementById("search-input");
             if (searchInput) searchInput.value = "";
@@ -93,15 +109,5 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Loading Spinner Fade Out
-window.addEventListener('load', () => {
-    const spinner = document.getElementById('loading-spinner');
-    if (spinner) {
-        setTimeout(() => {
-            spinner.classList.add('fade-out');
-        }, 1000);
-    }
-});
 
-// RUN!
 init();

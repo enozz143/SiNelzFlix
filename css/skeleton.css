@@ -1,0 +1,38 @@
+/* skeleton.css - Para sa Loading Effects */
+
+.skeleton {
+    background: #1a1a1a;
+    background: linear-gradient(
+        110deg, 
+        #121212 8%, 
+        #1f1f1f 18%, 
+        #121212 33%
+    );
+    background-size: 200% 100%;
+    animation: shine 1.5s linear infinite;
+    border-radius: 12px;
+}
+
+@keyframes shine {
+    to {
+        background-position-x: -200%;
+    }
+}
+
+/* Para sakto ang sukat sa Movie Cards mo */
+.skeleton-card {
+    width: 180px; /* Sukat sa Desktop */
+    height: 270px;
+    flex: 0 0 auto;
+    margin-right: 15px;
+    display: inline-block;
+}
+
+/* Responsive adjustment */
+@media screen and (max-width: 768px) {
+    .skeleton-card {
+        width: 130px; /* Sukat sa Mobile */
+        height: 195px;
+        margin-right: 10px;
+    }
+}
