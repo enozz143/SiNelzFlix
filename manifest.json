@@ -1,7 +1,12 @@
 {
-  "short_name": "CINElzFlix",
   "name": "CINElzFlix | Unlimited Cinema",
-  "description": "Unlimited Cinema Experience at your fingertips.",
+  "short_name": "CINElzFlix",
+  "description": "Stream the latest movies, TV shows, and anime for free.",
+  "start_url": "/?utm_source=pwa",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#00d4ff",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "favicon.png",
@@ -9,15 +14,9 @@
       "type": "image/png"
     },
     {
-      "src": "icon-512.png",
+      "src": "icon-512.png", 
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
-  ],
-  "start_url": "/index.html",
-  "background_color": "#020b1a",
-  "theme_color": "#00d4ff",
-  "display": "standalone",
-  "scope": "/"
+  ]
 }
