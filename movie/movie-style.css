@@ -1,113 +1,145 @@
-/* movie/movie-style.css - THE DEFINITIVE FIX */
+/* movie/movie-style.css - FULL CINEMATIC VERSION */
 :root { 
     --primary-blue: #00d4ff; 
     --bg-dark: #0a0a0a;
 }
 
+body {
+    background-color: var(--bg-dark);
+    margin: 0;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+}
+
 #movie-hero {
     position: relative;
     width: 100%;
-    height: 85vh; /* Tinaasan pa natin para mas immersive */
+    height: 80vh;
     background: #000;
     overflow: hidden;
+    background-size: cover;
+    background-position: center;
 }
 
 #trailer-container {
     position: absolute;
     inset: 0;
-    z-index: 1; 
+    z-index: 1;
     pointer-events: none;
-    background-size: cover;
-    background-position: center;
 }
 
-/* Force YouTube to cover the entire hero area */
 #trailer-container iframe {
     width: 100vw;
-    height: 56.25vw; /* 16:9 ratio */
+    height: 56.25vw;
     min-height: 100vh;
     min-width: 177.77vh;
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     opacity: 1;
-    filter: brightness(0.7); /* Mas madilim konti para lumitaw ang text */
+    filter: brightness(0.7);
+    border: none;
 }
 
 .movie-overlay {
     position: absolute;
     inset: 0;
-    /* Inayos ang gradients para mas smooth ang transition sa content */
-    background: linear-gradient(to top, var(--bg-dark) 0%, transparent 50%),
-                linear-gradient(to right, var(--bg-dark) 0%, transparent 70%),
-                rgba(0,0,0,0.3); /* Subtle darkening filter */
+    background: linear-gradient(to top, var(--bg-dark) 5%, transparent 60%),
+                linear-gradient(to right, var(--bg-dark) 15%, transparent 80%);
     z-index: 2;
     pointer-events: none;
 }
 
 .hero-info-content {
     position: absolute;
-    bottom: 15%;
+    bottom: 12%;
     left: 5%;
     z-index: 10;
     max-width: 700px;
+    color: white;
 }
 
-/* PLAYER SECTION FIX - Eto ang mag-aayos sa "maliit na thumbnail" */
+.hero-info-content h1 { 
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    margin-bottom: 10px; 
+    text-shadow: 2px 2px 20px rgba(0,0,0,0.9); 
+}
+
+.meta-info {
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: #ccc;
+    font-size: 0.9rem;
+}
+
+.hero-actions { display: flex; gap: 15px; margin-top: 25px; }
+
+/* PLAYER SECTION */
+.movie-page-container { 
+    padding: 60px 5%; 
+    max-width: 1300px; 
+    margin: 0 auto; 
+    background: var(--bg-dark);
+}
+
 .player-wrapper { 
     position: relative;
     width: 100%;
-    /* Pinilit nating maging malaki ang area ng video */
     aspect-ratio: 16/9;
-    min-height: 450px; 
     background: #000;
     border-radius: 15px;
-    box-shadow: 0 0 50px rgba(0, 212, 255, 0.25);
+    box-shadow: 0 0 40px rgba(0, 212, 255, 0.2);
     margin-bottom: 50px;
     overflow: hidden;
-    border: 1px solid rgba(0, 212, 255, 0.4);
+    border: 1px solid rgba(0, 212, 255, 0.3);
 }
 
-#movie-iframe {
-    width: 100% !important;
-    height: 100% !important;
-    display: block;
-    border: none;
+#movie-iframe { 
+    width: 100% !important; 
+    height: 100% !important; 
+    border: none; 
+    min-height: 450px; 
 }
 
-/* INFO GRID - Pantay na ang alignment nito */
+/* INFO GRID */
 .movie-info-grid { 
     display: grid; 
-    grid-template-columns: 280px 1fr;
-    gap: 60px; 
+    grid-template-columns: 280px 1fr; 
+    gap: 50px; 
     align-items: start;
     color: white;
 }
 
 #movie-poster { 
     width: 100%; 
-    border-radius: 12px; 
-    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
-    transition: transform 0.3s ease;
+    border-radius: 15px; 
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
-#movie-poster:hover {
-    transform: scale(1.02);
-}
+.details-side h2 { color: var(--primary-blue); margin-top: 0; font-size: 1.8rem; }
+#movie-overview { line-height: 1.8; color: #bbb; font-size: 1.05rem; }
 
+/* CAST */
+.cast-list {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding: 15px 0;
+}
+.cast-item { flex: 0 0 100px; text-align: center; color: white; }
 .cast-item img { 
-    width: 90px; height: 90px; 
+    width: 85px; height: 85px; 
     border-radius: 50%; 
     object-fit: cover; 
-    border: 3px solid var(--primary-blue);
-    margin-bottom: 10px;
+    border: 2px solid var(--primary-blue); 
+    margin-bottom: 8px;
 }
 
-/* MOBILE RESPONSIVE */
+/* RESPONSIVE */
 @media (max-width: 900px) {
-    #movie-hero { height: 60vh; }
     .movie-info-grid { grid-template-columns: 1fr; text-align: center; }
-    #movie-poster { max-width: 250px; margin: 0 auto; }
-    .player-wrapper { min-height: 250px; }
-    .hero-info-content { text-align: center; width: 90%; left: 5%; }
+    .hero-info-content { text-align: center; width: 90%; left: 5%; bottom: 5%; }
+    .hero-actions { justify-content: center; }
+    #movie-iframe { min-height: 250px; }
 }
