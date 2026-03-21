@@ -1,8 +1,6 @@
-// script.js (Root Directory)
 import { BASE_URL, fetchMovies } from './js/api.js';
 import { setupHeroSlider, nextSlide, goToSlide } from './js/slider.js';
 import { displayList, handleSearch, filterGenre, loadMore } from './js/ui.js';
-// Dinagdag ang playTrailer dito sa import 👇
 import { showDetails, closeModal, changeServer, playTrailer } from './js/modal.js';
 import { initCountdown } from './js/countdown.js';
 
@@ -22,12 +20,12 @@ function showSkeletons(containerId, count = 10) {
 window.showDetails = showDetails;
 window.closeModal = closeModal;
 window.changeServer = changeServer;
-window.playTrailer = playTrailer; // Dinagdag ito para ma-access ng buttons sa HTML 👈
+window.playTrailer = playTrailer; 
 window.nextSlide = nextSlide;
 window.goToSlide = goToSlide;
 window.handleSearch = handleSearch;
 window.filterGenre = filterGenre; 
-window.loadMore = loadMore;        
+window.loadMore = loadMore;         
 window.BASE_URL = BASE_URL; 
 
 /**
@@ -61,28 +59,29 @@ async function init() {
             { endpoint: '/movie/top_rated', container: 'top-rated-list' }
         ];
 
-        // Sabay-sabay nating i-fetch pero naka-skeleton bawat isa
         for (const cat of categories) {
             try {
                 const res = await fetch(`${BASE_URL}?endpoint=${cat.endpoint}`);
                 const data = await res.json();
-                // Pag dating ng data, mapapalitan na yung skeletons
                 displayList(data.results, cat.container);
             } catch (catErr) {
                 console.error(`Error loading category ${cat.container}:`, catErr);
             }
         }
 
-        // 3. Deep Linking Support
+        // --- 3. FIX: DEEP LINKING SUPPORT (No-Popup Update) ---
         const params = new URLSearchParams(window.location.search);
-        const movieId = params.get('movie');
-        const tvId = params.get('tv');
+        const movieId = params.get('movie'); // Para sa lumang links na ?movie=ID
+        const tvId = params.get('tv');       // Para sa lumang links na ?tv=ID
+
         if (movieId || tvId) {
             const id = (movieId || tvId).split('-')[0];
             const type = movieId ? 'movie' : 'tv';
-            const res = await fetch(`${BASE_URL}?endpoint=/${type}/${id}`);
-            const data = await res.json();
-            if (data) showDetails(data);
+            
+            console.log(`Detected deep link for ${type} ${id}. Redirecting to movie.html...`);
+            
+            // Redirect diretso sa movie.html imbes na mag-modal
+            window.location.href = `movie.html?id=${id}&type=${type}`;
         }
 
     } catch (err) { 
