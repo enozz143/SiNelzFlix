@@ -4,11 +4,11 @@ const params = new URLSearchParams(window.location.search);
 const movieId = params.get('id');
 const mediaType = params.get('type') || 'movie';
 
-// FIXED: Siguraduhin na may 'https://' at nagtatapos sa '/' ang iyong Worker URL
-const BASE_URL = 'https://cinelzflix-worker.nelz.workers.dev/'; 
+// FIXED: Gamit na ang tamang subdomain mo para hindi mag-CORS error
+const BASE_URL = 'https://cinelzflix-worker.baquial-enozz.workers.dev/'; 
 
 async function loadMovieDetails() {
-    // FIXED: Kapag walang ID, dapat bumalik sa root "/" ng domain
+    // FIXED: Balik sa root directory kung walang ID
     if (!movieId) { 
         window.location.href = '/'; 
         return; 
@@ -17,16 +17,13 @@ async function loadMovieDetails() {
     try {
         console.log(`Fetching details for ${mediaType} ID: ${movieId}...`);
         
-        // FIXED: Nilagyan ko ng absolute path check sa fetch
+        // Fetch details from your Cloudflare Worker
         const response = await fetch(`${BASE_URL}?endpoint=/${mediaType}/${movieId}&append_to_response=credits`);
         
-        // Check if the response is actually OK
         if (!response.ok) throw new Error(`Worker Error: ${response.status}`);
         
         const data = await response.json();
 
-        // FIXED: Minsan ang Worker ay nagbabalik ng data sa loob ng property na 'results' 
-        // depende sa setup mo, pero standard TMDB details ang response nito.
         if (!data || data.success === false) {
             throw new Error("Movie not found in TMDB");
         }
@@ -34,7 +31,6 @@ async function loadMovieDetails() {
         // --- UPDATE UI ---
         document.title = `${data.title || data.name} - CINElzFlix`;
         
-        // Check if elements exist before updating to avoid null errors
         const titleEl = document.getElementById('movie-title');
         const posterImg = document.getElementById('movie-poster');
         const overviewEl = document.getElementById('movie-overview');
@@ -51,7 +47,8 @@ async function loadMovieDetails() {
         
         if (overviewEl) overviewEl.innerText = data.overview || "No description available, bro.";
         
-        const releaseDate = (data.release_date || data.first_air_date || "N/A").split('-')[0]; // Year only
+        // Formatting: Year only and rating
+        const releaseDate = (data.release_date || data.first_air_date || "N/A").split('-')[0];
         const rating = data.vote_average ? data.vote_average.toFixed(1) : "N/A";
         
         if (metaEl) metaEl.innerText = `📅 ${releaseDate} • ⭐ ${rating} • 🎭 ${mediaType.toUpperCase()}`;
@@ -69,9 +66,6 @@ async function loadMovieDetails() {
         console.error("Error loading movie page:", error);
         const titleEl = document.getElementById('movie-title');
         if (titleEl) titleEl.innerText = "Error Loading Content, Bro!";
-        
-        // FIXED: Alert para malaman mo agad kung ano ang error sa mobile/browser
-        // alert("Fetch Error: " + error.message); 
     }
 }
 
@@ -90,11 +84,11 @@ function setPlayer(server) {
     }
 }
 
-// Listener para sa server switcher
+// Server switcher listener
 const serverSelect = document.getElementById('server-select');
 if (serverSelect) {
     serverSelect.addEventListener('change', (e) => setPlayer(e.target.value));
 }
 
-// Initial Run
+// Initialize
 loadMovieDetails();
