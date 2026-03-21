@@ -16,7 +16,7 @@ export function createMovieCard(item) {
     const overlay = document.createElement("div");
     overlay.className = "trailer-overlay";
     
-    // Button 1: Play Trailer (Modal pa rin 'to para mabilis na silip)
+    // Button 1: Play Trailer
     const trailerBtn = document.createElement("button");
     trailerBtn.className = "hover-btn trailer-btn";
     trailerBtn.innerHTML = "Play Trailer";
@@ -25,15 +25,16 @@ export function createMovieCard(item) {
         playTrailer(item.id, item.title ? "movie" : "tv"); 
     };
 
-    // Button 2: Full Movie (Dito na papasok yung redirect sa movie.html)
+    // Button 2: Full Movie (Redirect logic fixed for Cloudflare)
     const fullMovieBtn = document.createElement("button");
     fullMovieBtn.className = "hover-btn movie-btn";
     fullMovieBtn.innerHTML = "Full Movie";
     fullMovieBtn.onclick = (e) => { 
         e.stopPropagation(); 
         const type = item.title ? "movie" : "tv";
-        // FIX: Siniguro nating may .html para mahanap ni Cloudflare Pages
-        window.location.href = `movie.html?id=${item.id}&type=${type}`;
+        // Force absolute path para hindi mawala ang .html
+        const targetUrl = `${window.location.origin}/movie.html?id=${item.id}&type=${type}`;
+        window.location.href = targetUrl;
     };
 
     // Button 3: Share Link
@@ -59,10 +60,11 @@ export function createMovieCard(item) {
     card.appendChild(img);
     card.appendChild(overlay);
 
-    // FIX: Pag clinick mismo yung poster, direct to movie.html na rin
+    // FIX: Pag click sa card, dapat may .html din
     card.onclick = () => {
         const type = item.title ? "movie" : "tv";
-        window.location.href = `movie.html?id=${item.id}&type=${type}`;
+        const targetUrl = `${window.location.origin}/movie.html?id=${item.id}&type=${type}`;
+        window.location.href = targetUrl;
     };
 
     return card;
@@ -95,7 +97,6 @@ export function displaySimilar(items) {
     });
 }
 
-// Para ma-access sa labas (sa script.js)
 window.displaySimilar = displaySimilar;
 
 export async function handleSearch(q) {
@@ -106,7 +107,6 @@ export async function handleSearch(q) {
     }
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(async () => {
-        // Ginagamit yung window.BASE_URL na galing sa script.js/worker link
         const res = await fetch(`${window.BASE_URL}?endpoint=/search/multi&query=${encodeURIComponent(q)}`);
         const data = await res.json();
         document.getElementById("search-results-section").style.display = "block";
