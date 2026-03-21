@@ -16,7 +16,7 @@ function showSkeletons(containerId, count = 10) {
     container.innerHTML = skeletonHTML;
 }
 
-// --- BRIDGE TO HTML (Para gumana ang inline onclick calls) ---
+// --- BRIDGE TO HTML ---
 window.showDetails = showDetails;
 window.closeModal = closeModal;
 window.changeServer = changeServer;
@@ -25,7 +25,7 @@ window.nextSlide = nextSlide;
 window.goToSlide = goToSlide;
 window.handleSearch = handleSearch;
 window.filterGenre = filterGenre; 
-window.loadMore = loadMore;         
+window.loadMore = loadMore;          
 window.BASE_URL = BASE_URL; 
 
 /**
@@ -34,7 +34,6 @@ window.BASE_URL = BASE_URL;
 async function init() {
     console.log("🚀 CINElzFlix Engine is now LIVE, bro!"); 
     try {
-        // 0. Initialize Countdown Timer
         initCountdown();
 
         // --- START LOADING SKELETONS ---
@@ -69,7 +68,7 @@ async function init() {
             }
         }
 
-        // --- 3. DEEP LINKING SUPPORT (Updated to /movie/ folder) ---
+        // --- 3. DEEP LINKING SUPPORT ---
         const params = new URLSearchParams(window.location.search);
         const movieId = params.get('movie'); 
         const tvId = params.get('tv');        
@@ -77,8 +76,6 @@ async function init() {
         if (movieId || tvId) {
             const id = (movieId || tvId).split('-')[0];
             const type = movieId ? 'movie' : 'tv';
-            
-            console.log(`Detected deep link for ${type} ${id}. Redirecting to /movie/ folder...`);
             window.location.href = `/movie/?id=${id}&type=${type}`;
         }
 
@@ -90,21 +87,20 @@ async function init() {
 // --- GLOBAL EVENT LISTENERS ---
 
 /**
- * FIXED: EVENT DELEGATION PARA SA DYNAMIC BUTTONS
- * Sinisigurado nito na lahat ng clicks sa slider at posters ay gagana.
+ * FIXED: EVENT DELEGATION PARA SA DYNAMIC ELEMENTS
+ * Sinasalo nito ang clicks sa "Watch Now" (Slider) AT sa "Movie Cards" (Grid)
  */
 document.addEventListener('click', (e) => {
-    // Hanapin ang pinakamalapit na button element (watch-now, btn-watch, o play-btn)
-    const watchBtn = e.target.closest('.watch-now') || e.target.closest('.btn-watch') || e.target.closest('.play-btn');
+    // 1. Hanapin kung ang ki-nlick ay Watch Now button O ang mismong Movie Card
+    const target = e.target.closest('.watch-now') || e.target.closest('.movie-card');
     
-    if (watchBtn) {
+    if (target) {
         e.preventDefault();
-        const id = watchBtn.getAttribute('data-id');
-        const type = watchBtn.getAttribute('data-type') || 'movie';
+        const id = target.getAttribute('data-id');
+        const type = target.getAttribute('data-type') || 'movie';
         
         if (id) {
-            console.log(`🎬 Redirecting to play ${type}: ${id}`);
-            // FIXED: Path pointing to the folder /movie/
+            console.log(`🎬 Navigation Triggered: ${type} ${id}`);
             window.location.href = `/movie/?id=${id}&type=${type}`;
         }
         return;
@@ -133,5 +129,4 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Fire the engine!
 init();
