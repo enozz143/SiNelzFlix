@@ -1,4 +1,4 @@
-// js/movie-page.js - THE "NO BLACK SCREEN" VERSION
+// js/movie-page.js - FULL DEBUGGED VERSION (155+ Lines Logic)
 const params = new URLSearchParams(window.location.search);
 const movieId = params.get('id');
 const mediaType = params.get('type') || 'movie';
@@ -21,6 +21,7 @@ async function loadMovieDetails() {
 
         if (!data || data.success === false) throw new Error("Content not found");
 
+        // --- RENDER EVERYTHING ---
         updateHeroSection(data);
         updateDetailsSection(data);
         setPlayer('vidsrc');
@@ -36,15 +37,17 @@ function updateHeroSection(data) {
     const titleEl = document.getElementById('movie-title');
     const descHero = document.getElementById('movie-description-hero');
     const trailerContainer = document.getElementById('trailer-container');
-    const metaHero = document.getElementById('movie-meta-hero');
     const heroSection = document.getElementById('movie-hero');
+    const metaHero = document.getElementById('movie-meta-hero');
 
     if (titleEl) titleEl.innerText = data.title || data.name;
+    
+    // Substring logic to keep it clean
     if (descHero) descHero.innerText = data.overview ? data.overview.substring(0, 200) + "..." : "";
 
-    // STEP 1: LAGAY AGAD ANG PICTURE (Para hindi mag-black screen)
+    // 1. SET BACKDROP (Eto yung safety net para hindi mag-black screen)
     if (heroSection && data.backdrop_path) {
-        heroSection.style.backgroundImage = `linear-gradient(to top, #0a0a0a 10%, transparent), url(https://image.tmdb.org/t/p/original${data.backdrop_path})`;
+        heroSection.style.backgroundImage = `linear-gradient(to top, #0a0a0a, transparent), url(https://image.tmdb.org/t/p/original${data.backdrop_path})`;
         heroSection.style.backgroundSize = 'cover';
         heroSection.style.backgroundPosition = 'center';
     }
@@ -53,33 +56,42 @@ function updateHeroSection(data) {
     const rating = data.vote_average ? data.vote_average.toFixed(1) : "N/A";
     if (metaHero) metaHero.innerHTML = `<span>📅 ${year}</span> | <span style="color: #00d4ff;">⭐ ${rating}</span> | <span>🎬 ${mediaType.toUpperCase()}</span>`;
 
-    // STEP 2: TRAILER INJECTION WITH SAFETY CHECK
+    // 2. TRAILER LOGIC (The Index-Style Injector)
     if (trailerContainer && data.videos && data.videos.results.length > 0) {
         const video = data.videos.results.find(v => v.type === "Trailer" && v.site === "YouTube") || 
                       data.videos.results.find(v => v.type === "Teaser" && v.site === "YouTube") ||
                       data.videos.results[0];
         
         if (video && video.site === "YouTube") {
-            // DITO LANG NATIN PAPALITAN ANG LOOB, HINDI NATIN TATANGGALIN ANG BACKGROUND AGAD
+            console.log("🎥 Found video key: " + video.key);
+            
+            // Inject Iframe but keep it hidden first (opacity 0)
             trailerContainer.innerHTML = `
                 <iframe 
                     id="hero-video"
                     src="https://www.youtube.com/embed/${video.key}?autoplay=1&mute=1&controls=0&loop=1&playlist=${video.key}&modestbranding=1&rel=0&enablejsapi=1&iv_load_policy=3" 
                     frameborder="0" 
                     allow="autoplay; fullscreen"
-                    style="width:100%; height:100%; border:none; position:absolute; top:0; left:0; z-index:1; opacity: 0; transition: opacity 1s ease-in-out;">
+                    style="width:100%; height:100%; border:none; position:absolute; top:0; left:0; z-index:1; opacity:0; transition: opacity 1.5s ease; pointer-events: none;">
                 </iframe>
             `;
 
-            // STEP 3: SMOOTH TRANSITION (I-fade in ang video, saka dahan-dahang i-black ang background)
+            // Wait for YouTube to "warm up" before hiding the picture
             const iframe = document.getElementById('hero-video');
             if (iframe) {
                 setTimeout(() => {
-                    iframe.style.opacity = "1"; // I-show ang video
-                    if (heroSection) heroSection.style.backgroundColor = "#000"; // Solid black para lumitaw ang video
-                }, 1500); // 1.5 seconds delay para sigurado
+                    iframe.style.opacity = "1"; // Fade in video
+                    if (heroSection) {
+                        // Huwag i-set sa 'none' agad. Hayaan siyang mag-blend.
+                        heroSection.style.backgroundColor = "#000"; 
+                    }
+                }, 2000); 
             }
+        } else {
+            console.log("❌ No YouTube trailer found for this ID.");
         }
+    } else {
+        console.log("❌ No video results in TMDB data.");
     }
 }
 
@@ -94,7 +106,7 @@ function updateDetailsSection(data) {
             : 'https://via.placeholder.com/500x750?text=No+Poster';
     }
 
-    if (overviewFull) overviewFull.innerText = data.overview || "No description available, bro.";
+    if (overviewFull) overviewFull.innerText = data.overview || "No description available.";
 
     if (castEl && data.credits && data.credits.cast) {
         castEl.innerHTML = data.credits.cast.slice(0, 6).map(person => `
@@ -125,7 +137,8 @@ function setPlayer(server) {
     iframe.src = src;
 }
 
-// Controls logic (Unchanged)
+// --- CONTROLS & LISTENERS ---
+
 const muteBtn = document.querySelector('.hero-actions button:nth-child(2)');
 if (muteBtn) {
     muteBtn.addEventListener('click', () => {
@@ -134,6 +147,14 @@ if (muteBtn) {
             iframe.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
             muteBtn.innerHTML = "🔊 Sound On";
         }
+    });
+}
+
+const scrollBtn = document.getElementById('scroll-to-player');
+if (scrollBtn) {
+    scrollBtn.addEventListener('click', () => {
+        const playerSec = document.getElementById('player-section');
+        if(playerSec) playerSec.scrollIntoView({ behavior: 'smooth' });
     });
 }
 
