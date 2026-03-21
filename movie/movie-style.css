@@ -1,67 +1,79 @@
-/* movie/movie-style.css */
-:root { --primary-blue: #00d4ff; }
+/* movie/movie-style.css - FINAL NUCLEAR FIX */
+:root { 
+    --primary-blue: #00d4ff; 
+    --bg-dark: #0a0a0a;
+}
 
 #movie-hero {
     position: relative;
     width: 100%;
-    height: 75vh; /* 75% ng screen para sa trailer */
+    height: 75vh;
     background: #000;
     overflow: hidden;
+    /* Eto ang fallback para hindi black screen agad */
+    background-size: cover;
+    background-position: center;
 }
 
 #trailer-container {
     position: absolute;
     inset: 0;
     z-index: 1;
+    pointer-events: none; /* Mahalaga ito para hindi ma-block ang clicks sa info */
 }
 
 #trailer-container iframe {
     width: 100vw;
-    height: 56.25vw; /* 16:9 ratio */
+    height: 56.25vw;
     min-height: 100vh;
     min-width: 177.77vh;
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    pointer-events: none; /* Hindi maki-click ang youtube controls */
     opacity: 0.7;
+    filter: brightness(0.6);
 }
 
 .movie-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, #0a0a0a 5%, transparent 40%),
-                linear-gradient(to right, #0a0a0a 20%, transparent 70%);
+    /* Gradient fix para mabasa ang text */
+    background: linear-gradient(to top, var(--bg-dark) 5%, transparent 60%),
+                linear-gradient(to right, var(--bg-dark) 15%, transparent 80%);
     z-index: 2;
 }
 
 .hero-info-content {
     position: absolute;
-    bottom: 10%;
+    bottom: 12%;
     left: 5%;
     z-index: 10;
     max-width: 700px;
+    color: white;
 }
 
-.hero-info-content h1 { font-size: 3.5rem; margin-bottom: 10px; text-shadow: 2px 2px 15px rgba(0,0,0,0.8); }
+.hero-info-content h1 { 
+    font-size: clamp(2rem, 5vw, 3.5rem); /* Responsive font size */
+    margin-bottom: 10px; 
+    text-shadow: 2px 2px 20px rgba(0,0,0,0.9); 
+}
+
+.meta-info {
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: #ccc;
+    font-size: 0.9rem;
+}
 
 .hero-actions { display: flex; gap: 15px; margin-top: 25px; }
 
-.btn-secondary {
-    background: rgba(255,255,255,0.15);
-    border: 1px solid #fff;
-    color: #fff;
-    padding: 12px 25px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.3s;
-}
-
-.btn-secondary:hover { background: #fff; color: #000; }
-
 /* PLAYER SECTION */
-.movie-page-container { padding: 40px 5%; max-width: 1300px; margin: 0 auto; }
+.movie-page-container { 
+    padding: 60px 5%; 
+    max-width: 1300px; 
+    margin: 0 auto; 
+    background: var(--bg-dark);
+}
 
 .player-wrapper { 
     position: relative;
@@ -69,22 +81,88 @@
     aspect-ratio: 16/9;
     background: #000;
     border-radius: 15px;
-    box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
-    margin-bottom: 40px;
+    box-shadow: 0 0 40px rgba(0, 212, 255, 0.15);
+    margin-bottom: 50px;
     overflow: hidden;
-    border: 1px solid rgba(0, 212, 255, 0.3);
+    border: 1px solid rgba(0, 212, 255, 0.2);
 }
 
-.movie-info-grid { display: grid; grid-template-columns: 280px 1fr; gap: 50px; }
+#movie-iframe { width: 100%; height: 100%; border: none; }
+
+/* INFO GRID - FIXED ALIGNMENT */
+.movie-info-grid { 
+    display: grid; 
+    grid-template-columns: 280px 1fr; /* Fixed Poster Width */
+    gap: 50px; 
+    align-items: start;
+    color: white;
+}
+
+.poster-side {
+    position: relative;
+    width: 100%;
+}
+
+#movie-poster { 
+    width: 100%; 
+    border-radius: 15px; 
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.1);
+    display: block;
+}
+
+.rating-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--primary-blue);
+    color: #000;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    box-shadow: 0 0 15px rgba(0,212,255,0.5);
+}
+
+.details-side h2 { 
+    color: var(--primary-blue); 
+    margin-top: 0; 
+    font-size: 1.8rem;
+}
+
+#movie-overview { 
+    line-height: 1.8; 
+    color: #bbb; 
+    font-size: 1.05rem;
+}
 
 /* CAST STYLING */
+.cast-section { margin-top: 35px; }
 .cast-list {
     display: flex;
     gap: 20px;
     overflow-x: auto;
     padding: 15px 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-blue) transparent;
 }
 
-.cast-item { flex: 0 0 90px; text-align: center; }
-.cast-item img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-blue); }
-.cast-item p { font-size: 0.75rem; margin-top: 5px; }
+.cast-item { flex: 0 0 100px; text-align: center; color: white; }
+.cast-item img { 
+    width: 85px; height: 85px; 
+    border-radius: 50%; 
+    object-fit: cover; 
+    border: 2px solid var(--primary-blue); 
+    margin-bottom: 8px;
+}
+
+/* MOBILE RESPONSIVE */
+@media (max-width: 900px) {
+    .movie-info-grid { 
+        grid-template-columns: 1fr; 
+        text-align: center;
+        gap: 30px;
+    }
+    .poster-side { max-width: 250px; margin: 0 auto; }
+    .hero-info-content { text-align: center; width: 90%; left: 5%; bottom: 5%; }
+    .hero-actions { justify-content: center; }
+}
