@@ -54,7 +54,6 @@ export async function showDetails(item) {
             res = await fetch(`${BASE_URL}?endpoint=/${type}/${item.id}/similar`);
             data = await res.json();
         }
-        // Take note, bro: Kailangan nating i-import ang createMovieCard sa final script para gumana ang displaySimilar
         if (window.displaySimilar) window.displaySimilar(data.results.slice(0, 6)); 
     } catch (err) { 
         console.error("Suggestions error:", err); 
@@ -78,12 +77,31 @@ export function changeServer() {
     document.getElementById("modal-video").src = url;
 }
 
+/**
+ * --- FIXED PLAY TRAILER ---
+ * This now fetches movie details first to ensure the poster and info update correctly.
+ */
 export async function playTrailer(id, type) {
-    const res = await fetch(`${BASE_URL}?endpoint=/${type}/${id}/videos`);
-    const data = await res.json();
-    const trailer = data.results.find(v => v.type === "Trailer" && v.site === "YouTube");
-    if (trailer) {
-        document.getElementById("modal-video").src = `https://www.youtube.com/embed/${trailer.key}?autoplay=1`;
-        document.getElementById("modal").style.display = "flex";
+    try {
+        // 1. Fetch the full details first
+        const movieRes = await fetch(`${BASE_URL}?endpoint=/${type}/${id}`);
+        const movieData = await movieRes.json();
+        
+        // 2. Refresh the Modal UI with new details
+        await showDetails(movieData);
+
+        // 3. Find and play the trailer
+        const videoRes = await fetch(`${BASE_URL}?endpoint=/${type}/${id}/videos`);
+        const videoData = await videoRes.json();
+        const trailer = videoData.results.find(v => v.type === "Trailer" && v.site === "YouTube");
+        
+        if (trailer) {
+            // Override the server player with YouTube trailer
+            document.getElementById("modal-video").src = `https://www.youtube.com/embed/${trailer.key}?autoplay=1&rel=0`;
+        } else {
+            console.warn("No YouTube trailer found, bro. Showing server player instead.");
+        }
+    } catch (err) {
+        console.error("Trailer fetch error:", err);
     }
 }
