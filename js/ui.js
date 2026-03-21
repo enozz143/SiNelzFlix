@@ -16,6 +16,7 @@ export function createMovieCard(item) {
     const overlay = document.createElement("div");
     overlay.className = "trailer-overlay";
     
+    // Button 1: Play Trailer (Modal pa rin 'to para mabilis na silip)
     const trailerBtn = document.createElement("button");
     trailerBtn.className = "hover-btn trailer-btn";
     trailerBtn.innerHTML = "Play Trailer";
@@ -24,16 +25,18 @@ export function createMovieCard(item) {
         playTrailer(item.id, item.title ? "movie" : "tv"); 
     };
 
+    // Button 2: Full Movie (Dito na papasok yung redirect sa movie.html)
     const fullMovieBtn = document.createElement("button");
     fullMovieBtn.className = "hover-btn movie-btn";
     fullMovieBtn.innerHTML = "Full Movie";
     fullMovieBtn.onclick = (e) => { 
         e.stopPropagation(); 
         const type = item.title ? "movie" : "tv";
-        // FIX: Dinagdagan ng .html para mahanap ng Cloudflare yung file
+        // FIX: Siniguro nating may .html para mahanap ni Cloudflare Pages
         window.location.href = `movie.html?id=${item.id}&type=${type}`;
     };
 
+    // Button 3: Share Link
     const shareBtn = document.createElement("button");
     shareBtn.className = "share-mini-btn";
     shareBtn.innerHTML = "🔗 Share";
@@ -56,7 +59,7 @@ export function createMovieCard(item) {
     card.appendChild(img);
     card.appendChild(overlay);
 
-    // FIX: Pati dito sa card click, dapat may .html
+    // FIX: Pag clinick mismo yung poster, direct to movie.html na rin
     card.onclick = () => {
         const type = item.title ? "movie" : "tv";
         window.location.href = `movie.html?id=${item.id}&type=${type}`;
@@ -65,11 +68,11 @@ export function createMovieCard(item) {
     return card;
 }
 
-// ... ituloy mo lang yung displayList, handleSearch, filterGenre, at loadMore mo ...
 export function displayList(items, containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
     container.innerHTML = "";
+    if (!items) return;
     items.forEach(item => {
         if (item.poster_path) container.appendChild(createMovieCard(item));
     });
@@ -91,6 +94,8 @@ export function displaySimilar(items) {
         }
     });
 }
+
+// Para ma-access sa labas (sa script.js)
 window.displaySimilar = displaySimilar;
 
 export async function handleSearch(q) {
@@ -101,6 +106,7 @@ export async function handleSearch(q) {
     }
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(async () => {
+        // Ginagamit yung window.BASE_URL na galing sa script.js/worker link
         const res = await fetch(`${window.BASE_URL}?endpoint=/search/multi&query=${encodeURIComponent(q)}`);
         const data = await res.json();
         document.getElementById("search-results-section").style.display = "block";
@@ -113,16 +119,24 @@ export async function filterGenre(genreId) {
     currentGenre = genreId;
     currentPage = 1; 
     document.querySelectorAll('.genre-btn').forEach(btn => btn.classList.remove('active'));
+    
     if (event && event.target) event.target.classList.add('active');
+    
     const trendingRow = document.getElementById("movies-list");
     const allSections = document.querySelectorAll('#trending-section section.category-section');
+    
     allSections.forEach(sec => {
         if (!sec.contains(trendingRow)) {
             sec.style.display = genreId === 'all' ? "block" : "none";
         }
     });
-    if (genreId !== 'all') { trendingRow.classList.remove("horizontal-scroll"); } 
-    else { trendingRow.classList.add("horizontal-scroll"); }
+
+    if (genreId !== 'all') { 
+        trendingRow.classList.remove("horizontal-scroll"); 
+    } else { 
+        trendingRow.classList.add("horizontal-scroll"); 
+    }
+
     const filteredMovies = await fetchMovies("movie", 1, genreId);
     displayList(filteredMovies, "movies-list");
 }
@@ -131,15 +145,20 @@ export async function loadMore() {
     currentPage++; 
     const loadBtn = document.getElementById("load-more-btn");
     const trendingRow = document.getElementById("movies-list");
-    const trendingSection = trendingRow.parentElement; 
+    
     loadBtn.textContent = "Loading Results...";
     loadBtn.disabled = true;
+
     const moreMovies = await fetchMovies("movie", currentPage, currentGenre);
     if (moreMovies && moreMovies.length > 0) {
         moreMovies.forEach(item => {
-            if (item.poster_path) { trendingRow.appendChild(createMovieCard(item)); }
+            if (item.poster_path) { 
+                trendingRow.appendChild(createMovieCard(item)); 
+            }
         });
-        loadBtn.textContent = "Show Even More";
+        loadBtn.textContent = "Explore More Movies";
         loadBtn.disabled = false;
-    } else { loadBtn.style.display = "none"; }
+    } else { 
+        loadBtn.style.display = "none"; 
+    }
 }
