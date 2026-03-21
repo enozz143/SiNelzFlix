@@ -16,7 +16,7 @@ function showSkeletons(containerId, count = 10) {
     container.innerHTML = skeletonHTML;
 }
 
-// --- BRIDGE TO HTML ---
+// --- BRIDGE TO HTML (Para gumana ang inline onclick calls) ---
 window.showDetails = showDetails;
 window.closeModal = closeModal;
 window.changeServer = changeServer;
@@ -34,6 +34,7 @@ window.BASE_URL = BASE_URL;
 async function init() {
     console.log("🚀 CINElzFlix Engine is now LIVE, bro!"); 
     try {
+        // 0. Initialize Countdown Timer
         initCountdown();
 
         // --- START LOADING SKELETONS ---
@@ -68,7 +69,7 @@ async function init() {
             }
         }
 
-        // --- 3. FIX: DEEP LINKING SUPPORT ---
+        // --- 3. DEEP LINKING SUPPORT (Updated to /movie/ folder) ---
         const params = new URLSearchParams(window.location.search);
         const movieId = params.get('movie'); 
         const tvId = params.get('tv');        
@@ -76,7 +77,9 @@ async function init() {
         if (movieId || tvId) {
             const id = (movieId || tvId).split('-')[0];
             const type = movieId ? 'movie' : 'tv';
-            window.location.href = `movie.html?id=${id}&type=${type}`;
+            
+            console.log(`Detected deep link for ${type} ${id}. Redirecting to /movie/ folder...`);
+            window.location.href = `/movie/?id=${id}&type=${type}`;
         }
 
     } catch (err) { 
@@ -88,10 +91,10 @@ async function init() {
 
 /**
  * FIXED: EVENT DELEGATION PARA SA DYNAMIC BUTTONS
- * Dito natin sasaluhin lahat ng clicks sa Slider at Movie Cards
+ * Sinisigurado nito na lahat ng clicks sa slider at posters ay gagana.
  */
 document.addEventListener('click', (e) => {
-    // 1. Check kung "Watch Now" (Slider) o "Play" (Movie Cards) button
+    // Hanapin ang pinakamalapit na button element (watch-now, btn-watch, o play-btn)
     const watchBtn = e.target.closest('.watch-now') || e.target.closest('.btn-watch') || e.target.closest('.play-btn');
     
     if (watchBtn) {
@@ -101,14 +104,16 @@ document.addEventListener('click', (e) => {
         
         if (id) {
             console.log(`🎬 Redirecting to play ${type}: ${id}`);
-            window.location.href = `movie.html?id=${id}&type=${type}`;
+            // FIXED: Path pointing to the folder /movie/
+            window.location.href = `/movie/?id=${id}&type=${type}`;
         }
         return;
     }
-
-    // 2. Escape Key logic remains for other modals if needed
 });
 
+/**
+ * Handle Escape key for UI close actions
+ */
 document.addEventListener('keydown', (e) => {
     if (e.key === "Escape") {
         const modal = document.getElementById("modal");
@@ -128,4 +133,5 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+// Fire the engine!
 init();
