@@ -25,26 +25,26 @@ export function createMovieCard(item) {
         playTrailer(item.id, item.title ? "movie" : "tv"); 
     };
 
-    // Button 2: Full Movie (Redirect logic fixed for Cloudflare)
+    // Button 2: Full Movie (Updated to /movie/ folder)
     const fullMovieBtn = document.createElement("button");
     fullMovieBtn.className = "hover-btn movie-btn";
     fullMovieBtn.innerHTML = "Full Movie";
     fullMovieBtn.onclick = (e) => { 
         e.stopPropagation(); 
         const type = item.title ? "movie" : "tv";
-        // Force absolute path para hindi mawala ang .html
-        const targetUrl = `${window.location.origin}/movie.html?id=${item.id}&type=${type}`;
+        // Gamit ang folder structure para sa clean URL
+        const targetUrl = `${window.location.origin}/movie/?id=${item.id}&type=${type}`;
         window.location.href = targetUrl;
     };
 
-    // Button 3: Share Link
+    // Button 3: Share Link (Updated to /movie/ folder)
     const shareBtn = document.createElement("button");
     shareBtn.className = "share-mini-btn";
     shareBtn.innerHTML = "🔗 Share";
     shareBtn.onclick = (e) => {
         e.stopPropagation();
         const type = item.title ? "movie" : "tv";
-        const shareUrl = `${window.location.origin}/movie.html?id=${item.id}&type=${type}`;
+        const shareUrl = `${window.location.origin}/movie/?id=${item.id}&type=${type}`;
         
         if (navigator.share) {
             navigator.share({ title: item.title || item.name, text: `Panoorin natin 'to sa CINElzFlix!`, url: shareUrl });
@@ -60,10 +60,10 @@ export function createMovieCard(item) {
     card.appendChild(img);
     card.appendChild(overlay);
 
-    // FIX: Pag click sa card, dapat may .html din
+    // Card click: Direct to /movie/ folder
     card.onclick = () => {
         const type = item.title ? "movie" : "tv";
-        const targetUrl = `${window.location.origin}/movie.html?id=${item.id}&type=${type}`;
+        const targetUrl = `${window.location.origin}/movie/?id=${item.id}&type=${type}`;
         window.location.href = targetUrl;
     };
 
