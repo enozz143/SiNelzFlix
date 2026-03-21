@@ -1,14 +1,10 @@
-// js/ui.js
 import { IMG_URL, fetchMovies } from './api.js';
-import { playTrailer } from './modal.js'; // Tinanggal na natin ang showDetails import dito
+import { playTrailer } from './modal.js';
 
 let currentPage = 1;
 let currentGenre = 'all';
 let debounceTimer;
 
-/**
- * --- MOVIE CARDS & LISTS ---
- */
 export function createMovieCard(item) {
     const card = document.createElement("div");
     card.className = "movie-card";
@@ -20,7 +16,7 @@ export function createMovieCard(item) {
     const overlay = document.createElement("div");
     overlay.className = "trailer-overlay";
     
-    // --- 1. TRAILER BUTTON (Nanatiling Popup/Modal) ---
+    // --- 1. TRAILER BUTTON (Popup pa rin) ---
     const trailerBtn = document.createElement("button");
     trailerBtn.className = "hover-btn trailer-btn";
     trailerBtn.innerHTML = "Play Trailer";
@@ -29,18 +25,18 @@ export function createMovieCard(item) {
         playTrailer(item.id, item.title ? "movie" : "tv"); 
     };
 
-    // --- 2. FULL MOVIE BUTTON (Redirect na sa movie.html) ---
+    // --- 2. FULL MOVIE BUTTON (Explicit .html redirect) ---
     const fullMovieBtn = document.createElement("button");
     fullMovieBtn.className = "hover-btn movie-btn";
     fullMovieBtn.innerHTML = "Full Movie";
     fullMovieBtn.onclick = (e) => { 
         e.stopPropagation(); 
         const type = item.title ? "movie" : "tv";
-        // Lilipat na sa bagong page imbes na modal
-        window.location.href = `movie.html?id=${item.id}&type=${type}`;
+        // Gamit ang window.location.origin para iwas 404
+        window.location.href = `${window.location.origin}/movie.html?id=${item.id}&type=${type}`;
     };
 
-    // --- 3. SHARE BUTTON (Updated link format) ---
+    // --- 3. SHARE BUTTON ---
     const shareBtn = document.createElement("button");
     shareBtn.className = "share-mini-btn";
     shareBtn.innerHTML = "🔗 Share";
@@ -63,16 +59,16 @@ export function createMovieCard(item) {
     card.appendChild(img);
     card.appendChild(overlay);
 
-    // Optional: Gawin nating clickable yung buong card para sa mobile users
+    // Clicking the whole card redirects too
     card.onclick = () => {
         const type = item.title ? "movie" : "tv";
-        window.location.href = `movie.html?id=${item.id}&type=${type}`;
+        window.location.href = `${window.location.origin}/movie.html?id=${item.id}&type=${type}`;
     };
 
     return card;
 }
 
-// ... (displayList, displaySimilar, handleSearch, filterGenre, loadMore functions remain the same) ...
+// ... the rest of the functions (displayList, handleSearch, etc.) can stay as they are ...
 
 export function displayList(items, containerId) {
     const container = document.getElementById(containerId);
@@ -83,9 +79,6 @@ export function displayList(items, containerId) {
     });
 }
 
-/**
- * --- SPECIAL UI HANDLERS ---
- */
 export function displaySimilar(items) {
     let container = document.getElementById("similar-movies-container");
     if (!container) return;
@@ -103,12 +96,8 @@ export function displaySimilar(items) {
     });
 }
 
-// Global reference para sa movie-page.js if needed
 window.displaySimilar = displaySimilar;
 
-/**
- * --- SEARCH, FILTERS & LOAD MORE ---
- */
 export async function handleSearch(q) {
     if (!q.trim()) {
         document.getElementById("search-results-section").style.display = "none";
