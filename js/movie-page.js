@@ -1,4 +1,4 @@
-// js/movie-page.js - FULL DEBUGGED VERSION (155+ Lines Logic)
+// js/movie-page.js - MATCHED WITH movie/index.html
 const params = new URLSearchParams(window.location.search);
 const movieId = params.get('id');
 const mediaType = params.get('type') || 'movie';
@@ -14,6 +14,7 @@ async function loadMovieDetails() {
     try {
         console.log(`🚀 Loading cinematic experience for ${mediaType} ID: ${movieId}...`);
         
+        // Fetch data kasama ang Similar movies para sa bottom section
         const response = await fetch(`${BASE_URL}?endpoint=/${mediaType}/${movieId}&append_to_response=videos,credits,similar`);
         
         if (!response.ok) throw new Error(`Worker Error: ${response.status}`);
@@ -21,9 +22,12 @@ async function loadMovieDetails() {
 
         if (!data || data.success === false) throw new Error("Content not found");
 
-        // --- RENDER EVERYTHING ---
+        // --- RENDER SECTIONS ---
         updateHeroSection(data);
         updateDetailsSection(data);
+        updateSimilarMovies(data.similar);
+        
+        // --- SETUP PLAYER ---
         setPlayer('vidsrc');
 
     } catch (error) {
@@ -41,31 +45,24 @@ function updateHeroSection(data) {
     const metaHero = document.getElementById('movie-meta-hero');
 
     if (titleEl) titleEl.innerText = data.title || data.name;
-    
-    // Substring logic to keep it clean
-    if (descHero) descHero.innerText = data.overview ? data.overview.substring(0, 200) + "..." : "";
+    if (descHero) descHero.innerText = data.overview ? data.overview.substring(0, 160) + "..." : "";
 
-    // 1. SET BACKDROP (Eto yung safety net para hindi mag-black screen)
+    // 1. SET BACKDROP (Safety Net)
     if (heroSection && data.backdrop_path) {
-        heroSection.style.backgroundImage = `linear-gradient(to top, #0a0a0a, transparent), url(https://image.tmdb.org/t/p/original${data.backdrop_path})`;
-        heroSection.style.backgroundSize = 'cover';
-        heroSection.style.backgroundPosition = 'center';
+        heroSection.style.backgroundImage = `linear-gradient(to top, #0a0a0a 10%, transparent), url(https://image.tmdb.org/t/p/original${data.backdrop_path})`;
     }
 
     const year = (data.release_date || data.first_air_date || "N/A").split('-')[0];
     const rating = data.vote_average ? data.vote_average.toFixed(1) : "N/A";
     if (metaHero) metaHero.innerHTML = `<span>📅 ${year}</span> | <span style="color: #00d4ff;">⭐ ${rating}</span> | <span>🎬 ${mediaType.toUpperCase()}</span>`;
 
-    // 2. TRAILER LOGIC (The Index-Style Injector)
+    // 2. TRAILER ENGINE (Matches your #trailer-container)
     if (trailerContainer && data.videos && data.videos.results.length > 0) {
         const video = data.videos.results.find(v => v.type === "Trailer" && v.site === "YouTube") || 
                       data.videos.results.find(v => v.type === "Teaser" && v.site === "YouTube") ||
                       data.videos.results[0];
         
         if (video && video.site === "YouTube") {
-            console.log("🎥 Found video key: " + video.key);
-            
-            // Inject Iframe but keep it hidden first (opacity 0)
             trailerContainer.innerHTML = `
                 <iframe 
                     id="hero-video"
@@ -76,22 +73,14 @@ function updateHeroSection(data) {
                 </iframe>
             `;
 
-            // Wait for YouTube to "warm up" before hiding the picture
             const iframe = document.getElementById('hero-video');
             if (iframe) {
                 setTimeout(() => {
-                    iframe.style.opacity = "1"; // Fade in video
-                    if (heroSection) {
-                        // Huwag i-set sa 'none' agad. Hayaan siyang mag-blend.
-                        heroSection.style.backgroundColor = "#000"; 
-                    }
+                    iframe.style.opacity = "1";
+                    if (heroSection) heroSection.style.backgroundColor = "#000";
                 }, 2000); 
             }
-        } else {
-            console.log("❌ No YouTube trailer found for this ID.");
         }
-    } else {
-        console.log("❌ No video results in TMDB data.");
     }
 }
 
@@ -99,6 +88,7 @@ function updateDetailsSection(data) {
     const posterImg = document.getElementById('movie-poster');
     const overviewFull = document.getElementById('movie-overview');
     const castEl = document.getElementById('movie-cast');
+    const ratingBadge = document.getElementById('vote-avg');
 
     if (posterImg) {
         posterImg.src = data.poster_path 
@@ -106,6 +96,7 @@ function updateDetailsSection(data) {
             : 'https://via.placeholder.com/500x750?text=No+Poster';
     }
 
+    if (ratingBadge) ratingBadge.innerText = data.vote_average ? data.vote_average.toFixed(1) : "0.0";
     if (overviewFull) overviewFull.innerText = data.overview || "No description available.";
 
     if (castEl && data.credits && data.credits.cast) {
@@ -117,6 +108,23 @@ function updateDetailsSection(data) {
             </div>
         `).join('');
     }
+}
+
+function updateSimilarMovies(similar) {
+    const container = document.getElementById('similar-movies-container');
+    if (!container || !similar || !similar.results.length) return;
+
+    container.innerHTML = `
+        <h2 style="margin-bottom: 20px;">You Might Also Like</h2>
+        <div class="movie-row horizontal-scroll">
+            ${similar.results.slice(0, 10).map(movie => `
+                <div class="movie-card" onclick="location.href='?id=${movie.id}&type=${mediaType}'">
+                    <img src="https://image.tmdb.org/t/p/w300${movie.poster_path}" alt="${movie.title || movie.name}">
+                    <p>${movie.title || movie.name}</p>
+                </div>
+            `).join('')}
+        </div>
+    `;
 }
 
 function setPlayer(server) {
@@ -137,9 +145,10 @@ function setPlayer(server) {
     iframe.src = src;
 }
 
-// --- CONTROLS & LISTENERS ---
+// --- EVENT LISTENERS ---
 
-const muteBtn = document.querySelector('.hero-actions button:nth-child(2)');
+// 1. Mute Toggle (Fixed for your #trailer-mute-toggle)
+const muteBtn = document.getElementById('trailer-mute-toggle');
 if (muteBtn) {
     muteBtn.addEventListener('click', () => {
         const iframe = document.getElementById('hero-video');
@@ -150,6 +159,7 @@ if (muteBtn) {
     });
 }
 
+// 2. Watch Now Scroll (Fixed for your #scroll-to-player)
 const scrollBtn = document.getElementById('scroll-to-player');
 if (scrollBtn) {
     scrollBtn.addEventListener('click', () => {
@@ -158,6 +168,7 @@ if (scrollBtn) {
     });
 }
 
+// 3. Server Change
 const serverSelect = document.getElementById('server-select');
 if (serverSelect) {
     serverSelect.addEventListener('change', (e) => setPlayer(e.target.value));
