@@ -1,4 +1,4 @@
-// js/movie-page.js - FULL UNABRIDGED VERSION
+// js/movie-page.js
 const params = new URLSearchParams(window.location.search);
 const movieId = params.get('id');
 const mediaType = params.get('type') || 'movie';
@@ -45,9 +45,11 @@ function updateHeroSection(data) {
     const heroSection = document.getElementById('movie-hero');
 
     if (titleEl) titleEl.innerText = data.title || data.name;
+    
+    // Ibinalik ang eksaktong substring(0, 200) logic mo
     if (descHero) descHero.innerText = data.overview ? data.overview.substring(0, 200) + "..." : "";
 
-    // 1. SET BACKDROP AS FALLBACK (Yung "Picture" na nakikita mo)
+    // BACKDROP: Para laging may image habang naglo-load ang trailer
     if (heroSection && data.backdrop_path) {
         heroSection.style.backgroundImage = `linear-gradient(to top, #0a0a0a, transparent), url(https://image.tmdb.org/t/p/original${data.backdrop_path})`;
         heroSection.style.backgroundSize = 'cover';
@@ -58,26 +60,32 @@ function updateHeroSection(data) {
     const rating = data.vote_average ? data.vote_average.toFixed(1) : "N/A";
     if (metaHero) metaHero.innerHTML = `<span>📅 ${year}</span> | <span style="color: #00d4ff;">⭐ ${rating}</span> | <span>🎬 ${mediaType.toUpperCase()}</span>`;
 
-    // 2. TRAILER ENGINE (Dapat masapawan nito yung picture)
+    // TRAILER ENGINE: Hahanap ng pinaka-okay na video source
     if (trailerContainer && data.videos && data.videos.results.length > 0) {
+        // Priority: Trailer > Teaser > Clip
         const video = data.videos.results.find(v => v.type === "Trailer" && v.site === "YouTube") || 
                       data.videos.results.find(v => v.type === "Teaser" && v.site === "YouTube") ||
                       data.videos.results[0];
         
         if (video && video.site === "YouTube") {
-            // Tinatanggal ang background image para iframe lang ang bida
-            heroSection.style.backgroundImage = "none";
-            
+            // FIX: Force clear background if trailer exists para hindi mag-flicker
+            if (heroSection) {
+                setTimeout(() => {
+                    heroSection.style.backgroundImage = "none";
+                    heroSection.style.backgroundColor = "#000";
+                }, 2000); // 2 seconds delay para smooth transition
+            }
+
+            // Nilagyan natin ng extra params para i-force ang autoplay at loop
             trailerContainer.innerHTML = `
                 <iframe 
                     id="hero-video"
                     src="https://www.youtube.com/embed/${video.key}?autoplay=1&mute=1&controls=0&loop=1&playlist=${video.key}&modestbranding=1&rel=0&enablejsapi=1&iv_load_policy=3" 
                     frameborder="0" 
                     allow="autoplay; fullscreen"
-                    style="width:100%; height:100%; border:none; position:absolute; top:0; left:0; z-index:1; pointer-events: none;">
+                    style="width:100%; height:100%; border:none; pointer-events: none; position: absolute; top: 0; left: 0; z-index: 1;">
                 </iframe>
             `;
-            console.log("🎥 Trailer injected: " + video.key);
         }
     }
 }
@@ -86,7 +94,6 @@ function updateDetailsSection(data) {
     const posterImg = document.getElementById('movie-poster');
     const overviewFull = document.getElementById('movie-overview');
     const castEl = document.getElementById('movie-cast');
-    const voteAvg = document.getElementById('vote-avg');
 
     if (posterImg) {
         posterImg.src = data.poster_path 
@@ -95,7 +102,6 @@ function updateDetailsSection(data) {
     }
 
     if (overviewFull) overviewFull.innerText = data.overview || "No description available, bro.";
-    if (voteAvg) voteAvg.innerText = data.vote_average ? data.vote_average.toFixed(1) : "0.0";
 
     if (castEl && data.credits && data.credits.cast) {
         castEl.innerHTML = data.credits.cast.slice(0, 6).map(person => `
@@ -126,27 +132,41 @@ function setPlayer(server) {
     iframe.src = src;
 }
 
-// --- EVENT LISTENERS ---
+// --- CONTROLS ---
 
-const muteBtn = document.querySelector('.hero-actions button:nth-child(2)');
+// 1. Mute/Unmute Logic (Para sa button mo sa UI)
+const muteBtn = document.querySelector('.hero-actions button:nth-child(2)'); // Mute/Unmute button
 if (muteBtn) {
     muteBtn.addEventListener('click', () => {
         const iframe = document.getElementById('hero-video');
         if (iframe) {
+            // Pasabugin ang YouTube API para mag-unmute (kailangan ng postMessage)
             iframe.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
             muteBtn.innerHTML = "🔊 Sound On";
         }
     });
 }
 
+// 2. Server Selection Logic
 const serverSelect = document.getElementById('server-select');
 if (serverSelect) {
     serverSelect.addEventListener('change', (e) => setPlayer(e.target.value));
 }
 
+// 3. Scroll to Player Logic
 const scrollBtn = document.getElementById('scroll-to-player');
+const watchBtnHero = document.querySelector('.watch-now'); // Button na "Watch Full Movie"
+
 if (scrollBtn) {
     scrollBtn.addEventListener('click', () => {
+        const playerSection = document.getElementById('player-section');
+        if(playerSection) playerSection.scrollIntoView({ behavior: 'smooth' });
+    });
+}
+
+// Idinagdag ko 'to para pati yung Watch button sa Hero mag-scroll pababa
+if (watchBtnHero) {
+    watchBtnHero.addEventListener('click', () => {
         const playerSection = document.getElementById('player-section');
         if(playerSection) playerSection.scrollIntoView({ behavior: 'smooth' });
     });
