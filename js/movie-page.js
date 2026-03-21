@@ -3,7 +3,6 @@ const params = new URLSearchParams(window.location.search);
 const movieId = params.get('id');
 const mediaType = params.get('type') || 'movie';
 
-// Ang iyong Cloudflare Worker URL
 const BASE_URL = 'https://cinelzflix-worker.baquial-enozz.workers.dev/'; 
 
 async function loadMovieDetails() {
@@ -15,7 +14,6 @@ async function loadMovieDetails() {
     try {
         console.log(`🚀 Loading cinematic experience for ${mediaType} ID: ${movieId}...`);
         
-        // 1. FETCH DETAILS, VIDEOS, AND CREDITS IN ONE GO
         const response = await fetch(`${BASE_URL}?endpoint=/${mediaType}/${movieId}&append_to_response=videos,credits,similar`);
         
         if (!response.ok) throw new Error(`Worker Error: ${response.status}`);
@@ -23,7 +21,7 @@ async function loadMovieDetails() {
 
         if (!data || data.success === false) throw new Error("Content not found");
 
-        // --- UPDATE HERO TRAILER & INFO ---
+        // --- UPDATE HERO & TRAILER ---
         updateHeroSection(data);
 
         // --- UPDATE MAIN DETAILS & CAST ---
@@ -38,43 +36,44 @@ async function loadMovieDetails() {
     }
 }
 
-/**
- * Nag-a-update ng Trailer at Hero Information sa taas
- */
 function updateHeroSection(data) {
     const titleEl = document.getElementById('movie-title');
     const descHero = document.getElementById('movie-description-hero');
     const trailerContainer = document.getElementById('trailer-container');
     const metaHero = document.getElementById('movie-meta-hero');
+    const heroSection = document.getElementById('movie-hero');
 
     if (titleEl) titleEl.innerText = data.title || data.name;
     if (descHero) descHero.innerText = data.overview ? data.overview.substring(0, 180) + "..." : "";
 
-    // Formatting Meta (Year, Rating, Type)
+    // 1. BACKDROP FALLBACK: Para hindi black screen kung walang trailer
+    if (heroSection && data.backdrop_path) {
+        heroSection.style.backgroundImage = `url(https://image.tmdb.org/t/p/original${data.backdrop_path})`;
+        heroSection.style.backgroundSize = 'cover';
+        heroSection.style.backgroundPosition = 'center';
+    }
+
     const year = (data.release_date || data.first_air_date || "N/A").split('-')[0];
     const rating = data.vote_average ? data.vote_average.toFixed(1) : "N/A";
     if (metaHero) metaHero.innerHTML = `<span>📅 ${year}</span> | <span style="color: #00d4ff;">⭐ ${rating}</span> | <span>🎬 ${mediaType.toUpperCase()}</span>`;
 
-    // TRAILER LOGIC
+    // 2. FIXED TRAILER LOGIC: Autoplay & Mute Fix
     if (trailerContainer && data.videos && data.videos.results.length > 0) {
-        // Hanapin ang official trailer sa YouTube
         const trailer = data.videos.results.find(v => v.type === "Trailer" && v.site === "YouTube") || data.videos.results[0];
         
         if (trailer) {
             trailerContainer.innerHTML = `
                 <iframe 
-                    src="https://www.youtube.com/embed/${trailer.key}?autoplay=1&mute=1&controls=0&loop=1&playlist=${trailer.key}&showinfo=0&modestbranding=1&rel=0&iv_load_policy=3" 
+                    src="https://www.youtube.com/embed/${trailer.key}?autoplay=1&mute=1&controls=0&loop=1&playlist=${trailer.key}&modestbranding=1&rel=0&enablejsapi=1&iv_load_policy=3" 
                     frameborder="0" 
-                    allow="autoplay; encrypted-media">
+                    allow="autoplay; fullscreen"
+                    style="width:100%; height:100%;">
                 </iframe>
             `;
         }
     }
 }
 
-/**
- * Nag-a-update ng Poster, Full Overview, at Cast with Photos
- */
 function updateDetailsSection(data) {
     const posterImg = document.getElementById('movie-poster');
     const overviewFull = document.getElementById('movie-overview');
@@ -90,7 +89,6 @@ function updateDetailsSection(data) {
     if (overviewFull) overviewFull.innerText = data.overview || "No description available, bro.";
     if (voteAvg) voteAvg.innerText = data.vote_average ? data.vote_average.toFixed(1) : "0.0";
 
-    // CAST WITH PHOTOS (Top 6)
     if (castEl && data.credits && data.credits.cast) {
         castEl.innerHTML = data.credits.cast.slice(0, 6).map(person => `
             <div class="cast-item">
@@ -102,9 +100,6 @@ function updateDetailsSection(data) {
     }
 }
 
-/**
- * Player Engine - Switcher ng Servers
- */
 function setPlayer(server) {
     const iframe = document.getElementById('movie-iframe');
     if (!iframe) return;
@@ -123,15 +118,12 @@ function setPlayer(server) {
     iframe.src = src;
 }
 
-// --- GLOBAL EVENT LISTENERS ---
-
-// 1. Server Switcher
+// Event Listeners
 const serverSelect = document.getElementById('server-select');
 if (serverSelect) {
     serverSelect.addEventListener('change', (e) => setPlayer(e.target.value));
 }
 
-// 2. Scroll to Player Button
 const scrollBtn = document.getElementById('scroll-to-player');
 if (scrollBtn) {
     scrollBtn.addEventListener('click', () => {
@@ -139,5 +131,4 @@ if (scrollBtn) {
     });
 }
 
-// Fire the engine!
 loadMovieDetails();
