@@ -2,7 +2,8 @@
 import { BASE_URL, fetchMovies } from './js/api.js';
 import { setupHeroSlider, nextSlide, goToSlide } from './js/slider.js';
 import { displayList, handleSearch, filterGenre, loadMore } from './js/ui.js';
-import { showDetails, closeModal, changeServer } from './js/modal.js';
+// Dinagdag ang playTrailer dito sa import 👇
+import { showDetails, closeModal, changeServer, playTrailer } from './js/modal.js';
 import { initCountdown } from './js/countdown.js';
 
 // --- HELPER: SKELETON LOADER ---
@@ -21,11 +22,12 @@ function showSkeletons(containerId, count = 10) {
 window.showDetails = showDetails;
 window.closeModal = closeModal;
 window.changeServer = changeServer;
+window.playTrailer = playTrailer; // Dinagdag ito para ma-access ng buttons sa HTML 👈
 window.nextSlide = nextSlide;
 window.goToSlide = goToSlide;
 window.handleSearch = handleSearch;
 window.filterGenre = filterGenre; 
-window.loadMore = loadMore;       
+window.loadMore = loadMore;        
 window.BASE_URL = BASE_URL; 
 
 /**
@@ -108,6 +110,5 @@ document.addEventListener('keydown', (e) => {
         }
     }
 });
-
 
 init();
