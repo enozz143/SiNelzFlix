@@ -1,14 +1,19 @@
-const API_KEY = '826502283a005086b4a3a30eb6a7c362'; // TMDB Key mo bro
 const params = new URLSearchParams(window.location.search);
 const movieId = params.get('id');
 const mediaType = params.get('type') || 'movie';
+
+// Kunin ang BASE_URL mula sa global window (yung worker link mo)
+const BASE_URL = window.BASE_URL || 'https://iyong-worker-link.workers.dev/'; 
 
 async function loadMovieDetails() {
     if (!movieId) { window.location.href = '/'; return; }
 
     try {
-        const response = await fetch(`https://api.themoviedb.org/3/${mediaType}/${movieId}?api_key=${API_KEY}&append_to_response=credits`);
+        // Gagamit tayo ng endpoint na format para sa worker mo
+        const response = await fetch(`${BASE_URL}?endpoint=/${mediaType}/${movieId}&append_to_response=credits`);
         const data = await response.json();
+
+        if (data.success === false) throw new Error("Movie not found");
 
         // Fill up details
         document.title = `${data.title || data.name} - Watch on CINElzFlix`;
@@ -20,12 +25,15 @@ async function loadMovieDetails() {
         // Set Video Player
         setPlayer('vidsrc');
 
-        // Cast
-        const cast = data.credits.cast.slice(0, 5).map(c => c.name).join(', ');
-        document.getElementById('movie-cast').innerText = `Cast: ${cast}`;
+        // Cast logic
+        if (data.credits && data.credits.cast) {
+            const cast = data.credits.cast.slice(0, 5).map(c => c.name).join(', ');
+            document.getElementById('movie-cast').innerText = `Cast: ${cast}`;
+        }
 
     } catch (error) {
         console.error("Error loading movie:", error);
+        document.getElementById('movie-title').innerText = "Movie Not Found, Bro!";
     }
 }
 
@@ -40,7 +48,6 @@ function setPlayer(server) {
     }
 }
 
-// Event listener para sa server change
 document.getElementById('server-select').addEventListener('change', (e) => setPlayer(e.target.value));
 
 loadMovieDetails();
