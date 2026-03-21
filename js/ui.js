@@ -1,6 +1,6 @@
 // js/ui.js
 import { IMG_URL, fetchMovies } from './api.js';
-import { showDetails, playTrailer } from './modal.js';
+import { playTrailer } from './modal.js'; // Tinanggal na natin ang showDetails import dito
 
 let currentPage = 1;
 let currentGenre = 'all';
@@ -20,6 +20,7 @@ export function createMovieCard(item) {
     const overlay = document.createElement("div");
     overlay.className = "trailer-overlay";
     
+    // --- 1. TRAILER BUTTON (Nanatiling Popup/Modal) ---
     const trailerBtn = document.createElement("button");
     trailerBtn.className = "hover-btn trailer-btn";
     trailerBtn.innerHTML = "Play Trailer";
@@ -28,22 +29,25 @@ export function createMovieCard(item) {
         playTrailer(item.id, item.title ? "movie" : "tv"); 
     };
 
+    // --- 2. FULL MOVIE BUTTON (Redirect na sa movie.html) ---
     const fullMovieBtn = document.createElement("button");
     fullMovieBtn.className = "hover-btn movie-btn";
     fullMovieBtn.innerHTML = "Full Movie";
     fullMovieBtn.onclick = (e) => { 
         e.stopPropagation(); 
-        showDetails(item); 
+        const type = item.title ? "movie" : "tv";
+        // Lilipat na sa bagong page imbes na modal
+        window.location.href = `movie.html?id=${item.id}&type=${type}`;
     };
 
+    // --- 3. SHARE BUTTON (Updated link format) ---
     const shareBtn = document.createElement("button");
     shareBtn.className = "share-mini-btn";
     shareBtn.innerHTML = "🔗 Share";
     shareBtn.onclick = (e) => {
         e.stopPropagation();
         const type = item.title ? "movie" : "tv";
-        const titleSlug = (item.title || item.name).toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
-        const shareUrl = `${window.location.origin}${window.location.pathname}?${type}=${item.id}-${titleSlug}`;
+        const shareUrl = `${window.location.origin}/movie.html?id=${item.id}&type=${type}`;
         
         if (navigator.share) {
             navigator.share({ title: item.title || item.name, text: `Panoorin natin 'to sa CINElzFlix!`, url: shareUrl });
@@ -58,8 +62,17 @@ export function createMovieCard(item) {
     overlay.appendChild(shareBtn);
     card.appendChild(img);
     card.appendChild(overlay);
+
+    // Optional: Gawin nating clickable yung buong card para sa mobile users
+    card.onclick = () => {
+        const type = item.title ? "movie" : "tv";
+        window.location.href = `movie.html?id=${item.id}&type=${type}`;
+    };
+
     return card;
 }
+
+// ... (displayList, displaySimilar, handleSearch, filterGenre, loadMore functions remain the same) ...
 
 export function displayList(items, containerId) {
     const container = document.getElementById(containerId);
@@ -90,7 +103,7 @@ export function displaySimilar(items) {
     });
 }
 
-// Global reference para sa modal.js
+// Global reference para sa movie-page.js if needed
 window.displaySimilar = displaySimilar;
 
 /**
