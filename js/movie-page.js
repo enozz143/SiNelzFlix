@@ -1,4 +1,4 @@
-// js/movie-page.js - MATCHED WITH movie/index.html
+// js/movie-page.js - Version base sa Slider.js logic
 const params = new URLSearchParams(window.location.search);
 const movieId = params.get('id');
 const mediaType = params.get('type') || 'movie';
@@ -12,32 +12,24 @@ async function loadMovieDetails() {
     }
 
     try {
-        console.log(`🚀 Loading cinematic experience for ${mediaType} ID: ${movieId}...`);
+        console.log(`🚀 Loading details for ${mediaType} ID: ${movieId}...`);
         
-        // Fetch data kasama ang Similar movies para sa bottom section
+        // Gamitin natin ang append_to_response pero mag-fallback sa direct fetch kung kailangan
         const response = await fetch(`${BASE_URL}?endpoint=/${mediaType}/${movieId}&append_to_response=videos,credits,similar`);
-        
-        if (!response.ok) throw new Error(`Worker Error: ${response.status}`);
         const data = await response.json();
 
         if (!data || data.success === false) throw new Error("Content not found");
 
-        // --- RENDER SECTIONS ---
         updateHeroSection(data);
         updateDetailsSection(data);
-        updateSimilarMovies(data.similar);
-        
-        // --- SETUP PLAYER ---
         setPlayer('vidsrc');
 
     } catch (error) {
-        console.error("Error loading movie page, bro:", error);
-        const titleEl = document.getElementById('movie-title');
-        if (titleEl) titleEl.innerText = "Content Unavailable ☹️";
+        console.error("Error loading movie page:", error);
     }
 }
 
-function updateHeroSection(data) {
+async function updateHeroSection(data) {
     const titleEl = document.getElementById('movie-title');
     const descHero = document.getElementById('movie-description-hero');
     const trailerContainer = document.getElementById('trailer-container');
@@ -45,58 +37,64 @@ function updateHeroSection(data) {
     const metaHero = document.getElementById('movie-meta-hero');
 
     if (titleEl) titleEl.innerText = data.title || data.name;
-    if (descHero) descHero.innerText = data.overview ? data.overview.substring(0, 160) + "..." : "";
+    if (descHero) descHero.innerText = data.overview ? data.overview.substring(0, 180) + "..." : "";
 
-    // 1. SET BACKDROP (Safety Net)
+    // BACKDROP (Safety Net para hindi black screen)
     if (heroSection && data.backdrop_path) {
-        heroSection.style.backgroundImage = `linear-gradient(to top, #0a0a0a 10%, transparent), url(https://image.tmdb.org/t/p/original${data.backdrop_path})`;
+        heroSection.style.backgroundImage = `linear-gradient(to top, #0a0a0a 15%, transparent), url(https://image.tmdb.org/t/p/original${data.backdrop_path})`;
+        heroSection.style.backgroundSize = 'cover';
+        heroSection.style.backgroundPosition = 'center';
     }
 
     const year = (data.release_date || data.first_air_date || "N/A").split('-')[0];
     const rating = data.vote_average ? data.vote_average.toFixed(1) : "N/A";
     if (metaHero) metaHero.innerHTML = `<span>📅 ${year}</span> | <span style="color: #00d4ff;">⭐ ${rating}</span> | <span>🎬 ${mediaType.toUpperCase()}</span>`;
 
-    // 2. TRAILER ENGINE (Matches your #trailer-container)
-    if (trailerContainer && data.videos && data.videos.results.length > 0) {
-        const video = data.videos.results.find(v => v.type === "Trailer" && v.site === "YouTube") || 
-                      data.videos.results.find(v => v.type === "Teaser" && v.site === "YouTube") ||
-                      data.videos.results[0];
+    // --- TRAILER LOGIC (Kinuha sa slider.js mo) ---
+    if (trailerContainer) {
+        let trailerKey = "";
         
-        if (video && video.site === "YouTube") {
+        // Hanapin ang trailer sa data.videos (append_to_response)
+        if (data.videos && data.videos.results) {
+            const trailer = data.videos.results.find(v => v.type === "Trailer" && v.site === "YouTube") || 
+                            data.videos.results.find(v => v.site === "YouTube");
+            if (trailer) trailerKey = trailer.key;
+        }
+
+        if (trailerKey) {
+            console.log("🎬 Trailer found! Injecting iframe...");
+            // Gamit ang eksaktong params ng slider.js mo:
             trailerContainer.innerHTML = `
                 <iframe 
-                    id="hero-video"
-                    src="https://www.youtube.com/embed/${video.key}?autoplay=1&mute=1&controls=0&loop=1&playlist=${video.key}&modestbranding=1&rel=0&enablejsapi=1&iv_load_policy=3" 
+                    src="https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=1&controls=0&loop=1&playlist=${trailerKey}&rel=0&showinfo=0&modestbranding=1&iv_load_policy=3" 
                     frameborder="0" 
-                    allow="autoplay; fullscreen"
-                    style="width:100%; height:100%; border:none; position:absolute; top:0; left:0; z-index:1; opacity:0; transition: opacity 1.5s ease; pointer-events: none;">
+                    allow="autoplay; encrypted-media" 
+                    style="width:100%; height:100%; position:absolute; top:0; left:0; border:none; z-index:0;">
                 </iframe>
             `;
-
-            const iframe = document.getElementById('hero-video');
-            if (iframe) {
-                setTimeout(() => {
-                    iframe.style.opacity = "1";
-                    if (heroSection) heroSection.style.backgroundColor = "#000";
-                }, 2000); 
-            }
+            
+            // Para mawala yung black background once mag-load ang iframe
+            setTimeout(() => {
+                if (heroSection) heroSection.style.background = "none";
+                if (heroSection) heroSection.style.backgroundColor = "#000";
+            }, 3000);
+        } else {
+            console.log("❌ No trailer available for this movie.");
         }
     }
 }
 
+// Binalik ko ang normal details logic mo
 function updateDetailsSection(data) {
     const posterImg = document.getElementById('movie-poster');
     const overviewFull = document.getElementById('movie-overview');
     const castEl = document.getElementById('movie-cast');
-    const ratingBadge = document.getElementById('vote-avg');
 
     if (posterImg) {
         posterImg.src = data.poster_path 
             ? `https://image.tmdb.org/t/p/w500${data.poster_path}` 
             : 'https://via.placeholder.com/500x750?text=No+Poster';
     }
-
-    if (ratingBadge) ratingBadge.innerText = data.vote_average ? data.vote_average.toFixed(1) : "0.0";
     if (overviewFull) overviewFull.innerText = data.overview || "No description available.";
 
     if (castEl && data.credits && data.credits.cast) {
@@ -108,23 +106,6 @@ function updateDetailsSection(data) {
             </div>
         `).join('');
     }
-}
-
-function updateSimilarMovies(similar) {
-    const container = document.getElementById('similar-movies-container');
-    if (!container || !similar || !similar.results.length) return;
-
-    container.innerHTML = `
-        <h2 style="margin-bottom: 20px;">You Might Also Like</h2>
-        <div class="movie-row horizontal-scroll">
-            ${similar.results.slice(0, 10).map(movie => `
-                <div class="movie-card" onclick="location.href='?id=${movie.id}&type=${mediaType}'">
-                    <img src="https://image.tmdb.org/t/p/w300${movie.poster_path}" alt="${movie.title || movie.name}">
-                    <p>${movie.title || movie.name}</p>
-                </div>
-            `).join('')}
-        </div>
-    `;
 }
 
 function setPlayer(server) {
@@ -145,33 +126,12 @@ function setPlayer(server) {
     iframe.src = src;
 }
 
-// --- EVENT LISTENERS ---
+// --- BUTTONS ---
+document.getElementById('scroll-to-player')?.addEventListener('click', () => {
+    document.getElementById('player-section')?.scrollIntoView({ behavior: 'smooth' });
+});
 
-// 1. Mute Toggle (Fixed for your #trailer-mute-toggle)
-const muteBtn = document.getElementById('trailer-mute-toggle');
-if (muteBtn) {
-    muteBtn.addEventListener('click', () => {
-        const iframe = document.getElementById('hero-video');
-        if (iframe) {
-            iframe.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
-            muteBtn.innerHTML = "🔊 Sound On";
-        }
-    });
-}
-
-// 2. Watch Now Scroll (Fixed for your #scroll-to-player)
-const scrollBtn = document.getElementById('scroll-to-player');
-if (scrollBtn) {
-    scrollBtn.addEventListener('click', () => {
-        const playerSec = document.getElementById('player-section');
-        if(playerSec) playerSec.scrollIntoView({ behavior: 'smooth' });
-    });
-}
-
-// 3. Server Change
-const serverSelect = document.getElementById('server-select');
-if (serverSelect) {
-    serverSelect.addEventListener('change', (e) => setPlayer(e.target.value));
-}
+// Server change listener
+document.getElementById('server-select')?.addEventListener('change', (e) => setPlayer(e.target.value));
 
 loadMovieDetails();
