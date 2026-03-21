@@ -4,7 +4,7 @@ const movieId = params.get('id');
 const mediaType = params.get('type') || 'movie';
 
 // PAALALA: Siguraduhin na ang BASE_URL ay naka-set sa index.html o ilagay mo dito yung Worker link mo
-const BASE_URL = 'https://cinelzflix-worker.nelz.workers.dev/'; // Palitan mo kung iba ang URL ng worker mo
+const BASE_URL = 'https://nopopup.sinelzflix2.pages.dev/'; // Palitan mo kung iba ang URL ng worker mo
 
 async function loadMovieDetails() {
     if (!movieId) { window.location.href = 'index.html'; return; }
