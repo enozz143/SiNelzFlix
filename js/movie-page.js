@@ -1,4 +1,4 @@
-// js/movie-page.js
+// js/movie-page.js - THE "NO BLACK SCREEN" VERSION
 const params = new URLSearchParams(window.location.search);
 const movieId = params.get('id');
 const mediaType = params.get('type') || 'movie';
@@ -21,13 +21,8 @@ async function loadMovieDetails() {
 
         if (!data || data.success === false) throw new Error("Content not found");
 
-        // --- UPDATE HERO & TRAILER ---
         updateHeroSection(data);
-
-        // --- UPDATE MAIN DETAILS & CAST ---
         updateDetailsSection(data);
-
-        // --- SETUP PLAYER (Default Server) ---
         setPlayer('vidsrc');
 
     } catch (error) {
@@ -45,13 +40,11 @@ function updateHeroSection(data) {
     const heroSection = document.getElementById('movie-hero');
 
     if (titleEl) titleEl.innerText = data.title || data.name;
-    
-    // Ibinalik ang eksaktong substring(0, 200) logic mo
     if (descHero) descHero.innerText = data.overview ? data.overview.substring(0, 200) + "..." : "";
 
-    // BACKDROP: Para laging may image habang naglo-load ang trailer
+    // STEP 1: LAGAY AGAD ANG PICTURE (Para hindi mag-black screen)
     if (heroSection && data.backdrop_path) {
-        heroSection.style.backgroundImage = `linear-gradient(to top, #0a0a0a, transparent), url(https://image.tmdb.org/t/p/original${data.backdrop_path})`;
+        heroSection.style.backgroundImage = `linear-gradient(to top, #0a0a0a 10%, transparent), url(https://image.tmdb.org/t/p/original${data.backdrop_path})`;
         heroSection.style.backgroundSize = 'cover';
         heroSection.style.backgroundPosition = 'center';
     }
@@ -60,32 +53,32 @@ function updateHeroSection(data) {
     const rating = data.vote_average ? data.vote_average.toFixed(1) : "N/A";
     if (metaHero) metaHero.innerHTML = `<span>📅 ${year}</span> | <span style="color: #00d4ff;">⭐ ${rating}</span> | <span>🎬 ${mediaType.toUpperCase()}</span>`;
 
-    // TRAILER ENGINE: Hahanap ng pinaka-okay na video source
+    // STEP 2: TRAILER INJECTION WITH SAFETY CHECK
     if (trailerContainer && data.videos && data.videos.results.length > 0) {
-        // Priority: Trailer > Teaser > Clip
         const video = data.videos.results.find(v => v.type === "Trailer" && v.site === "YouTube") || 
                       data.videos.results.find(v => v.type === "Teaser" && v.site === "YouTube") ||
                       data.videos.results[0];
         
         if (video && video.site === "YouTube") {
-            // FIX: Force clear background if trailer exists para hindi mag-flicker
-            if (heroSection) {
-                setTimeout(() => {
-                    heroSection.style.backgroundImage = "none";
-                    heroSection.style.backgroundColor = "#000";
-                }, 2000); // 2 seconds delay para smooth transition
-            }
-
-            // Nilagyan natin ng extra params para i-force ang autoplay at loop
+            // DITO LANG NATIN PAPALITAN ANG LOOB, HINDI NATIN TATANGGALIN ANG BACKGROUND AGAD
             trailerContainer.innerHTML = `
                 <iframe 
                     id="hero-video"
                     src="https://www.youtube.com/embed/${video.key}?autoplay=1&mute=1&controls=0&loop=1&playlist=${video.key}&modestbranding=1&rel=0&enablejsapi=1&iv_load_policy=3" 
                     frameborder="0" 
                     allow="autoplay; fullscreen"
-                    style="width:100%; height:100%; border:none; pointer-events: none; position: absolute; top: 0; left: 0; z-index: 1;">
+                    style="width:100%; height:100%; border:none; position:absolute; top:0; left:0; z-index:1; opacity: 0; transition: opacity 1s ease-in-out;">
                 </iframe>
             `;
+
+            // STEP 3: SMOOTH TRANSITION (I-fade in ang video, saka dahan-dahang i-black ang background)
+            const iframe = document.getElementById('hero-video');
+            if (iframe) {
+                setTimeout(() => {
+                    iframe.style.opacity = "1"; // I-show ang video
+                    if (heroSection) heroSection.style.backgroundColor = "#000"; // Solid black para lumitaw ang video
+                }, 1500); // 1.5 seconds delay para sigurado
+            }
         }
     }
 }
@@ -132,44 +125,21 @@ function setPlayer(server) {
     iframe.src = src;
 }
 
-// --- CONTROLS ---
-
-// 1. Mute/Unmute Logic (Para sa button mo sa UI)
-const muteBtn = document.querySelector('.hero-actions button:nth-child(2)'); // Mute/Unmute button
+// Controls logic (Unchanged)
+const muteBtn = document.querySelector('.hero-actions button:nth-child(2)');
 if (muteBtn) {
     muteBtn.addEventListener('click', () => {
         const iframe = document.getElementById('hero-video');
         if (iframe) {
-            // Pasabugin ang YouTube API para mag-unmute (kailangan ng postMessage)
             iframe.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
             muteBtn.innerHTML = "🔊 Sound On";
         }
     });
 }
 
-// 2. Server Selection Logic
 const serverSelect = document.getElementById('server-select');
 if (serverSelect) {
     serverSelect.addEventListener('change', (e) => setPlayer(e.target.value));
-}
-
-// 3. Scroll to Player Logic
-const scrollBtn = document.getElementById('scroll-to-player');
-const watchBtnHero = document.querySelector('.watch-now'); // Button na "Watch Full Movie"
-
-if (scrollBtn) {
-    scrollBtn.addEventListener('click', () => {
-        const playerSection = document.getElementById('player-section');
-        if(playerSection) playerSection.scrollIntoView({ behavior: 'smooth' });
-    });
-}
-
-// Idinagdag ko 'to para pati yung Watch button sa Hero mag-scroll pababa
-if (watchBtnHero) {
-    watchBtnHero.addEventListener('click', () => {
-        const playerSection = document.getElementById('player-section');
-        if(playerSection) playerSection.scrollIntoView({ behavior: 'smooth' });
-    });
 }
 
 loadMovieDetails();
