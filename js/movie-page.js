@@ -1,4 +1,4 @@
-// js/movie-page.js - FULL COMPLETE VERSION
+// js/movie-page.js - FULL UNABRIDGED VERSION
 const params = new URLSearchParams(window.location.search);
 const movieId = params.get('id');
 const mediaType = params.get('type') || 'movie';
@@ -47,31 +47,37 @@ function updateHeroSection(data) {
     if (titleEl) titleEl.innerText = data.title || data.name;
     if (descHero) descHero.innerText = data.overview ? data.overview.substring(0, 200) + "..." : "";
 
-    // BACKDROP FALLBACK: Para laging may image
+    // 1. SET BACKDROP AS FALLBACK (Yung "Picture" na nakikita mo)
     if (heroSection && data.backdrop_path) {
         heroSection.style.backgroundImage = `linear-gradient(to top, #0a0a0a, transparent), url(https://image.tmdb.org/t/p/original${data.backdrop_path})`;
+        heroSection.style.backgroundSize = 'cover';
+        heroSection.style.backgroundPosition = 'center';
     }
 
     const year = (data.release_date || data.first_air_date || "N/A").split('-')[0];
     const rating = data.vote_average ? data.vote_average.toFixed(1) : "N/A";
     if (metaHero) metaHero.innerHTML = `<span>📅 ${year}</span> | <span style="color: #00d4ff;">⭐ ${rating}</span> | <span>🎬 ${mediaType.toUpperCase()}</span>`;
 
-    // TRAILER ENGINE: Autoplay & Mute Fix
+    // 2. TRAILER ENGINE (Dapat masapawan nito yung picture)
     if (trailerContainer && data.videos && data.videos.results.length > 0) {
         const video = data.videos.results.find(v => v.type === "Trailer" && v.site === "YouTube") || 
                       data.videos.results.find(v => v.type === "Teaser" && v.site === "YouTube") ||
                       data.videos.results[0];
         
         if (video && video.site === "YouTube") {
+            // Tinatanggal ang background image para iframe lang ang bida
+            heroSection.style.backgroundImage = "none";
+            
             trailerContainer.innerHTML = `
                 <iframe 
                     id="hero-video"
                     src="https://www.youtube.com/embed/${video.key}?autoplay=1&mute=1&controls=0&loop=1&playlist=${video.key}&modestbranding=1&rel=0&enablejsapi=1&iv_load_policy=3" 
                     frameborder="0" 
                     allow="autoplay; fullscreen"
-                    style="width:100%; height:100%; border:none; pointer-events: none;">
+                    style="width:100%; height:100%; border:none; position:absolute; top:0; left:0; z-index:1; pointer-events: none;">
                 </iframe>
             `;
+            console.log("🎥 Trailer injected: " + video.key);
         }
     }
 }
@@ -80,6 +86,7 @@ function updateDetailsSection(data) {
     const posterImg = document.getElementById('movie-poster');
     const overviewFull = document.getElementById('movie-overview');
     const castEl = document.getElementById('movie-cast');
+    const voteAvg = document.getElementById('vote-avg');
 
     if (posterImg) {
         posterImg.src = data.poster_path 
@@ -88,6 +95,7 @@ function updateDetailsSection(data) {
     }
 
     if (overviewFull) overviewFull.innerText = data.overview || "No description available, bro.";
+    if (voteAvg) voteAvg.innerText = data.vote_average ? data.vote_average.toFixed(1) : "0.0";
 
     if (castEl && data.credits && data.credits.cast) {
         castEl.innerHTML = data.credits.cast.slice(0, 6).map(person => `
@@ -118,7 +126,8 @@ function setPlayer(server) {
     iframe.src = src;
 }
 
-// Event Listeners
+// --- EVENT LISTENERS ---
+
 const muteBtn = document.querySelector('.hero-actions button:nth-child(2)');
 if (muteBtn) {
     muteBtn.addEventListener('click', () => {
