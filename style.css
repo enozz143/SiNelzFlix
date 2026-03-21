@@ -1,16 +1,32 @@
-/* style.css (Root) */
+/* style.css - Ang Master File */
 
-/* 1. Global Variables & Reset */
-@import url('./css/base.css');
+/* 1. Base Styles */
+@import url('css/base.css');
+@import url('css/navbar.css');
 
 /* 2. Components */
-@import url('./css/navbar.css');
-@import url('./css/hero.css');
-@import url('./css/movies.css');
-@import url('./css/modal.css');
-@import url('./css/countdown.css');
-
-/* 3. Footer & Utilities */
-@import url('./css/footer.css');
-@import url('./css/ads.css');
+@import url('css/hero.css');
+@import url('css/movies.css');
 @import url('css/skeleton.css');
+@import url('css/countdown.css');
+@import url('css/modal.css');
+@import url('css/footer.css');
+@import url('css/ads.css');
+
+/* 3. Global Fixes (Dito natin ilalagay yung fix sa buttons) */
+.hero-content {
+    position: relative;
+    z-index: 10;
+}
+
+.hero-btns {
+    position: relative;
+    z-index: 20;
+    display: flex;
+    gap: 15px;
+}
+
+.watch-now, .play-trailer, .play-btn {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+}
