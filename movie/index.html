@@ -5,25 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Watch Now - CINElzFlix</title>
     <link rel="stylesheet" href="../style.css?v=1.6">
-    <link rel="stylesheet" href="../css/hero.css"> <link rel="stylesheet" href="movie-style.css"> 
+    <link rel="stylesheet" href="../css/hero.css"> 
+    <link rel="stylesheet" href="movie-style.css"> 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     
     <section id="movie-hero">
-        <div id="trailer-container">
-            <div class="trailer-placeholder"></div>
-        </div>
         <div class="movie-overlay"></div>
         
         <div class="hero-info-content">
-            <h1 id="movie-title">Loading...</h1>
+            <h1 id="movie-title">Loading Title...</h1>
             <div id="movie-meta-hero" class="meta-info"></div>
-            <p id="movie-description-hero">Fetching details...</p>
+            <p id="movie-description-hero">Fetching cinematic details...</p>
             
             <div class="hero-actions">
                 <button id="scroll-to-player" class="watch-now">▶ WATCH FULL MOVIE</button>
-                <button class="btn-secondary" id="trailer-mute-toggle">🔊 Mute/Unmute</button>
+                <button id="play-trailer-btn" class="btn-secondary">🎬 WATCH TRAILER</button>
             </div>
         </div>
     </section>
@@ -45,7 +43,6 @@
 
         <div class="player-wrapper">
             <iframe id="movie-iframe" src="" allowfullscreen></iframe>
-            <div id="player-poster-overlay"></div>
         </div>
 
         <div class="movie-info-grid">
@@ -66,12 +63,13 @@
         </div>
 
         <section class="similar-section">
+            <h2 style="margin-bottom: 20px;">You Might Also Like</h2>
             <div id="similar-movies-container">
                 </div>
         </section>
     </main>
 
-    <footer style="text-align: center; padding: 60px; color: #444; font-size: 0.8rem; border-top: 1px solid #111; background: #050505;">
+    <footer>
         <p>© 2026 CINElzFlix.com • Developed by Nelz</p>
     </footer>
 
