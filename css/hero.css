@@ -1,4 +1,4 @@
-/* --- HERO SLIDER FINAL NUCLEAR FIX --- */
+/* --- HERO SLIDER FINAL NUCLEAR & LIGHTNING FIX --- */
 #hero-slider-container {
     position: relative;
     width: 100%; 
@@ -25,13 +25,13 @@
     opacity: 0; 
     visibility: hidden;
     transition: opacity 1s ease-in-out;
-    z-index: 5; /* Default slide depth */
+    z-index: 5;
 }
 
 .hero-slide.active { 
     opacity: 1; 
     visibility: visible;
-    z-index: 10; /* Active slide goes on top */
+    z-index: 10;
 }
 
 /* Container ng Video Preview */
@@ -39,7 +39,7 @@
     position: absolute; 
     top: 0; left: 0; 
     width: 100%; height: 100%; 
-    z-index: -1; /* NASA PINAKALIKOD DAPAT ITO */
+    z-index: -1; 
     background: #000;
     pointer-events: none !important;
 }
@@ -66,27 +66,21 @@
         rgba(0,0,0,0.6) 30%, 
         rgba(0,0,0,0) 70%
     );
-    z-index: 1; /* Nasa likod ng content */
-    pointer-events: none !important; /* HINDI DAPAT ITO NAKAKA-CLICK */
+    z-index: 1;
+    pointer-events: none !important;
 }
 
 .hero-content { 
     position: relative; 
-    z-index: 999 !important; /* SOBRANG TAAS DAPAT NITO */
+    z-index: 999 !important; 
     padding: 0 8%; 
     max-width: 850px; 
-    pointer-events: auto !important; /* ENABLE CLICKS */
-}
-
-/* --- BUTTONS FIX --- */
-.watch-now, .btn-watch, .movie-btn, .hero-btns {
-    position: relative;
-    z-index: 1000 !important; /* PINAKAMATAAS SA LAHAT */
     pointer-events: auto !important;
-    cursor: pointer !important;
 }
 
+/* --- LIGHTNING BUTTON FIX --- */
 .watch-now, .btn-watch {
+    position: relative;
     display: inline-block;
     background: var(--primary-blue, #00d4ff);
     color: #020b1a; 
@@ -94,18 +88,54 @@
     padding: 14px 40px; 
     border-radius: 5px;
     font-weight: bold; 
+    cursor: pointer !important;
     transition: all 0.3s ease;
     margin-right: 15px;
     text-transform: uppercase;
     letter-spacing: 1px;
     text-decoration: none;
+    z-index: 1000 !important;
+    pointer-events: auto !important;
+    overflow: hidden; /* Important para sa lightning slash */
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+    animation: lightningPulse 3s infinite ease-in-out;
+}
+
+/* The Lightning Strike Effect */
+.watch-now::before, .btn-watch::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.6), 
+        rgba(0, 212, 255, 0.6),
+        transparent
+    );
+    animation: lightningStrike 4s infinite;
 }
 
 .watch-now:hover, .btn-watch:hover { 
     background: #fff; 
-    transform: translateY(-3px); 
-    box-shadow: 0 10px 20px rgba(0, 212, 255, 0.4);
+    transform: translateY(-5px) scale(1.05); 
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.8), 0 0 50px rgba(0, 212, 255, 0.4);
     color: #000;
+}
+
+/* --- LIGHTNING ANIMATIONS --- */
+@keyframes lightningPulse {
+    0%, 100% { box-shadow: 0 0 15px rgba(0, 212, 255, 0.5); }
+    50% { box-shadow: 0 0 30px rgba(0, 212, 255, 0.8), 0 0 10px #fff; }
+}
+
+@keyframes lightningStrike {
+    0% { left: -150%; }
+    20% { left: 150%; }
+    100% { left: 150%; }
 }
 
 /* --- SLIDER DOTS --- */
@@ -116,7 +146,7 @@
     transform: translateX(-50%);
     display: flex; 
     gap: 12px; 
-    z-index: 1001; /* MAS MATAAS PA SA SLIDE */
+    z-index: 1001;
     pointer-events: auto;
 }
 
@@ -131,6 +161,7 @@
     background: var(--primary-blue, #00d4ff); 
     width: 30px; 
     border-radius: 10px;
+    box-shadow: 0 0 10px var(--primary-blue, #00d4ff);
 }
 
 #hero-slider-container::after, #hero-slider-container::before {
