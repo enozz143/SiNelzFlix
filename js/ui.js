@@ -1,70 +1,41 @@
 import { IMG_URL, fetchMovies } from './api.js';
-import { playTrailer } from './modal.js';
 
 let currentPage = 1;
 let currentGenre = 'all';
 let debounceTimer;
 
+/**
+ * --- CREATE MOVIE CARD (CLEAN VERSION) ---
+ * Clickable ang buong card, wala nang buttons na humaharang.
+ */
 export function createMovieCard(item) {
+    const type = item.title ? "movie" : "tv";
     const card = document.createElement("div");
+    
+    // Nilagyan natin ng classes at data attributes para sa CSS at Script.js
     card.className = "movie-card";
+    card.setAttribute('data-id', item.id);
+    card.setAttribute('data-type', type);
     
-    const img = document.createElement("img");
-    img.src = item.poster_path ? `${IMG_URL}${item.poster_path}` : 'https://via.placeholder.com/500x750?text=No+Image';
-    img.loading = "lazy";
-    
-    const overlay = document.createElement("div");
-    overlay.className = "trailer-overlay";
-    
-    // Button 1: Play Trailer
-    const trailerBtn = document.createElement("button");
-    trailerBtn.className = "hover-btn trailer-btn";
-    trailerBtn.innerHTML = "Play Trailer";
-    trailerBtn.onclick = (e) => { 
-        e.stopPropagation(); 
-        playTrailer(item.id, item.title ? "movie" : "tv"); 
-    };
+    const posterPath = item.poster_path 
+        ? `${IMG_URL}${item.poster_path}` 
+        : 'https://via.placeholder.com/500x750?text=No+Image';
 
-    // Button 2: Full Movie (Updated to /movie/ folder)
-    const fullMovieBtn = document.createElement("button");
-    fullMovieBtn.className = "hover-btn movie-btn";
-    fullMovieBtn.innerHTML = "Full Movie";
-    fullMovieBtn.onclick = (e) => { 
-        e.stopPropagation(); 
-        const type = item.title ? "movie" : "tv";
-        // Gamit ang folder structure para sa clean URL
-        const targetUrl = `${window.location.origin}/movie/?id=${item.id}&type=${type}`;
-        window.location.href = targetUrl;
-    };
+    card.innerHTML = `
+        <div class="poster-wrapper">
+            <img src="${posterPath}" alt="${item.title || item.name}" loading="lazy">
+            <div class="card-overlay">
+                <div class="card-info">
+                    <span class="card-rating">⭐ ${item.vote_average ? item.vote_average.toFixed(1) : '0.0'}</span>
+                    <h3 class="card-title">${item.title || item.name}</h3>
+                </div>
+            </div>
+        </div>
+    `;
 
-    // Button 3: Share Link (Updated to /movie/ folder)
-    const shareBtn = document.createElement("button");
-    shareBtn.className = "share-mini-btn";
-    shareBtn.innerHTML = "🔗 Share";
-    shareBtn.onclick = (e) => {
-        e.stopPropagation();
-        const type = item.title ? "movie" : "tv";
-        const shareUrl = `${window.location.origin}/movie/?id=${item.id}&type=${type}`;
-        
-        if (navigator.share) {
-            navigator.share({ title: item.title || item.name, text: `Panoorin natin 'to sa CINElzFlix!`, url: shareUrl });
-        } else {
-            navigator.clipboard.writeText(shareUrl);
-            alert("Movie link copied to clipboard, bro!");
-        }
-    };
-    
-    overlay.appendChild(trailerBtn);
-    overlay.appendChild(fullMovieBtn);
-    overlay.appendChild(shareBtn);
-    card.appendChild(img);
-    card.appendChild(overlay);
-
-    // Card click: Direct to /movie/ folder
+    // Direct Click Navigation
     card.onclick = () => {
-        const type = item.title ? "movie" : "tv";
-        const targetUrl = `${window.location.origin}/movie/?id=${item.id}&type=${type}`;
-        window.location.href = targetUrl;
+        window.location.href = `/movie/?id=${item.id}&type=${type}`;
     };
 
     return card;
@@ -85,7 +56,7 @@ export function displaySimilar(items) {
     if (!container) return;
 
     container.innerHTML = `
-        <h3 style="margin: 20px 0 10px 0; color: #fff;">You Might Also Like</h3>
+        <h3 style="margin: 30px 0 15px 0; color: #fff; font-size: 1.5rem;">You Might Also Like</h3>
         <div id="similar-movies" class="movie-row"></div>
     `;
 
