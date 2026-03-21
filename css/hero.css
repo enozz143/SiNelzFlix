@@ -1,17 +1,18 @@
-/* --- HERO SLIDER FIXED BY GEMINI --- */
+/* --- HERO SLIDER FINAL NUCLEAR FIX --- */
 #hero-slider-container {
     position: relative;
     width: 100%; 
     height: 85vh;
     overflow: hidden; 
     background: #000;
+    z-index: 1;
 }
 
 #hero-slider {
     position: relative;
     width: 100%; 
     height: 100%;
-    display: block !important;
+    z-index: 2;
 }
 
 .hero-slide {
@@ -24,13 +25,13 @@
     opacity: 0; 
     visibility: hidden;
     transition: opacity 1s ease-in-out;
-    z-index: 1;
+    z-index: 5; /* Default slide depth */
 }
 
 .hero-slide.active { 
     opacity: 1; 
     visibility: visible;
-    z-index: 10;
+    z-index: 10; /* Active slide goes on top */
 }
 
 /* Container ng Video Preview */
@@ -38,9 +39,9 @@
     position: absolute; 
     top: 0; left: 0; 
     width: 100%; height: 100%; 
-    z-index: 1;
+    z-index: -1; /* NASA PINAKALIKOD DAPAT ITO */
     background: #000;
-    pointer-events: none; /* Para hindi ma-click ang mismong video/youtube */
+    pointer-events: none !important;
 }
 
 .hero-video-container iframe {
@@ -52,76 +53,59 @@
     top: 50%; left: 50%; 
     transform: translate(-50%, -50%);
     opacity: 0.8; 
-    pointer-events: none;
-    filter: brightness(0.9) contrast(1.1);
+    pointer-events: none !important;
+    filter: brightness(0.8) contrast(1.1);
 }
 
 .hero-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     background: linear-gradient(to right, 
         rgba(0,0,0,0.9) 0%, 
         rgba(0,0,0,0.6) 30%, 
         rgba(0,0,0,0) 70%
     );
-    z-index: 5;
-    pointer-events: none; /* FIX: Hahayaan ang click na tumagos sa buttons sa ilalim */
+    z-index: 1; /* Nasa likod ng content */
+    pointer-events: none !important; /* HINDI DAPAT ITO NAKAKA-CLICK */
 }
 
 .hero-content { 
     position: relative; 
-    z-index: 100; /* Taasan natin para laging nasa ibabaw */
+    z-index: 999 !important; /* SOBRANG TAAS DAPAT NITO */
     padding: 0 8%; 
     max-width: 850px; 
-    pointer-events: auto; /* Siguraduhin na clickable ang content */
+    pointer-events: auto !important; /* ENABLE CLICKS */
 }
 
-/* --- BUTTONS FIX (MATCHED CLASS NAMES) --- */
-.watch-now, .btn-watch, .movie-btn {
+/* --- BUTTONS FIX --- */
+.watch-now, .btn-watch, .movie-btn, .hero-btns {
     position: relative;
+    z-index: 1000 !important; /* PINAKAMATAAS SA LAHAT */
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+.watch-now, .btn-watch {
     display: inline-block;
-    z-index: 110;
-    overflow: hidden;
     background: var(--primary-blue, #00d4ff);
     color: #020b1a; 
     border: none;
-    padding: 12px 35px; 
+    padding: 14px 40px; 
     border-radius: 5px;
     font-weight: bold; 
-    cursor: pointer !important;
     transition: all 0.3s ease;
     margin-right: 15px;
     text-transform: uppercase;
     letter-spacing: 1px;
-    pointer-events: auto !important; /* PINIPILIT NA MAGING CLICKABLE */
     text-decoration: none;
 }
 
 .watch-now:hover, .btn-watch:hover { 
     background: #fff; 
-    transform: translateY(-3px) scale(1.05); 
+    transform: translateY(-3px); 
     box-shadow: 0 10px 20px rgba(0, 212, 255, 0.4);
     color: #000;
-}
-
-/* --- SHIMMER ANIMATION --- */
-.watch-now::before, .btn-watch::before, .movie-btn::before {
-    content: '';
-    position: absolute;
-    top: 0; left: -100%;
-    width: 100%; height: 100%;
-    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-}
-
-.watch-now::before, .btn-watch::before { animation: btnShimmer 3s infinite; }
-
-@keyframes btnShimmer {
-    0% { left: -100%; }
-    30% { left: 100%; }
-    100% { left: 100%; }
 }
 
 /* --- SLIDER DOTS --- */
@@ -132,21 +116,19 @@
     transform: translateX(-50%);
     display: flex; 
     gap: 12px; 
-    z-index: 120; /* Taasan din para clickable */
+    z-index: 1001; /* MAS MATAAS PA SA SLIDE */
+    pointer-events: auto;
 }
 
 .dot { 
-    width: 10px; 
-    height: 10px; 
+    width: 12px; height: 12px; 
     background: rgba(255,255,255,0.3); 
     border-radius: 50%; 
     cursor: pointer; 
-    transition: all 0.3s ease; 
 }
 
 .dot.active { 
     background: var(--primary-blue, #00d4ff); 
-    width: 25px; 
+    width: 30px; 
     border-radius: 10px;
-    box-shadow: 0 0 10px var(--primary-blue, #00d4ff);
 }
