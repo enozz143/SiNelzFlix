@@ -34,7 +34,6 @@ window.BASE_URL = BASE_URL;
 async function init() {
     console.log("🚀 CINElzFlix Engine is now LIVE, bro!"); 
     try {
-        // 0. Initialize Countdown Timer
         initCountdown();
 
         // --- START LOADING SKELETONS ---
@@ -69,18 +68,14 @@ async function init() {
             }
         }
 
-        // --- 3. FIX: DEEP LINKING SUPPORT (No-Popup Update) ---
+        // --- 3. FIX: DEEP LINKING SUPPORT ---
         const params = new URLSearchParams(window.location.search);
-        const movieId = params.get('movie'); // Para sa lumang links na ?movie=ID
-        const tvId = params.get('tv');       // Para sa lumang links na ?tv=ID
+        const movieId = params.get('movie'); 
+        const tvId = params.get('tv');        
 
         if (movieId || tvId) {
             const id = (movieId || tvId).split('-')[0];
             const type = movieId ? 'movie' : 'tv';
-            
-            console.log(`Detected deep link for ${type} ${id}. Redirecting to movie.html...`);
-            
-            // Redirect diretso sa movie.html imbes na mag-modal
             window.location.href = `movie.html?id=${id}&type=${type}`;
         }
 
@@ -90,6 +85,29 @@ async function init() {
 }
 
 // --- GLOBAL EVENT LISTENERS ---
+
+/**
+ * FIXED: EVENT DELEGATION PARA SA DYNAMIC BUTTONS
+ * Dito natin sasaluhin lahat ng clicks sa Slider at Movie Cards
+ */
+document.addEventListener('click', (e) => {
+    // 1. Check kung "Watch Now" (Slider) o "Play" (Movie Cards) button
+    const watchBtn = e.target.closest('.watch-now') || e.target.closest('.btn-watch') || e.target.closest('.play-btn');
+    
+    if (watchBtn) {
+        e.preventDefault();
+        const id = watchBtn.getAttribute('data-id');
+        const type = watchBtn.getAttribute('data-type') || 'movie';
+        
+        if (id) {
+            console.log(`🎬 Redirecting to play ${type}: ${id}`);
+            window.location.href = `movie.html?id=${id}&type=${type}`;
+        }
+        return;
+    }
+
+    // 2. Escape Key logic remains for other modals if needed
+});
 
 document.addEventListener('keydown', (e) => {
     if (e.key === "Escape") {
