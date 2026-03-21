@@ -132,3 +132,7 @@
     width: 30px; 
     border-radius: 10px;
 }
+
+#hero-slider-container::after, #hero-slider-container::before {
+    display: none !important;
+}
