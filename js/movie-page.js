@@ -1,6 +1,6 @@
 /**
  * CINElzFlix - Movie Page Engine
- * Version: 5.1 (Separate API Calls - Working Cast & Similar)
+ * Version: 5.2 (Fixed Duplicate Heading)
  */
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -370,6 +370,9 @@ function renderCast(data) {
     console.log(`✅ Cast rendered: ${topCast.length} actors`);
 }
 
+/**
+ * ✅ FIXED: Render Similar Movies - NO DUPLICATE HEADING
+ */
 function renderSimilar(similar) {
     const container = document.getElementById('similar-movies-container');
     
@@ -380,6 +383,7 @@ function renderSimilar(similar) {
         return;
     }
     
+    // ✅ ETO NA - isang heading lang!
     container.innerHTML = `
         <h2 style="margin: 30px 0 15px;">You Might Also Like</h2>
         <div class="similar-grid" style="display: flex; gap: 15px; overflow-x: auto; padding-bottom: 20px;">
