@@ -1,6 +1,6 @@
 /**
  * CINElzFlix - Movie Page Engine
- * Version: 4.4 (Improved Cast Display + Modal Trailer)
+ * Version: 4.5 (Working Cast Display + Modal Trailer)
  */
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -26,23 +26,32 @@ async function initMoviePage() {
     try {
         showLoadingState();
         
+        // ✅ CORRECT API URL with credits
         const apiUrl = `${BASE_URL}?endpoint=/${mediaType}/${movieId}&append_to_response=videos,credits,similar`;
+        console.log("📡 Fetching URL:", apiUrl);
+        
         const response = await fetch(apiUrl);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         
         const data = await response.json();
+        console.log("📡 API Response received");
+        console.log("📡 Movie title:", data.title || data.name);
+        console.log("📡 Credits data exists:", !!data.credits);
+        console.log("📡 Cast count:", data.credits?.cast?.length || 0);
+        
         if (!data || data.success === false) throw new Error("Invalid API Data");
 
-        // Store current movie data for trailer modal
+        // Store current movie data
         window.currentMovieData = data;
         window.movieTitle = data.title || data.name || "Unknown Title";
         
         // Update page title
         document.title = `${window.movieTitle} - CINElzFlix Movies`;
         
+        // Render all sections
         renderHero(data);
         renderDetails(data);
-        renderCast(data.credits);  // ✅ Updated cast render
+        renderCast(data.credits);  // Pass credits directly
         renderSimilar(data.similar);
 
         updateVideoPlayer('vidsrc');
@@ -59,7 +68,7 @@ async function initMoviePage() {
 }
 
 /**
- * ✅ Play Trailer with Modal (Same as Main Branch!)
+ * Play Trailer with Modal
  */
 async function playTrailer() {
     if (!window.currentMovieData) {
@@ -307,53 +316,88 @@ function renderDetails(data) {
 }
 
 /**
- * ✅ IMPROVED: Render Cast with better styling
+ * ✅ FULLY FIXED: Render Cast with proper data handling
  */
 function renderCast(credits) {
     const castList = document.getElementById('movie-cast');
+    
+    console.log("🎨 renderCast called");
+    console.log("🎨 Credits object:", credits);
+    console.log("🎨 Cast list element exists:", !!castList);
+    
     if (!castList) {
-        console.warn("Cast container not found");
+        console.warn("❌ Cast container element not found!");
         return;
     }
     
-    if (!credits?.cast || credits.cast.length === 0) {
-        castList.innerHTML = '<p style="color: #888; text-align: center; width: 100%;">No cast information available.</p>';
+    // Check if credits exists and has cast
+    if (!credits) {
+        console.warn("❌ No credits data received");
+        castList.innerHTML = '<p style="color: #888; text-align: center; width: 100%; padding: 20px;">No cast data received from API.</p>';
         return;
     }
+    
+    if (!credits.cast) {
+        console.warn("❌ Credits.cast is undefined");
+        castList.innerHTML = '<p style="color: #888; text-align: center; width: 100%; padding: 20px;">Cast information not available for this title.</p>';
+        return;
+    }
+    
+    if (credits.cast.length === 0) {
+        console.warn("❌ Cast array is empty");
+        castList.innerHTML = '<p style="color: #888; text-align: center; width: 100%; padding: 20px;">No cast members found for this title.</p>';
+        return;
+    }
+    
+    console.log(`✅ Found ${credits.cast.length} cast members`);
     
     // Get top 10 cast members
     const topCast = credits.cast.slice(0, 10);
     
-    castList.innerHTML = topCast.map(actor => `
-        <div class="cast-item">
-            <div class="cast-img-wrapper">
-                <img 
-                    src="${actor.profile_path ? 'https://image.tmdb.org/t/p/w185' + actor.profile_path : 'https://via.placeholder.com/185x278?text=No+Photo'}" 
-                    alt="${actor.name}"
-                    loading="lazy"
-                    onerror="this.src='https://via.placeholder.com/185x278?text=No+Photo'"
-                >
+    castList.innerHTML = topCast.map(actor => {
+        const profileUrl = actor.profile_path 
+            ? `https://image.tmdb.org/t/p/w185${actor.profile_path}` 
+            : 'https://via.placeholder.com/185x278?text=No+Photo';
+        
+        return `
+            <div class="cast-item">
+                <div class="cast-img-wrapper">
+                    <img 
+                        src="${profileUrl}" 
+                        alt="${actor.name || 'Actor'}"
+                        loading="lazy"
+                        onerror="this.src='https://via.placeholder.com/185x278?text=No+Photo'"
+                    >
+                </div>
+                <div class="cast-info">
+                    <p class="cast-name"><strong>${actor.name || 'Unknown'}</strong></p>
+                    <p class="cast-character">${actor.character || 'Unknown Role'}</p>
+                </div>
             </div>
-            <div class="cast-info">
-                <p class="cast-name"><strong>${actor.name}</strong></p>
-                <p class="cast-character">${actor.character || 'Unknown Role'}</p>
-            </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
     
-    console.log(`✅ Cast rendered: ${topCast.length} actors`);
+    console.log(`✅ Cast rendered successfully: ${topCast.length} actors shown`);
 }
 
 function renderSimilar(similar) {
     const container = document.getElementById('similar-movies-container');
-    if (!container || !similar?.results.length) return;
+    if (!container) {
+        console.warn("Similar container not found");
+        return;
+    }
+    
+    if (!similar?.results || similar.results.length === 0) {
+        container.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">No similar movies found.</p>';
+        return;
+    }
     
     container.innerHTML = `
         <h2 style="margin: 30px 0 15px;">More Like This</h2>
         <div class="similar-grid" style="display: flex; gap: 15px; overflow-x: auto; padding-bottom: 20px;">
             ${similar.results.slice(0, 12).map(m => `
                 <div class="similar-card" style="min-width: 160px; cursor: pointer;" onclick="window.location.href='?id=${m.id}&type=${mediaType}'">
-                    <img src="https://image.tmdb.org/t/p/w300${m.poster_path}" style="width: 100%; border-radius: 10px;" loading="lazy">
+                    <img src="https://image.tmdb.org/t/p/w300${m.poster_path}" style="width: 100%; border-radius: 10px;" loading="lazy" onerror="this.src='https://via.placeholder.com/300x450?text=No+Poster'">
                     <p style="font-size: 0.85rem; margin-top: 8px; font-weight: bold;">${m.title || m.name}</p>
                     <span style="font-size: 0.7rem; color: #00d4ff;">⭐ ${m.vote_average ? m.vote_average.toFixed(1) : 'N/A'}</span>
                 </div>
@@ -408,6 +452,7 @@ function showNotification(message) {
             font-size: 0.85rem;
             animation: fadeInOut 3s ease forwards;
             white-space: nowrap;
+            box-shadow: 0 0 15px rgba(0,212,255,0.5);
         `;
         document.body.appendChild(notif);
         
@@ -428,7 +473,10 @@ function showNotification(message) {
     
     notif.textContent = message;
     notif.style.display = 'block';
-    setTimeout(() => notif.style.display = 'none', 3000);
+    notif.style.visibility = 'visible';
+    setTimeout(() => {
+        notif.style.display = 'none';
+    }, 3000);
 }
 
 function showLoadingState() {
@@ -449,22 +497,44 @@ function showErrorMessage(message) {
 // --- EVENT LISTENERS ---
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Watch Full Movie button
-    document.getElementById('scroll-to-player')?.addEventListener('click', () => {
-        updateVideoPlayer('vidsrc');
-        document.getElementById('player-section')?.scrollIntoView({ behavior: 'smooth' });
-    });
+    console.log("📄 DOM Ready - Setting up event listeners");
     
-    // Trailer button - uses modal like main branch!
-    document.getElementById('play-trailer-btn')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        playTrailer();
-    });
+    // Watch Full Movie button
+    const watchBtn = document.getElementById('scroll-to-player');
+    if (watchBtn) {
+        watchBtn.addEventListener('click', () => {
+            console.log("🎬 Watch Full Movie clicked");
+            updateVideoPlayer('vidsrc');
+            document.getElementById('player-section')?.scrollIntoView({ behavior: 'smooth' });
+        });
+    } else {
+        console.warn("⚠️ Watch button not found");
+    }
+    
+    // Trailer button
+    const trailerBtn = document.getElementById('play-trailer-btn');
+    if (trailerBtn) {
+        trailerBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log("🎬 Trailer button clicked");
+            playTrailer();
+        });
+        console.log("✅ Trailer button listener attached");
+    } else {
+        console.warn("⚠️ Trailer button not found");
+    }
     
     // Server switcher
-    document.getElementById('server-select')?.addEventListener('change', (e) => {
-        updateVideoPlayer(e.target.value);
-    });
+    const serverSelect = document.getElementById('server-select');
+    if (serverSelect) {
+        serverSelect.addEventListener('change', (e) => {
+            console.log("🔄 Server changed to:", e.target.value);
+            updateVideoPlayer(e.target.value);
+        });
+        console.log("✅ Server select listener attached");
+    } else {
+        console.warn("⚠️ Server select not found");
+    }
 });
 
 // START!
