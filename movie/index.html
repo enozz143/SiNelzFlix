@@ -14,11 +14,6 @@
             to { transform: rotate(360deg); }
         }
         
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
         .player-wrapper {
             position: relative;
             background: #000;
@@ -58,26 +53,146 @@
             text-align: center;
         }
         
-        /* Adjust hero section to account for fixed navbar */
+        /* Hero section with video background */
         #movie-hero {
-            margin-top: 85px; /* Same height as navbar */
+            position: relative;
+            width: 100%;
+            height: 85vh;
+            overflow: hidden;
+            margin-top: 85px;
+            background: #000;
+        }
+        
+        .hero-video-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .hero-video-background iframe {
+            width: 100vw;
+            height: 56.25vw;
+            min-height: 100vh;
+            min-width: 177.77vh;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            opacity: 0.7;
+            filter: brightness(0.6) blur(2px);
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, #0a0a0a 15%, rgba(0,0,0,0.4) 60%);
+            z-index: 2;
+        }
+        
+        .hero-info-content {
+            position: absolute;
+            bottom: 15%;
+            left: 5%;
+            z-index: 10;
+            max-width: 700px;
+        }
+        
+        .hero-info-content h1 {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            margin-bottom: 15px;
+            font-weight: 800;
+            text-shadow: 2px 2px 20px rgba(0,0,0,1);
+        }
+        
+        .hero-meta {
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #00d4ff;
+            font-size: 1rem;
+        }
+        
+        .hero-meta span {
+            margin-right: 15px;
+        }
+        
+        #movie-description-hero {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #ddd;
+            text-shadow: 1px 1px 10px rgba(0,0,0,0.8);
+            margin-bottom: 25px;
+        }
+        
+        .hero-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .watch-now {
+            background: #00d4ff;
+            color: #000;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1rem;
+        }
+        
+        .watch-now:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 20px rgba(0,212,255,0.5);
         }
         
         @media (max-width: 768px) {
+            #movie-hero {
+                height: 70vh;
+                margin-top: 70px;
+            }
+            
             #movie-iframe {
                 height: 50vh;
                 min-height: 300px;
             }
             
-            #movie-hero {
-                margin-top: 70px;
+            .hero-info-content {
+                bottom: 10%;
+                left: 5%;
+                right: 5%;
+            }
+            
+            .hero-info-content h1 {
+                font-size: 1.8rem;
+            }
+            
+            #movie-description-hero {
+                font-size: 0.9rem;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+            
+            .watch-now {
+                padding: 10px 25px;
+                font-size: 0.9rem;
             }
         }
     </style>
 </head>
 <body>
     
-    <!-- ========== NAVBAR (SAME AS ROOT) ========== -->
+    <!-- Navbar -->
     <nav id="navbar">
         <div class="logo">
             <a href="/" style="text-decoration: none;">
@@ -88,19 +203,21 @@
             <input type="text" id="search-input" placeholder="Search movies, anime..." oninput="handleSearch(this.value)">
         </div>
     </nav>
-    <!-- ========== END NAVBAR ========== -->
     
+    <!-- Hero Section with Video Background -->
     <section id="movie-hero">
-        <div class="movie-overlay"></div>
+        <div class="hero-video-background" id="hero-video-container">
+            <!-- Trailer will be injected here -->
+        </div>
+        <div class="hero-overlay"></div>
         
         <div class="hero-info-content">
+            <div class="hero-meta" id="movie-meta-hero"></div>
             <h1 id="movie-title">Loading Title...</h1>
-            <div id="movie-meta-hero" class="meta-info"></div>
             <p id="movie-description-hero">Fetching cinematic details...</p>
             
             <div class="hero-actions">
                 <button id="scroll-to-player" class="watch-now">▶ WATCH FULL MOVIE</button>
-                <button id="play-trailer-btn" class="btn-secondary">🎬 WATCH TRAILER</button>
             </div>
         </div>
     </section>
@@ -158,7 +275,7 @@
         <p>© 2026 CINElzFlix.com • Developed by Nelz</p>
     </footer>
 
-    <!-- Global loading spinner (hidden by default) -->
+    <!-- Global loading spinner -->
     <div id="global-loading" style="display: none;">
         <div style="width: 50px; height: 50px; border: 3px solid #333; border-top-color: #00d4ff; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto;"></div>
         <p style="color: #00d4ff; margin-top: 10px;">Loading movie data...</p>
