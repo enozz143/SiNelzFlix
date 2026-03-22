@@ -157,7 +157,7 @@
         }
         
         /* ============================================ */
-        /* MOBILE VIEW - FULL WIDTH, NO SIDE SPACE */
+        /* MOBILE VIEW - FULL WIDTH, HORIZONTAL SCROLL CAST */
         /* ============================================ */
         
         @media (max-width: 768px) {
@@ -249,9 +249,15 @@
                 line-height: 1.4 !important;
             }
             
+            /* ============================================ */
+            /* CAST SECTION - HORIZONTAL SCROLL FIX */
+            /* ============================================ */
+            
             .cast-section {
                 margin-top: 15px !important;
                 padding: 0 10px !important;
+                width: 100% !important;
+                overflow-x: auto !important;
             }
             
             .cast-section h3 {
@@ -260,28 +266,66 @@
             }
             
             .cast-list {
-                gap: 10px !important;
+                display: flex !important;
+                gap: 12px !important;
                 padding: 5px 0 10px 0 !important;
-                justify-content: flex-start !important;
+                overflow-x: auto !important;
+                overflow-y: hidden !important;
+                scrollbar-width: thin !important;
+                -webkit-overflow-scrolling: touch !important;
+                width: 100% !important;
+            }
+            
+            .cast-list::-webkit-scrollbar {
+                height: 4px !important;
+            }
+            
+            .cast-list::-webkit-scrollbar-track {
+                background: #1a1a1a !important;
+                border-radius: 10px !important;
+            }
+            
+            .cast-list::-webkit-scrollbar-thumb {
+                background: #00d4ff !important;
+                border-radius: 10px !important;
             }
             
             .cast-item {
+                flex: 0 0 auto !important;
                 width: 70px !important;
+                text-align: center !important;
             }
             
             .cast-img-wrapper {
                 width: 60px !important;
                 height: 60px !important;
-                margin-bottom: 5px !important;
+                margin: 0 auto 5px !important;
+                border-radius: 50% !important;
+                overflow: hidden !important;
+                border: 2px solid #00d4ff !important;
+            }
+            
+            .cast-img-wrapper img {
+                width: 100% !important;
+                height: 100% !important;
+                object-fit: cover !important;
             }
             
             .cast-name {
                 font-size: 0.6rem !important;
+                white-space: nowrap !important;
+                overflow-x: hidden !important;
+                text-overflow: ellipsis !important;
             }
             
             .cast-character {
                 font-size: 0.5rem !important;
+                white-space: nowrap !important;
+                overflow-x: hidden !important;
+                text-overflow: ellipsis !important;
             }
+            
+            /* ============================================ */
             
             .similar-section {
                 margin-top: 20px !important;
