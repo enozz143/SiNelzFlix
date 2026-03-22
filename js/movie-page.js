@@ -1,6 +1,6 @@
 /**
  * CINElzFlix - Ultimate Movie Page Engine
- * Version: 3.7 (MODAL POPUP TRAILER EDITION)
+ * Version: 3.9 (FIXED: Direct In-Page Trailer Playback)
  * Developed by: Nelz & Gemini
  */
 
@@ -68,11 +68,12 @@ function updateTrailerButtonState() {
     const trailerBtn = document.getElementById('play-trailer-btn');
     if (!trailerBtn) return;
     trailerBtn.innerHTML = "🎬 WATCH TRAILER";
-    trailerBtn.title = "Open Trailer Popup";
+    trailerBtn.title = "Play Trailer in the player below";
 }
 
 /**
  * MAIN PLAYER SYSTEM
+ * Traffic controller para sa movie servers at trailer.
  */
 function updateVideoPlayer(server) {
     const iframe = document.getElementById('movie-iframe');
@@ -81,45 +82,37 @@ function updateVideoPlayer(server) {
     if (!iframe) return;
     
     if (server === 'trailer') {
-        // Trailer uses the Modal Popup, not the main iframe
-        handleTrailerPlayback();
+        // ✅ FIX: Trailer now loads DIRECTLY in the main iframe
+        handleTrailerDirectEmbed(iframe, loadingIndicator);
     } else {
-        // Normal servers use the main iframe
+        // Normal movie servers
         handleServerPlayback(server, iframe, loadingIndicator);
     }
 }
 
 /**
- * ✅ MODAL TRAILER LOGIC
- * Opens the trailer in a popup instead of the main page player.
+ * ✅ FIXED: Direct Trailer Embed
+ * No Modals, No Popups, No New Tabs.
  */
-function handleTrailerPlayback() {
-    const modal = document.getElementById('trailer-modal');
-    const modalIframe = document.getElementById('modal-iframe');
+function handleTrailerDirectEmbed(iframe, loadingIndicator) {
     const title = window.movieTitle;
-
-    if (!modal || !modalIframe) return;
-
+    if (loadingIndicator) loadingIndicator.style.display = 'flex';
+    
+    iframe.style.display = 'block';
+    
     if (window.movieTrailerKey) {
-        // May key? Buksan ang Modal
-        modal.style.display = 'flex';
-        modalIframe.src = `https://www.youtube.com/embed/${window.movieTrailerKey}?autoplay=1&rel=0&modestbranding=1`;
-        
-        // Setup Close Logic
-        const closeModal = () => {
-            modal.style.display = 'none';
-            modalIframe.src = ""; // Clear src to stop video/sound
-        };
-
-        document.getElementById('close-modal').onclick = closeModal;
-        modal.onclick = (e) => { if (e.target === modal) closeModal(); };
-        
+        // Case 1: May YouTube Key - Embed directly
+        iframe.src = `https://www.youtube.com/embed/${window.movieTrailerKey}?autoplay=1&rel=0&modestbranding=1`;
     } else {
-        // Walang key? YouTube Search Tab fallback
+        // Case 2: Walang Key - Use the YouTube Search Embed trick
         const searchQuery = encodeURIComponent(`${title} official trailer`);
-        showNotification(`Opening YouTube search for: ${title}`);
-        window.open(`https://www.youtube.com/results?search_query=${searchQuery}`, '_blank');
+        iframe.src = `https://www.youtube.com/embed?listType=search&list=${searchQuery}&autoplay=1`;
+        showNotification(`Searching for "${title}" trailer...`);
     }
+
+    iframe.onload = () => {
+        if (loadingIndicator) loadingIndicator.style.display = 'none';
+    };
 }
 
 function handleServerPlayback(server, iframe, loadingIndicator) {
@@ -210,15 +203,17 @@ function showErrorMessage(m) { alert(m); }
 
 document.addEventListener('DOMContentLoaded', () => {
     // Scroll and Play Movie
-    document.getElementById('scroll-to-player')?.addEventListener('click', () => {
+    document.getElementById('scroll-to-player')?.addEventListener('click', (e) => {
+        e.preventDefault();
         updateVideoPlayer('vidsrc');
         document.getElementById('player-section')?.scrollIntoView({ behavior: 'smooth' });
     });
 
-    // Play Trailer (Modal)
+    // Play Trailer directly in main player
     document.getElementById('play-trailer-btn')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        handleTrailerPlayback();
+        e.preventDefault(); // ✅ STOP REDIRECT
+        updateVideoPlayer('trailer');
+        document.getElementById('player-section')?.scrollIntoView({ behavior: 'smooth' });
     });
 
     // Switch Servers
