@@ -1,6 +1,6 @@
 /**
  * CINElzFlix - Ultimate Movie Page Engine
- * Version: 4.0 (Hero Video Background - No Trailer Button)
+ * Version: 4.1 (Hero Video Background - FIXED!)
  * Developed by: Nelz & Gemini
  */
 
@@ -39,10 +39,12 @@ async function initMoviePage() {
         window.movieTitle = data.title || data.name || "Unknown Title";
         window.movieTrailerKey = await getTrailerKey(data);
         
-        console.log(window.movieTrailerKey ? "✅ Trailer found" : "🔍 No trailer, using backdrop only");
+        console.log(window.movieTrailerKey ? "✅ Trailer found: " + window.movieTrailerKey : "🔍 No trailer, using backdrop only");
         
-        // Render everything
+        // ✅ CRITICAL: Render Hero Video Background
         renderHeroVideoBackground(window.movieTrailerKey);
+        
+        // Render everything else
         renderHeroInfo(data);
         renderDetails(data);
         renderCast(data.credits);
@@ -56,7 +58,6 @@ async function initMoviePage() {
     } catch (err) {
         console.error("🚨 Error:", err);
         showErrorMessage(`Failed to load: ${err.message}`);
-        // Fallback: show backdrop only
         document.getElementById('movie-title').innerText = "Unable to Load";
     } finally {
         hideLoadingState();
@@ -86,7 +87,6 @@ async function getTrailerKey(data) {
         }
     }
     
-    // Fallback: any YouTube video
     const anyVideo = data.videos.results.find(v => v.site === "YouTube" && v.key);
     if (anyVideo) {
         console.log("🎬 Using fallback video:", anyVideo.type);
@@ -97,12 +97,17 @@ async function getTrailerKey(data) {
 }
 
 /**
- * ✅ NEW: Render Hero Video Background (same as main site!)
+ * ✅ Render Hero Video Background (with debugging)
  */
 function renderHeroVideoBackground(trailerKey) {
     const heroVideoContainer = document.getElementById('hero-video-container');
+    
+    console.log("🎨 renderHeroVideoBackground called");
+    console.log("📦 heroVideoContainer found:", !!heroVideoContainer);
+    console.log("🎬 trailerKey:", trailerKey);
+    
     if (!heroVideoContainer) {
-        console.warn("Hero video container not found");
+        console.error("❌ CRITICAL: hero-video-container element not found in DOM!");
         return;
     }
     
@@ -118,8 +123,8 @@ function renderHeroVideoBackground(trailerKey) {
             </iframe>
         `;
     } else {
-        // Walang trailer - clear container, use backdrop image only
-        console.log("🎨 No trailer, using backdrop image only");
+        // Walang trailer - clear container
+        console.log("🎨 No trailer available, clearing video container");
         heroVideoContainer.innerHTML = '';
     }
 }
@@ -212,17 +217,12 @@ function updateVideoPlayer(server) {
     if (loadingIndicator) loadingIndicator.style.display = 'flex';
     
     if (server === 'trailer') {
-        // Trailer playback (in case may mag-call, pero wala na dapat)
         handleTrailerDirectEmbed(iframe, loadingIndicator);
     } else {
-        // Movie servers
         handleServerPlayback(server, iframe, loadingIndicator);
     }
 }
 
-/**
- * Trailer playback (fallback - hindi na ginagamit sa UI)
- */
 function handleTrailerDirectEmbed(iframe, loadingIndicator) {
     const title = window.movieTitle;
     iframe.style.display = 'block';
@@ -239,9 +239,6 @@ function handleTrailerDirectEmbed(iframe, loadingIndicator) {
     };
 }
 
-/**
- * Movie server playback
- */
 function handleServerPlayback(server, iframe, loadingIndicator) {
     const servers = {
         'vidsrc': mediaType === 'movie' ? `https://vidsrc.me/embed/movie?tmdb=${movieId}` : `https://vidsrc.me/embed/tv?tmdb=${movieId}&sea=1&epi=1`,
@@ -332,7 +329,6 @@ function showErrorMessage(message) {
 document.addEventListener('DOMContentLoaded', () => {
     console.log("📄 DOM Ready - Setting up event listeners");
     
-    // Watch Full Movie button
     const watchBtn = document.getElementById('scroll-to-player');
     if (watchBtn) {
         watchBtn.addEventListener('click', (e) => {
@@ -345,9 +341,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.warn("⚠️ Watch button not found");
     }
 
-    // Note: Wala nang trailer button sa UI!
-
-    // Server switcher
     const serverSelect = document.getElementById('server-select');
     if (serverSelect) {
         serverSelect.addEventListener('change', (e) => {
