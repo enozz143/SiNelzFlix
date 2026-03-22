@@ -1,6 +1,6 @@
 /**
  * CINElzFlix - Movie Page Engine
- * Version: 5.0 (Working Cast & Similar Movies)
+ * Version: 5.1 (Separate API Calls - Working Cast & Similar)
  */
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -25,26 +25,52 @@ async function initMoviePage() {
     try {
         showLoadingState();
         
-        const apiUrl = `${BASE_URL}?endpoint=/${mediaType}/${movieId}&append_to_response=videos,credits,similar`;
-        console.log("📡 Fetching:", apiUrl);
+        // 1. FETCH MAIN MOVIE DATA
+        const movieUrl = `${BASE_URL}?endpoint=/${mediaType}/${movieId}`;
+        console.log("📡 Fetching movie:", movieUrl);
+        const movieRes = await fetch(movieUrl);
+        const movieData = await movieRes.json();
         
-        const response = await fetch(apiUrl);
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        if (!movieData || movieData.success === false) throw new Error("Invalid Movie Data");
         
-        const data = await response.json();
+        // 2. FETCH CREDITS (CAST)
+        const creditsUrl = `${BASE_URL}?endpoint=/${mediaType}/${movieId}/credits`;
+        console.log("📡 Fetching credits:", creditsUrl);
+        const creditsRes = await fetch(creditsUrl);
+        const creditsData = await creditsRes.json();
         
-        if (!data || data.success === false) throw new Error("Invalid API Data");
+        // 3. FETCH SIMILAR MOVIES
+        const similarUrl = `${BASE_URL}?endpoint=/${mediaType}/${movieId}/similar`;
+        console.log("📡 Fetching similar:", similarUrl);
+        const similarRes = await fetch(similarUrl);
+        const similarData = await similarRes.json();
+        
+        // 4. FETCH VIDEOS (for trailer)
+        const videosUrl = `${BASE_URL}?endpoint=/${mediaType}/${movieId}/videos`;
+        console.log("📡 Fetching videos:", videosUrl);
+        const videosRes = await fetch(videosUrl);
+        const videosData = await videosRes.json();
+        
+        // Combine all data
+        const data = {
+            ...movieData,
+            credits: creditsData,
+            similar: similarData,
+            videos: videosData
+        };
+        
+        console.log("✅ All data fetched!");
+        console.log("📡 Cast count:", data.credits?.cast?.length || 0);
+        console.log("📡 Similar count:", data.similar?.results?.length || 0);
 
         window.currentMovieData = data;
         window.movieTitle = data.title || data.name || "Unknown Title";
         
-        // Update page title
         document.title = `${window.movieTitle} - CINElzFlix Movies`;
         
-        // Render all sections
         renderHero(data);
         renderDetails(data);
-        renderCast(data);  // Pass full data object
+        renderCast(data);
         renderSimilar(data.similar);
 
         updateVideoPlayer('vidsrc');
@@ -306,24 +332,16 @@ function renderDetails(data) {
     if (vote) vote.innerText = data.vote_average ? data.vote_average.toFixed(1) : "0.0";
 }
 
-/**
- * ✅ WORKING: Render Cast from full data object
- */
 function renderCast(data) {
     const castList = document.getElementById('movie-cast');
     
-    if (!castList) {
-        console.warn("Cast container not found");
-        return;
-    }
+    if (!castList) return;
     
-    // Check if credits and cast exist
     if (!data?.credits?.cast || data.credits.cast.length === 0) {
         castList.innerHTML = '<p style="color: #888; text-align: center; width: 100%; padding: 20px;">No cast information available for this title.</p>';
         return;
     }
     
-    // Get top 8 cast members
     const topCast = data.credits.cast.slice(0, 8);
     
     castList.innerHTML = topCast.map(actor => {
@@ -336,13 +354,13 @@ function renderCast(data) {
                 <div class="cast-img-wrapper">
                     <img 
                         src="${profileUrl}" 
-                        alt="${actor.name || 'Actor'}"
+                        alt="${actor.name}"
                         loading="lazy"
                         onerror="this.src='https://via.placeholder.com/185x278?text=No+Photo'"
                     >
                 </div>
                 <div class="cast-info">
-                    <p class="cast-name"><strong>${actor.name || 'Unknown'}</strong></p>
+                    <p class="cast-name"><strong>${actor.name}</strong></p>
                     <p class="cast-character">${actor.character || 'Unknown Role'}</p>
                 </div>
             </div>
@@ -352,16 +370,10 @@ function renderCast(data) {
     console.log(`✅ Cast rendered: ${topCast.length} actors`);
 }
 
-/**
- * Render Similar Movies (Recommendations)
- */
 function renderSimilar(similar) {
     const container = document.getElementById('similar-movies-container');
     
-    if (!container) {
-        console.warn("Similar container not found");
-        return;
-    }
+    if (!container) return;
     
     if (!similar?.results || similar.results.length === 0) {
         container.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">No similar movies found.</p>';
@@ -406,8 +418,6 @@ function updateVideoPlayer(server) {
         showNotification(`Unable to load ${server}. Try another server.`);
     };
 }
-
-// --- UTILITIES ---
 
 function showNotification(message) {
     let notif = document.getElementById('temp-notification');
@@ -470,35 +480,20 @@ function showErrorMessage(message) {
     showNotification(message);
 }
 
-// --- EVENT LISTENERS ---
-
 document.addEventListener('DOMContentLoaded', () => {
-    // Watch Full Movie button
-    const watchBtn = document.getElementById('scroll-to-player');
-    if (watchBtn) {
-        watchBtn.addEventListener('click', () => {
-            updateVideoPlayer('vidsrc');
-            document.getElementById('player-section')?.scrollIntoView({ behavior: 'smooth' });
-        });
-    }
+    document.getElementById('scroll-to-player')?.addEventListener('click', () => {
+        updateVideoPlayer('vidsrc');
+        document.getElementById('player-section')?.scrollIntoView({ behavior: 'smooth' });
+    });
     
-    // Trailer button
-    const trailerBtn = document.getElementById('play-trailer-btn');
-    if (trailerBtn) {
-        trailerBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            playTrailer();
-        });
-    }
+    document.getElementById('play-trailer-btn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        playTrailer();
+    });
     
-    // Server switcher
-    const serverSelect = document.getElementById('server-select');
-    if (serverSelect) {
-        serverSelect.addEventListener('change', (e) => {
-            updateVideoPlayer(e.target.value);
-        });
-    }
+    document.getElementById('server-select')?.addEventListener('change', (e) => {
+        updateVideoPlayer(e.target.value);
+    });
 });
 
-// START!
 initMoviePage();
