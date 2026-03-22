@@ -1,7 +1,6 @@
 /**
- * CINElzFlix - Ultimate Movie Page Engine
- * Version: 4.1 (Hero Video Background - FIXED!)
- * Developed by: Nelz & Gemini
+ * CINElzFlix - Movie Page Engine
+ * Version: 4.2 (Simple Hero + Dynamic Page Title)
  */
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -12,7 +11,6 @@ const BASE_URL = 'https://cinelzflix-worker.baquial-enozz.workers.dev/';
 const TMDB_IMG = 'https://image.tmdb.org/t/p/original';
 const TMDB_POSTER = 'https://image.tmdb.org/t/p/w500';
 
-// Global store
 window.movieTrailerKey = "";
 window.movieTitle = "";
 
@@ -28,8 +26,6 @@ async function initMoviePage() {
         showLoadingState();
         
         const apiUrl = `${BASE_URL}?endpoint=/${mediaType}/${movieId}&append_to_response=videos,credits,similar`;
-        console.log("📡 Fetching:", apiUrl);
-        
         const response = await fetch(apiUrl);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         
@@ -37,102 +33,43 @@ async function initMoviePage() {
         if (!data || data.success === false) throw new Error("Invalid API Data");
 
         window.movieTitle = data.title || data.name || "Unknown Title";
+        
+        // ✅ UPDATE PAGE TITLE
+        document.title = `${window.movieTitle} - CINElzFlix Movies`;
+        console.log("📄 Page title set to:", document.title);
+        
         window.movieTrailerKey = await getTrailerKey(data);
         
-        console.log(window.movieTrailerKey ? "✅ Trailer found: " + window.movieTrailerKey : "🔍 No trailer, using backdrop only");
-        
-        // ✅ CRITICAL: Render Hero Video Background
-        renderHeroVideoBackground(window.movieTrailerKey);
-        
-        // Render everything else
-        renderHeroInfo(data);
+        renderHero(data);
         renderDetails(data);
         renderCast(data.credits);
         renderSimilar(data.similar);
 
-        // Load movie server by default
         updateVideoPlayer('vidsrc');
         
         console.log("✅ Movie Page Ready!");
 
     } catch (err) {
         console.error("🚨 Error:", err);
+        document.title = "Error - CINElzFlix";
         showErrorMessage(`Failed to load: ${err.message}`);
-        document.getElementById('movie-title').innerText = "Unable to Load";
     } finally {
         hideLoadingState();
     }
 }
 
-/**
- * Get trailer key from TMDB
- */
 async function getTrailerKey(data) {
-    if (!data.videos || !data.videos.results.length) {
-        console.log("No videos found in TMDB");
-        return "";
-    }
-    
+    if (!data.videos || !data.videos.results.length) return "";
     const priority = ["Trailer", "Teaser", "Featurette", "Clip"];
     for (const type of priority) {
-        const video = data.videos.results.find(v => 
-            v.type === type && 
-            v.site === "YouTube" && 
-            v.key && 
-            v.key.trim() !== ""
-        );
-        if (video) {
-            console.log(`🎬 Found ${type}:`, video.key);
-            return video.key;
-        }
+        const video = data.videos.results.find(v => v.type === type && v.site === "YouTube" && v.key);
+        if (video) return video.key;
     }
-    
-    const anyVideo = data.videos.results.find(v => v.site === "YouTube" && v.key);
-    if (anyVideo) {
-        console.log("🎬 Using fallback video:", anyVideo.type);
-        return anyVideo.key;
-    }
-    
-    return "";
+    return data.videos.results[0]?.key || "";
 }
 
-/**
- * ✅ Render Hero Video Background (with debugging)
- */
-function renderHeroVideoBackground(trailerKey) {
-    const heroVideoContainer = document.getElementById('hero-video-container');
-    
-    console.log("🎨 renderHeroVideoBackground called");
-    console.log("📦 heroVideoContainer found:", !!heroVideoContainer);
-    console.log("🎬 trailerKey:", trailerKey);
-    
-    if (!heroVideoContainer) {
-        console.error("❌ CRITICAL: hero-video-container element not found in DOM!");
-        return;
-    }
-    
-    if (trailerKey && trailerKey.trim() !== "") {
-        // May trailer - play as background video (muted, loop)
-        console.log("🎬 Playing hero background trailer:", trailerKey);
-        heroVideoContainer.innerHTML = `
-            <iframe 
-                src="https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=1&controls=0&loop=1&playlist=${trailerKey}&rel=0&showinfo=0&modestbranding=1&iv_load_policy=3" 
-                frameborder="0" 
-                allow="autoplay; encrypted-media"
-                allowfullscreen>
-            </iframe>
-        `;
-    } else {
-        // Walang trailer - clear container
-        console.log("🎨 No trailer available, clearing video container");
-        heroVideoContainer.innerHTML = '';
-    }
-}
-
-/**
- * Render Hero Info (Title, Meta, Description)
- */
-function renderHeroInfo(data) {
+function renderHero(data) {
+    const heroBg = document.getElementById('movie-hero');
     const title = document.getElementById('movie-title');
     const desc = document.getElementById('movie-description-hero');
     const meta = document.getElementById('movie-meta-hero');
@@ -149,26 +86,26 @@ function renderHeroInfo(data) {
             <span>🎬 ${mediaType.toUpperCase()}</span>
         `;
     }
+    
+    // Set hero background image
+    if (heroBg && data.backdrop_path) {
+        heroBg.style.backgroundImage = `linear-gradient(to top, #0a0a0a 15%, rgba(0,0,0,0.4)), url('${TMDB_IMG}${data.backdrop_path}')`;
+        heroBg.style.backgroundSize = 'cover';
+        heroBg.style.backgroundPosition = 'center top';
+        console.log("✅ Hero background image set");
+    }
 }
 
-/**
- * Render Poster and Overview
- */
 function renderDetails(data) {
     const poster = document.getElementById('movie-poster');
     const overview = document.getElementById('movie-overview');
     const vote = document.getElementById('vote-avg');
     
-    if (poster) {
-        poster.src = data.poster_path ? `${TMDB_POSTER}${data.poster_path}` : 'https://via.placeholder.com/500x750?text=No+Poster';
-    }
+    if (poster) poster.src = data.poster_path ? `${TMDB_POSTER}${data.poster_path}` : 'https://via.placeholder.com/500x750?text=No+Poster';
     if (overview) overview.innerText = data.overview || "The plot for this title is currently unavailable.";
     if (vote) vote.innerText = data.vote_average ? data.vote_average.toFixed(1) : "0.0";
 }
 
-/**
- * Render Cast Section
- */
 function renderCast(credits) {
     const castList = document.getElementById('movie-cast');
     if (!castList || !credits?.cast) return;
@@ -184,9 +121,6 @@ function renderCast(credits) {
     `).join('');
 }
 
-/**
- * Render Similar Movies
- */
 function renderSimilar(similar) {
     const container = document.getElementById('similar-movies-container');
     if (!container || !similar?.results.length) return;
@@ -196,7 +130,7 @@ function renderSimilar(similar) {
         <div class="similar-grid" style="display: flex; gap: 15px; overflow-x: auto; padding-bottom: 20px;">
             ${similar.results.slice(0, 12).map(m => `
                 <div class="similar-card" style="min-width: 160px; cursor: pointer;" onclick="window.location.href='?id=${m.id}&type=${mediaType}'">
-                    <img src="https://image.tmdb.org/t/p/w300${m.poster_path}" style="width: 100%; border-radius: 10px; transition: 0.3s;" loading="lazy">
+                    <img src="https://image.tmdb.org/t/p/w300${m.poster_path}" style="width: 100%; border-radius: 10px;" loading="lazy">
                     <p style="font-size: 0.85rem; margin-top: 8px; font-weight: bold;">${m.title || m.name}</p>
                     <span style="font-size: 0.7rem; color: #00d4ff;">⭐ ${m.vote_average ? m.vote_average.toFixed(1) : 'N/A'}</span>
                 </div>
@@ -205,41 +139,12 @@ function renderSimilar(similar) {
     `;
 }
 
-/**
- * MAIN PLAYER SYSTEM
- */
 function updateVideoPlayer(server) {
     const iframe = document.getElementById('movie-iframe');
     const loadingIndicator = document.getElementById('player-loading');
-    
     if (!iframe) return;
-    
     if (loadingIndicator) loadingIndicator.style.display = 'flex';
     
-    if (server === 'trailer') {
-        handleTrailerDirectEmbed(iframe, loadingIndicator);
-    } else {
-        handleServerPlayback(server, iframe, loadingIndicator);
-    }
-}
-
-function handleTrailerDirectEmbed(iframe, loadingIndicator) {
-    const title = window.movieTitle;
-    iframe.style.display = 'block';
-    
-    if (window.movieTrailerKey) {
-        iframe.src = `https://www.youtube.com/embed/${window.movieTrailerKey}?autoplay=1&rel=0&modestbranding=1`;
-    } else {
-        const searchQuery = encodeURIComponent(`${title} official trailer`);
-        iframe.src = `https://www.youtube.com/results?search_query=${searchQuery}`;
-    }
-
-    iframe.onload = () => {
-        if (loadingIndicator) loadingIndicator.style.display = 'none';
-    };
-}
-
-function handleServerPlayback(server, iframe, loadingIndicator) {
     const servers = {
         'vidsrc': mediaType === 'movie' ? `https://vidsrc.me/embed/movie?tmdb=${movieId}` : `https://vidsrc.me/embed/tv?tmdb=${movieId}&sea=1&epi=1`,
         'vidsrc2': `https://vidsrc.to/embed/${mediaType}/${movieId}`,
@@ -254,13 +159,10 @@ function handleServerPlayback(server, iframe, loadingIndicator) {
     };
     
     iframe.onerror = () => {
-        console.error("Failed to load server:", server);
         if (loadingIndicator) loadingIndicator.style.display = 'none';
         showNotification(`Unable to load ${server}. Try another server.`);
     };
 }
-
-// --- UTILITIES ---
 
 function showNotification(message) {
     let notif = document.getElementById('temp-notification');
@@ -281,7 +183,6 @@ function showNotification(message) {
             font-size: 0.85rem;
             animation: fadeInOut 3s ease forwards;
             white-space: nowrap;
-            box-shadow: 0 0 20px rgba(0,212,255,0.5);
         `;
         document.body.appendChild(notif);
         
@@ -302,11 +203,7 @@ function showNotification(message) {
     
     notif.textContent = message;
     notif.style.display = 'block';
-    notif.style.visibility = 'visible';
-    
-    setTimeout(() => {
-        notif.style.display = 'none';
-    }, 3000);
+    setTimeout(() => notif.style.display = 'none', 3000);
 }
 
 function showLoadingState() {
@@ -324,31 +221,15 @@ function showErrorMessage(message) {
     showNotification(message);
 }
 
-// --- EVENT LISTENERS ---
-
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("📄 DOM Ready - Setting up event listeners");
-    
-    const watchBtn = document.getElementById('scroll-to-player');
-    if (watchBtn) {
-        watchBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            console.log("🎬 Watch Full Movie clicked");
-            updateVideoPlayer('vidsrc');
-            document.getElementById('player-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-    } else {
-        console.warn("⚠️ Watch button not found");
-    }
+    document.getElementById('scroll-to-player')?.addEventListener('click', () => {
+        updateVideoPlayer('vidsrc');
+        document.getElementById('player-section')?.scrollIntoView({ behavior: 'smooth' });
+    });
 
-    const serverSelect = document.getElementById('server-select');
-    if (serverSelect) {
-        serverSelect.addEventListener('change', (e) => {
-            console.log("🔄 Server changed to:", e.target.value);
-            updateVideoPlayer(e.target.value);
-        });
-    }
+    document.getElementById('server-select')?.addEventListener('change', (e) => {
+        updateVideoPlayer(e.target.value);
+    });
 });
 
-// START!
 initMoviePage();
