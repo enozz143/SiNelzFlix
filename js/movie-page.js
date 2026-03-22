@@ -1,6 +1,6 @@
 /**
  * CINElzFlix - Ultimate Movie Page Engine
- * Version: 3.1 (Trailer Fix + Enhanced UX)
+ * Version: 3.2 (Auto YouTube Embed - No API)
  * Developed by: Nelz & Gemini
  */
 
@@ -24,7 +24,6 @@ async function initMoviePage() {
     }
 
     try {
-        // Show loading state
         showLoadingState();
         
         const response = await fetch(`${BASE_URL}?endpoint=/${mediaType}/${movieId}&append_to_response=videos,credits,similar`);
@@ -32,29 +31,23 @@ async function initMoviePage() {
 
         if (!data || data.success === false) throw new Error("API Connection Failed");
 
-        // Store movie title globally
         window.movieTitle = data.title || data.name;
         
-        // --- 1. IMPROVED TRAILER SEARCH ---
+        // --- GET TRAILER FROM TMDB ---
         window.movieTrailerKey = await getTrailerKey(data);
         
-        // Log trailer status for debugging
         if (window.movieTrailerKey) {
-            console.log("✅ Trailer found! Key:", window.movieTrailerKey);
+            console.log("✅ TMDB Trailer found! Key:", window.movieTrailerKey);
         } else {
-            console.log("❌ No trailer found in TMDB for:", window.movieTitle);
+            console.log("🔍 No TMDB trailer, will use YouTube search embed for:", window.movieTitle);
         }
 
-        // --- 2. FULL UI RENDERING ---
         renderHero(data);
         renderDetails(data);
         renderCast(data.credits);
         renderSimilar(data.similar);
-        
-        // Update trailer button state
         updateTrailerButtonState();
 
-        // --- 3. AUTO-LOAD PLAYER ---
         updateVideoPlayer('vidsrc');
 
     } catch (err) {
@@ -67,23 +60,15 @@ async function initMoviePage() {
 }
 
 /**
- * IMPROVED: Get trailer key with better search logic
+ * Get trailer key from TMDB
  */
 async function getTrailerKey(data) {
     if (!data.videos || !data.videos.results.length) {
         return "";
     }
     
-    // Expanded priority list
-    const videoTypes = [
-        "Trailer",
-        "Teaser", 
-        "Featurette",
-        "Behind the Scenes",
-        "Clip"
-    ];
+    const videoTypes = ["Trailer", "Teaser", "Featurette", "Behind the Scenes", "Clip"];
     
-    // Try to find by priority types
     for (const type of videoTypes) {
         const video = data.videos.results.find(v => 
             v.type === type && 
@@ -92,20 +77,14 @@ async function getTrailerKey(data) {
             v.key.trim() !== ""
         );
         if (video) {
-            console.log(`🎬 Found ${type}:`, video.key);
+            console.log(`🎬 Found ${type} in TMDB:`, video.key);
             return video.key;
         }
     }
     
-    // Fallback: any YouTube video
-    const anyVideo = data.videos.results.find(v => 
-        v.site === "YouTube" && 
-        v.key && 
-        v.key.trim() !== ""
-    );
-    
+    const anyVideo = data.videos.results.find(v => v.site === "YouTube" && v.key);
     if (anyVideo) {
-        console.log("🎬 Using fallback video:", anyVideo.type);
+        console.log("🎬 Using fallback TMDB video:", anyVideo.type);
         return anyVideo.key;
     }
     
@@ -113,35 +92,27 @@ async function getTrailerKey(data) {
 }
 
 /**
- * NEW: Update trailer button UI based on availability
+ * Update trailer button UI
  */
 function updateTrailerButtonState() {
     const trailerBtn = document.getElementById('play-trailer-btn');
     if (!trailerBtn) return;
     
     if (window.movieTrailerKey) {
-        // Trailer available - enable button
         trailerBtn.style.opacity = "1";
         trailerBtn.style.cursor = "pointer";
-        trailerBtn.title = "Watch Trailer";
-        trailerBtn.classList.remove('disabled');
+        trailerBtn.title = "Watch Official Trailer";
+        trailerBtn.innerHTML = "🎬 WATCH TRAILER";
     } else {
-        // No trailer - disable button but still functional (will open YouTube search)
-        trailerBtn.style.opacity = "0.7";
-        trailerBtn.style.cursor = "pointer"; // Still clickable for fallback
-        trailerBtn.title = "No official trailer found. Click to search YouTube.";
-        
-        // Optional: Add indicator
-        const originalHtml = trailerBtn.innerHTML;
-        if (!trailerBtn.hasAttribute('data-modified')) {
-            trailerBtn.setAttribute('data-modified', 'true');
-            // You can add a small icon or leave as is
-        }
+        trailerBtn.style.opacity = "1";
+        trailerBtn.style.cursor = "pointer";
+        trailerBtn.title = "Search YouTube for trailer";
+        trailerBtn.innerHTML = "🔍 SEARCH TRAILER";
     }
 }
 
 /**
- * FIXED: Player system with better trailer handling
+ * MAIN PLAYER SYSTEM
  */
 function updateVideoPlayer(server) {
     const iframe = document.getElementById('movie-iframe');
@@ -150,10 +121,7 @@ function updateVideoPlayer(server) {
     
     if (!iframe) return;
     
-    // Hide any previous errors
     if (playerError) playerError.style.display = 'none';
-    
-    // Show loading
     if (loadingIndicator) loadingIndicator.style.display = 'flex';
     
     if (server === 'trailer') {
@@ -164,37 +132,49 @@ function updateVideoPlayer(server) {
 }
 
 /**
- * NEW: Handle trailer playback with better UX
+ * FIXED: Trailer playback - TMDB or Auto YouTube Search
  */
 function handleTrailerPlayback(iframe, loadingIndicator) {
     const title = window.movieTitle || document.getElementById('movie-title')?.innerText || "this title";
     
     if (window.movieTrailerKey && window.movieTrailerKey.trim() !== "") {
-        // We have a trailer key - play it!
-        console.log("🎬 Playing trailer:", window.movieTrailerKey);
-        iframe.src = `https://www.youtube.com/embed/${window.movieTrailerKey}?autoplay=1&rel=0&modestbranding=1`;
+        // ✅ MAY TRAILER SA TMDB - play it directly!
+        console.log("🎬 Playing TMDB trailer:", window.movieTrailerKey);
+        iframe.style.display = 'block';
+        iframe.src = `https://www.youtube.com/embed/${window.movieTrailerKey}?autoplay=1&rel=0&modestbranding=1&showinfo=0`;
         
-        // Clear loading after iframe loads
         iframe.onload = () => {
             if (loadingIndicator) loadingIndicator.style.display = 'none';
         };
         
-        // Timeout fallback
         setTimeout(() => {
             if (loadingIndicator) loadingIndicator.style.display = 'none';
         }, 5000);
         
     } else {
-        // No trailer key - show modal/dialog instead of alert
-        iframe.style.display = 'none';
-        if (loadingIndicator) loadingIndicator.style.display = 'none';
+        // 🔍 WALANG TMDB TRAILER - auto-embed YouTube search results!
+        console.log("🔍 No TMDB trailer, embedding YouTube search for:", title);
+        iframe.style.display = 'block';
         
-        showTrailerNotFoundModal(title);
+        // YouTube embed with search query - automatic maghahanap ng trailer
+        const searchQuery = encodeURIComponent(`${title} official trailer`);
+        iframe.src = `https://www.youtube.com/embed/?q=${searchQuery}&autoplay=1`;
+        
+        iframe.onload = () => {
+            if (loadingIndicator) loadingIndicator.style.display = 'none';
+        };
+        
+        // Show notification para alam ng user
+        showNotification(`🔍 Showing YouTube search results for "${title}" trailer...`);
+        
+        setTimeout(() => {
+            if (loadingIndicator) loadingIndicator.style.display = 'none';
+        }, 5000);
     }
 }
 
 /**
- * NEW: Handle server playback
+ * Handle video server playback
  */
 function handleServerPlayback(server, iframe, loadingIndicator) {
     const servers = {
@@ -209,7 +189,6 @@ function handleServerPlayback(server, iframe, loadingIndicator) {
     iframe.style.display = 'block';
     iframe.src = newSrc;
     
-    // Handle iframe errors
     iframe.onerror = () => {
         console.error("Failed to load iframe:", server);
         if (loadingIndicator) loadingIndicator.style.display = 'none';
@@ -220,90 +199,63 @@ function handleServerPlayback(server, iframe, loadingIndicator) {
         if (loadingIndicator) loadingIndicator.style.display = 'none';
     };
     
-    // Timeout fallback
     setTimeout(() => {
         if (loadingIndicator) loadingIndicator.style.display = 'none';
     }, 8000);
 }
 
 /**
- * NEW: Show modal for missing trailer
+ * Show temporary notification
  */
-function showTrailerNotFoundModal(title) {
-    // Check if modal already exists
-    let modal = document.getElementById('trailer-modal');
-    if (!modal) {
-        modal = document.createElement('div');
-        modal.id = 'trailer-modal';
-        modal.style.cssText = `
+function showNotification(message) {
+    let notif = document.getElementById('temp-notification');
+    if (!notif) {
+        notif = document.createElement('div');
+        notif.id = 'temp-notification';
+        notif.style.cssText = `
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: fadeIn 0.3s ease;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 212, 255, 0.95);
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            z-index: 10000;
+            font-size: 0.85rem;
+            animation: fadeInOut 3s ease forwards;
+            white-space: nowrap;
+            box-shadow: 0 0 20px rgba(0,212,255,0.5);
         `;
+        document.body.appendChild(notif);
         
-        modal.innerHTML = `
-            <div style="background: #1a1a1a; border-radius: 15px; max-width: 400px; width: 90%; padding: 30px; text-align: center; border: 1px solid #00d4ff;">
-                <div style="font-size: 64px; margin-bottom: 20px;">🎬</div>
-                <h2 style="color: #fff; margin-bottom: 15px;">No Trailer Available</h2>
-                <p style="color: #ccc; margin-bottom: 25px; line-height: 1.5;">
-                    We couldn't find an official trailer for "${title}" in our database.
-                </p>
-                <div style="display: flex; gap: 10px; justify-content: center;">
-                    <button id="search-youtube-btn" style="background: #00d4ff; color: #000; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">
-                        🔍 Search YouTube
-                    </button>
-                    <button id="close-modal-btn" style="background: #333; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
-                        Close
-                    </button>
-                </div>
-                <p style="color: #888; font-size: 12px; margin-top: 20px;">
-                    Tip: You can also search manually on YouTube using the title.
-                </p>
-            </div>
-        `;
-        
-        document.body.appendChild(modal);
-        
-        // Add styles for animation
-        if (!document.getElementById('modal-styles')) {
+        if (!document.getElementById('notif-styles')) {
             const style = document.createElement('style');
-            style.id = 'modal-styles';
+            style.id = 'notif-styles';
             style.textContent = `
-                @keyframes fadeIn {
-                    from { opacity: 0; }
-                    to { opacity: 1; }
+                @keyframes fadeInOut {
+                    0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+                    15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+                    85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+                    100% { opacity: 0; transform: translateX(-50%) translateY(-20px); visibility: hidden; }
                 }
             `;
             document.head.appendChild(style);
         }
-        
-        // Event listeners
-        document.getElementById('search-youtube-btn')?.addEventListener('click', () => {
-            window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(title)}+official+trailer`, '_blank');
-            modal.remove();
-        });
-        
-        document.getElementById('close-modal-btn')?.addEventListener('click', () => {
-            modal.remove();
-        });
-        
-        // Close on background click
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) modal.remove();
-        });
     }
+    
+    notif.textContent = message;
+    notif.style.display = 'block';
+    notif.style.visibility = 'visible';
+    
+    setTimeout(() => {
+        notif.style.display = 'none';
+    }, 3000);
 }
 
 /**
- * NEW: Show server error message
+ * Show server error message
  */
 function showServerErrorMessage(server) {
     let errorDiv = document.getElementById('player-error');
@@ -336,11 +288,13 @@ function showServerErrorMessage(server) {
 }
 
 /**
- * NEW: Loading state functions
+ * Loading state functions
  */
 function showLoadingState() {
     const spinner = document.getElementById('global-loading');
-    if (!spinner) {
+    if (spinner) {
+        spinner.style.display = 'flex';
+    } else {
         const loadingDiv = document.createElement('div');
         loadingDiv.id = 'global-loading';
         loadingDiv.style.cssText = `
@@ -350,26 +304,22 @@ function showLoadingState() {
             transform: translate(-50%, -50%);
             z-index: 9999;
             text-align: center;
+            background: rgba(0,0,0,0.9);
+            padding: 20px 30px;
+            border-radius: 10px;
         `;
         loadingDiv.innerHTML = `
-            <div style="width: 50px; height: 50px; border: 3px solid #333; border-top-color: #00d4ff; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+            <div style="width: 50px; height: 50px; border: 3px solid #333; border-top-color: #00d4ff; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto;"></div>
             <p style="color: #00d4ff; margin-top: 10px;">Loading...</p>
         `;
         document.body.appendChild(loadingDiv);
         
-        // Add spin animation if not exists
         if (!document.getElementById('spin-keyframes')) {
             const style = document.createElement('style');
             style.id = 'spin-keyframes';
-            style.textContent = `
-                @keyframes spin {
-                    to { transform: rotate(360deg); }
-                }
-            `;
+            style.textContent = `@keyframes spin { to { transform: rotate(360deg); } }`;
             document.head.appendChild(style);
         }
-    } else {
-        spinner.style.display = 'block';
     }
 }
 
@@ -389,18 +339,16 @@ function showErrorMessage(message) {
         padding: 12px 20px;
         border-radius: 8px;
         z-index: 9999;
-        animation: slideIn 0.3s ease;
+        animation: fadeIn 0.3s ease;
     `;
     errorMsg.innerText = message;
     document.body.appendChild(errorMsg);
     
-    setTimeout(() => {
-        errorMsg.remove();
-    }, 5000);
+    setTimeout(() => errorMsg.remove(), 5000);
 }
 
 /**
- * RENDER FUNCTIONS (Same as before, but with fixes)
+ * RENDER FUNCTIONS
  */
 function renderHero(data) {
     const heroBg = document.getElementById('movie-hero');
@@ -474,16 +422,14 @@ function renderSimilar(similar) {
 }
 
 /**
- * EVENT LISTENERS (Improved)
+ * EVENT LISTENERS
  */
 document.addEventListener('DOMContentLoaded', () => {
-    // Watch Movie Click
     document.getElementById('scroll-to-player')?.addEventListener('click', () => {
         updateVideoPlayer('vidsrc'); 
         document.getElementById('player-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 
-    // Watch Trailer Click - Improved with feedback
     const trailerBtn = document.getElementById('play-trailer-btn');
     if (trailerBtn) {
         trailerBtn.addEventListener('click', (e) => {
@@ -494,7 +440,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Server Switcher
     const serverSelect = document.getElementById('server-select');
     if (serverSelect) {
         serverSelect.addEventListener('change', (e) => {
