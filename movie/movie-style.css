@@ -424,9 +424,10 @@ body {
 }
 
 /* ============================================ */
-/* MOBILE RESPONSIVE */
+/* MOBILE RESPONSIVE - OPTIMIZED */
 /* ============================================ */
 
+/* Tablet and below (max-width: 900px) */
 @media (max-width: 900px) {
     .movie-info-grid { 
         grid-template-columns: 1fr; 
@@ -473,69 +474,10 @@ body {
     }
 }
 
-@media (max-width: 768px) {
-    #movie-hero {
-        margin-top: 70px;
-        height: 70vh;
-    }
-    
-    .controls-bar {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .similar-card {
-        min-width: 120px;
-    }
-    
-    .cast-item {
-        width: 100px;
-    }
-    
-    .cast-img-wrapper {
-        width: 90px;
-        height: 90px;
-    }
-    
-    .cast-name {
-        font-size: 0.75rem;
-    }
-    
-    .cast-character {
-        font-size: 0.65rem;
-    }
-    
-    .meta-badge {
-        font-size: 0.7rem;
-        padding: 3px 8px;
-        margin-right: 5px;
-    }
-    
-    .watch-now, .btn-secondary {
-        padding: 8px 20px;
-        font-size: 0.85rem;
-    }
-    
-    .hero-info-content h1 {
-        font-size: 1.8rem;
-    }
-    
-    #movie-description-hero {
-        font-size: 0.9rem;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-}
-
-/* ============================================ */
-/* MOBILE VIEW FIX - PARA SA MOVIE PAGE */
-/* ============================================ */
-
+/* Mobile Phones (max-width: 768px) */
 @media (max-width: 768px) {
     
-    /* Hero Section - Pinaliit para sa mobile */
+    /* Hero Section */
     #movie-hero {
         height: 50vh !important;
         margin-top: 70px !important;
@@ -565,7 +507,7 @@ body {
         margin-bottom: 12px !important;
     }
     
-    /* Buttons - Magkapatong sa mobile */
+    /* Buttons */
     .hero-actions {
         flex-direction: column !important;
         align-items: center !important;
@@ -589,7 +531,7 @@ body {
         min-height: 250px !important;
     }
     
-    /* Info Grid - Naka-stack sa mobile */
+    /* Info Grid */
     .movie-info-grid {
         grid-template-columns: 1fr !important;
         gap: 20px !important;
@@ -615,7 +557,7 @@ body {
         line-height: 1.5 !important;
     }
     
-    /* Cast Section - Mas maliit na circles */
+    /* Cast Section */
     .cast-section {
         margin-top: 20px !important;
     }
@@ -627,6 +569,7 @@ body {
     .cast-list {
         gap: 12px !important;
         padding: 10px 0 15px 0 !important;
+        justify-content: flex-start !important;
     }
     
     .cast-item {
@@ -659,7 +602,7 @@ body {
         font-size: 0.7rem !important;
     }
     
-    /* Controls Bar - Stack vertically */
+    /* Controls Bar */
     .controls-bar {
         flex-direction: column !important;
         align-items: flex-start !important;
