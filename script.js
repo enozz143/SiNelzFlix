@@ -28,6 +28,114 @@ window.filterGenre = filterGenre;
 window.loadMore = loadMore;          
 window.BASE_URL = BASE_URL; 
 
+// ============================================
+// LIVE SEARCH DROPDOWN - NEW FEATURE!
+// ============================================
+
+let searchDebounceTimer;
+
+/**
+ * Live search with dropdown suggestions
+ */
+window.handleSearchWithDropdown = async function(query) {
+    const dropdown = document.getElementById('search-dropdown');
+    
+    if (!dropdown) return;
+    
+    if (!query || !query.trim()) {
+        dropdown.style.display = 'none';
+        return;
+    }
+    
+    // Show loading state
+    dropdown.innerHTML = '<div class="search-dropdown-loading">🔍 Searching...</div>';
+    dropdown.style.display = 'block';
+    
+    // Debounce para hindi masyadong madaming request
+    clearTimeout(searchDebounceTimer);
+    searchDebounceTimer = setTimeout(async () => {
+        try {
+            const res = await fetch(`${BASE_URL}?endpoint=/search/multi&query=${encodeURIComponent(query)}`);
+            const data = await res.json();
+            const results = data.results || [];
+            
+            if (results.length === 0) {
+                dropdown.innerHTML = `<div class="search-dropdown-empty">😢 No results found for "${escapeHtml(query)}"</div>`;
+                return;
+            }
+            
+            // Show top 8 results
+            dropdown.innerHTML = results.slice(0, 8).map(item => {
+                const title = item.title || item.name || 'Unknown';
+                const year = (item.release_date || item.first_air_date || '').split('-')[0];
+                const type = item.title ? 'Movie' : (item.name ? 'TV' : 'Person');
+                const rating = item.vote_average ? `⭐ ${item.vote_average.toFixed(1)}` : '';
+                const poster = item.poster_path 
+                    ? `https://image.tmdb.org/t/p/w92${item.poster_path}` 
+                    : '';
+                
+                // Skip if no title or invalid type
+                if (type === 'Person') return '';
+                
+                return `
+                    <div class="search-dropdown-item" onclick="window.location.href='/movie/?id=${item.id}&type=${item.title ? 'movie' : 'tv'}'">
+                        ${poster ? `<img class="search-dropdown-img" src="${poster}" alt="${escapeHtml(title)}" onerror="this.style.display='none'">` : '<div style="width:45px;"></div>'}
+                        <div class="search-dropdown-info">
+                            <div class="search-dropdown-title">${escapeHtml(title)}</div>
+                            <div class="search-dropdown-meta">
+                                <span class="search-dropdown-type">${type}</span>
+                                <span class="search-dropdown-year">${year || 'N/A'}</span>
+                                <span class="search-dropdown-rating">${rating}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).filter(item => item !== '').join('');
+            
+            // If all items were filtered out
+            if (dropdown.innerHTML === '') {
+                dropdown.innerHTML = '<div class="search-dropdown-empty">😢 No valid results found</div>';
+            }
+            
+        } catch (err) {
+            console.error('Search error:', err);
+            dropdown.innerHTML = '<div class="search-dropdown-empty">⚠️ Search failed. Please try again.</div>';
+        }
+    }, 300);
+};
+
+/**
+ * Escape HTML to prevent XSS
+ */
+function escapeHtml(str) {
+    if (!str) return '';
+    return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+/**
+ * Close dropdown when clicking outside
+ */
+document.addEventListener('click', function(e) {
+    const searchBox = document.querySelector('.search-box');
+    const dropdown = document.getElementById('search-dropdown');
+    if (searchBox && dropdown && !searchBox.contains(e.target)) {
+        dropdown.style.display = 'none';
+    }
+});
+
+// Also close on Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const dropdown = document.getElementById('search-dropdown');
+        if (dropdown) dropdown.style.display = 'none';
+    }
+});
+
 /**
  * --- INITIALIZATION ENGINE ---
  */
