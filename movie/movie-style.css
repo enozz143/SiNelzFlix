@@ -238,11 +238,13 @@ body {
 }
 
 /* ============================================ */
-/* CAST SECTION - UPDATED & CLEAN */
+/* CAST SECTION - FIXED ALIGNMENT */
 /* ============================================ */
 
 .cast-section {
     margin-top: 40px;
+    width: 100%;
+    overflow: hidden;
 }
 
 .cast-section h3 {
@@ -267,9 +269,10 @@ body {
     display: flex;
     gap: 20px;
     overflow-x: auto;
-    padding: 20px 0 25px 0;
+    padding: 15px 0 25px 0;
     scrollbar-width: thin;
     scrollbar-color: #00d4ff #1a1a1a;
+    width: 100%;
 }
 
 .cast-list::-webkit-scrollbar {
@@ -348,6 +351,25 @@ body {
     text-overflow: ellipsis;
 }
 
+/* Mobile */
+@media (max-width: 768px) {
+    .cast-item {
+        width: 100px;
+    }
+    
+    .cast-img-wrapper {
+        width: 90px;
+        height: 90px;
+    }
+    
+    .cast-name {
+        font-size: 0.75rem;
+    }
+    
+    .cast-character {
+        font-size: 0.65rem;
+    }
+}
 /* ============================================ */
 /* SIMILAR MOVIES SECTION */
 /* ============================================ */
