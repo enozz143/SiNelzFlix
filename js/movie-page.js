@@ -1,6 +1,6 @@
 /**
  * CINElzFlix - Ultimate Movie Page Engine
- * Version: 3.6 (FIXED: Direct Iframe Trailer Embed)
+ * Version: 3.7 (MODAL POPUP TRAILER EDITION)
  * Developed by: Nelz & Gemini
  */
 
@@ -41,7 +41,7 @@ async function initMoviePage() {
         renderSimilar(data.similar);
         updateTrailerButtonState();
 
-        // Load movie server by default
+        // Load movie server by default sa main player
         updateVideoPlayer('vidsrc');
         
         console.log("✅ Engine Ready");
@@ -68,7 +68,7 @@ function updateTrailerButtonState() {
     const trailerBtn = document.getElementById('play-trailer-btn');
     if (!trailerBtn) return;
     trailerBtn.innerHTML = "🎬 WATCH TRAILER";
-    trailerBtn.title = "Play Trailer in Player";
+    trailerBtn.title = "Open Trailer Popup";
 }
 
 /**
@@ -79,38 +79,52 @@ function updateVideoPlayer(server) {
     const loadingIndicator = document.getElementById('player-loading');
     
     if (!iframe) return;
-    if (loadingIndicator) loadingIndicator.style.display = 'flex';
     
     if (server === 'trailer') {
-        handleTrailerPlayback(iframe, loadingIndicator);
+        // Trailer uses the Modal Popup, not the main iframe
+        handleTrailerPlayback();
     } else {
+        // Normal servers use the main iframe
         handleServerPlayback(server, iframe, loadingIndicator);
     }
 }
 
 /**
- * ✅ FIXED: Direct Iframe Embed (No Redirect)
+ * ✅ MODAL TRAILER LOGIC
+ * Opens the trailer in a popup instead of the main page player.
  */
-function handleTrailerPlayback(iframe, loadingIndicator) {
+function handleTrailerPlayback() {
+    const modal = document.getElementById('trailer-modal');
+    const modalIframe = document.getElementById('modal-iframe');
     const title = window.movieTitle;
-    iframe.style.display = 'block';
-    
-    if (window.movieTrailerKey) {
-        // May key? Embed direct video.
-        iframe.src = `https://www.youtube.com/embed/${window.movieTrailerKey}?autoplay=1&rel=0&modestbranding=1`;
-    } else {
-        // Walang key? Embed search results directly in player!
-        const searchQuery = encodeURIComponent(`${title} official trailer`);
-        iframe.src = `https://www.youtube.com/embed?listType=search&list=${searchQuery}&autoplay=1`;
-        showNotification(`Searching trailer for: ${title}`);
-    }
 
-    iframe.onload = () => {
-        if (loadingIndicator) loadingIndicator.style.display = 'none';
-    };
+    if (!modal || !modalIframe) return;
+
+    if (window.movieTrailerKey) {
+        // May key? Buksan ang Modal
+        modal.style.display = 'flex';
+        modalIframe.src = `https://www.youtube.com/embed/${window.movieTrailerKey}?autoplay=1&rel=0&modestbranding=1`;
+        
+        // Setup Close Logic
+        const closeModal = () => {
+            modal.style.display = 'none';
+            modalIframe.src = ""; // Clear src to stop video/sound
+        };
+
+        document.getElementById('close-modal').onclick = closeModal;
+        modal.onclick = (e) => { if (e.target === modal) closeModal(); };
+        
+    } else {
+        // Walang key? YouTube Search Tab fallback
+        const searchQuery = encodeURIComponent(`${title} official trailer`);
+        showNotification(`Opening YouTube search for: ${title}`);
+        window.open(`https://www.youtube.com/results?search_query=${searchQuery}`, '_blank');
+    }
 }
 
 function handleServerPlayback(server, iframe, loadingIndicator) {
+    if (loadingIndicator) loadingIndicator.style.display = 'flex';
+
     const servers = {
         'vidsrc': mediaType === 'movie' ? `https://vidsrc.me/embed/movie?tmdb=${movieId}` : `https://vidsrc.me/embed/tv?tmdb=${movieId}&sea=1&epi=1`,
         'vidsrc2': `https://vidsrc.to/embed/${mediaType}/${movieId}`,
@@ -195,17 +209,19 @@ function showErrorMessage(m) { alert(m); }
 // --- LISTENERS ---
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Scroll and Play Movie
     document.getElementById('scroll-to-player')?.addEventListener('click', () => {
         updateVideoPlayer('vidsrc');
         document.getElementById('player-section')?.scrollIntoView({ behavior: 'smooth' });
     });
 
+    // Play Trailer (Modal)
     document.getElementById('play-trailer-btn')?.addEventListener('click', (e) => {
         e.preventDefault();
-        updateVideoPlayer('trailer');
-        document.getElementById('player-section')?.scrollIntoView({ behavior: 'smooth' });
+        handleTrailerPlayback();
     });
 
+    // Switch Servers
     document.getElementById('server-select')?.addEventListener('change', (e) => {
         updateVideoPlayer(e.target.value);
     });
