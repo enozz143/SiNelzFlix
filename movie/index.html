@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Watch Now - CINElzFlix</title>
+    <title id="page-title">Loading - CINElzFlix</title>
     <link rel="stylesheet" href="../style.css?v=1.6">
     <link rel="stylesheet" href="../css/hero.css"> 
     <link rel="stylesheet" href="movie-style.css"> 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        /* Additional styles for loading indicators */
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
@@ -53,37 +52,15 @@
             text-align: center;
         }
         
-        /* Hero section with video background */
+        /* Hero section with backdrop image only */
         #movie-hero {
             position: relative;
             width: 100%;
-            height: 85vh;
-            overflow: hidden;
+            height: 75vh;
+            background-size: cover;
+            background-position: center top;
+            background-repeat: no-repeat;
             margin-top: 85px;
-            background: #000;
-        }
-        
-        .hero-video-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-        
-        .hero-video-background iframe {
-            width: 100vw;
-            height: 56.25vw;
-            min-height: 100vh;
-            min-width: 177.77vh;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            opacity: 0.7;
-            filter: brightness(0.6) blur(2px);
         }
         
         .hero-overlay {
@@ -92,20 +69,20 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(to top, #0a0a0a 15%, rgba(0,0,0,0.4) 60%);
-            z-index: 2;
+            background: linear-gradient(to top, #0a0a0a 15%, rgba(0,0,0,0.5) 60%);
+            z-index: 1;
         }
         
         .hero-info-content {
             position: absolute;
             bottom: 15%;
             left: 5%;
-            z-index: 10;
+            z-index: 2;
             max-width: 700px;
         }
         
         .hero-info-content h1 {
-            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-size: clamp(2.5rem, 5vw, 4rem);
             margin-bottom: 15px;
             font-weight: 800;
             text-shadow: 2px 2px 20px rgba(0,0,0,1);
@@ -123,11 +100,15 @@
         }
         
         #movie-description-hero {
-            font-size: 1.1rem;
-            line-height: 1.6;
+            font-size: 1rem;
+            line-height: 1.5;
             color: #ddd;
             text-shadow: 1px 1px 10px rgba(0,0,0,0.8);
             margin-bottom: 25px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
         
         .hero-actions {
@@ -139,7 +120,7 @@
             background: #00d4ff;
             color: #000;
             border: none;
-            padding: 14px 40px;
+            padding: 12px 35px;
             border-radius: 5px;
             font-weight: bold;
             cursor: pointer;
@@ -156,7 +137,7 @@
         
         @media (max-width: 768px) {
             #movie-hero {
-                height: 70vh;
+                height: 60vh;
                 margin-top: 70px;
             }
             
@@ -172,20 +153,17 @@
             }
             
             .hero-info-content h1 {
-                font-size: 1.8rem;
+                font-size: 1.6rem;
             }
             
             #movie-description-hero {
-                font-size: 0.9rem;
-                display: -webkit-box;
+                font-size: 0.85rem;
                 -webkit-line-clamp: 3;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
             }
             
             .watch-now {
-                padding: 10px 25px;
-                font-size: 0.9rem;
+                padding: 8px 20px;
+                font-size: 0.85rem;
             }
         }
     </style>
@@ -204,18 +182,13 @@
         </div>
     </nav>
     
-    <!-- Hero Section with Video Background -->
+    <!-- Hero Section with Backdrop Image -->
     <section id="movie-hero">
-        <div class="hero-video-background" id="hero-video-container">
-            <!-- Trailer will be injected here -->
-        </div>
         <div class="hero-overlay"></div>
-        
         <div class="hero-info-content">
             <div class="hero-meta" id="movie-meta-hero"></div>
             <h1 id="movie-title">Loading Title...</h1>
             <p id="movie-description-hero">Fetching cinematic details...</p>
-            
             <div class="hero-actions">
                 <button id="scroll-to-player" class="watch-now">▶ WATCH FULL MOVIE</button>
             </div>
@@ -256,18 +229,14 @@
                 
                 <div class="cast-section">
                     <h3>Top Cast</h3>
-                    <div id="movie-cast" class="cast-list">
-                        <!-- Cast will be loaded here -->
-                    </div>
+                    <div id="movie-cast" class="cast-list"></div>
                 </div>
             </div>
         </div>
 
         <section class="similar-section">
             <h2 style="margin-bottom: 20px;">You Might Also Like</h2>
-            <div id="similar-movies-container">
-                <!-- Similar movies will be loaded here -->
-            </div>
+            <div id="similar-movies-container"></div>
         </section>
     </main>
 
@@ -275,13 +244,11 @@
         <p>© 2026 CINElzFlix.com • Developed by Nelz</p>
     </footer>
 
-    <!-- Global loading spinner -->
     <div id="global-loading" style="display: none;">
         <div style="width: 50px; height: 50px; border: 3px solid #333; border-top-color: #00d4ff; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto;"></div>
         <p style="color: #00d4ff; margin-top: 10px;">Loading movie data...</p>
     </div>
 
-    <!-- Search functionality -->
     <script type="module">
         import { handleSearch } from '../js/ui.js';
         window.handleSearch = handleSearch;
