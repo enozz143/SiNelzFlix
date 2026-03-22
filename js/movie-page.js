@@ -1,6 +1,6 @@
 /**
  * CINElzFlix - Movie Page Engine
- * Version: 4.2 (Simple Hero + Dynamic Page Title)
+ * Version: 4.3 (With Modal Trailer - Like Main Branch)
  */
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -11,7 +11,8 @@ const BASE_URL = 'https://cinelzflix-worker.baquial-enozz.workers.dev/';
 const TMDB_IMG = 'https://image.tmdb.org/t/p/original';
 const TMDB_POSTER = 'https://image.tmdb.org/t/p/w500';
 
-window.movieTrailerKey = "";
+// Global store
+window.currentMovieData = null;
 window.movieTitle = "";
 
 async function initMoviePage() {
@@ -32,13 +33,12 @@ async function initMoviePage() {
         const data = await response.json();
         if (!data || data.success === false) throw new Error("Invalid API Data");
 
+        // Store current movie data for trailer modal
+        window.currentMovieData = data;
         window.movieTitle = data.title || data.name || "Unknown Title";
         
-        // ✅ UPDATE PAGE TITLE
+        // Update page title
         document.title = `${window.movieTitle} - CINElzFlix Movies`;
-        console.log("📄 Page title set to:", document.title);
-        
-        window.movieTrailerKey = await getTrailerKey(data);
         
         renderHero(data);
         renderDetails(data);
@@ -58,15 +58,236 @@ async function initMoviePage() {
     }
 }
 
-async function getTrailerKey(data) {
-    if (!data.videos || !data.videos.results.length) return "";
-    const priority = ["Trailer", "Teaser", "Featurette", "Clip"];
-    for (const type of priority) {
-        const video = data.videos.results.find(v => v.type === type && v.site === "YouTube" && v.key);
-        if (video) return video.key;
+/**
+ * ✅ NEW: Play Trailer with Modal (Same as Main Branch!)
+ */
+async function playTrailer() {
+    if (!window.currentMovieData) {
+        showNotification("Movie data not ready yet.");
+        return;
     }
-    return data.videos.results[0]?.key || "";
+    
+    console.log("🎬 Opening trailer for:", window.movieTitle);
+    
+    try {
+        // Show loading in modal
+        showModalLoading();
+        
+        // Fetch videos from TMDB
+        const videoUrl = `${BASE_URL}?endpoint=/${mediaType}/${movieId}/videos`;
+        console.log("📡 Fetching videos:", videoUrl);
+        
+        const response = await fetch(videoUrl);
+        const videoData = await response.json();
+        
+        // Find trailer in TMDB videos
+        const trailer = videoData.results?.find(v => 
+            v.type === "Trailer" && 
+            v.site === "YouTube" &&
+            v.key &&
+            v.key.trim() !== ""
+        );
+        
+        if (trailer) {
+            console.log("✅ Trailer found:", trailer.key);
+            // Show modal with trailer
+            showTrailerModal(trailer.key);
+        } else {
+            console.log("❌ No trailer found in TMDB");
+            // Optional: Fallback to YouTube search
+            showNoTrailerModal();
+        }
+        
+    } catch (err) {
+        console.error("Trailer fetch error:", err);
+        showNotification("Failed to load trailer. Please try again.");
+        hideModalLoading();
+    }
 }
+
+/**
+ * Show modal with YouTube trailer
+ */
+function showTrailerModal(trailerKey) {
+    // Check if modal exists, if not create it
+    let modal = document.getElementById('trailer-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'trailer-modal';
+        modal.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        `;
+        
+        modal.innerHTML = `
+            <div style="position: relative; width: 90%; max-width: 1000px; background: #000; border-radius: 15px; overflow: hidden;">
+                <button id="close-modal-btn" style="
+                    position: absolute;
+                    top: 10px;
+                    right: 10px;
+                    background: rgba(0,0,0,0.8);
+                    color: #00d4ff;
+                    border: none;
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    font-size: 24px;
+                    cursor: pointer;
+                    z-index: 10;
+                    font-weight: bold;
+                ">✕</button>
+                <div id="trailer-player-container" style="position: relative; padding-bottom: 56.25%; height: 0;">
+                    <iframe 
+                        id="trailer-iframe"
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
+                        allow="autoplay; encrypted-media"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <div style="padding: 15px; background: #111;">
+                    <h3 style="color: #00d4ff; margin: 0;">${window.movieTitle}</h3>
+                    <p style="color: #ccc; margin: 5px 0 0; font-size: 0.85rem;">Official Trailer</p>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Close modal on click
+        document.getElementById('close-modal-btn')?.addEventListener('click', () => {
+            closeTrailerModal();
+        });
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeTrailerModal();
+        });
+        
+        // Add fadeIn animation if not exists
+        if (!document.getElementById('modal-animation')) {
+            const style = document.createElement('style');
+            style.id = 'modal-animation';
+            style.textContent = `@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }`;
+            document.head.appendChild(style);
+        }
+    }
+    
+    // Set trailer iframe source
+    const trailerIframe = document.getElementById('trailer-iframe');
+    if (trailerIframe) {
+        trailerIframe.src = `https://www.youtube.com/embed/${trailerKey}?autoplay=1&rel=0&modestbranding=1`;
+    }
+    
+    // Show modal
+    modal.style.display = 'flex';
+    hideModalLoading();
+}
+
+/**
+ * Close trailer modal
+ */
+function closeTrailerModal() {
+    const modal = document.getElementById('trailer-modal');
+    if (modal) {
+        const iframe = document.getElementById('trailer-iframe');
+        if (iframe) iframe.src = ''; // Stop video
+        modal.style.display = 'none';
+    }
+}
+
+/**
+ * Show modal loading state
+ */
+function showModalLoading() {
+    let loadingDiv = document.getElementById('modal-loading');
+    if (!loadingDiv) {
+        loadingDiv = document.createElement('div');
+        loadingDiv.id = 'modal-loading';
+        loadingDiv.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.9);
+            color: #00d4ff;
+            padding: 20px;
+            border-radius: 10px;
+            z-index: 10001;
+            font-weight: bold;
+        `;
+        loadingDiv.innerHTML = `
+            <div style="width: 40px; height: 40px; border: 3px solid #333; border-top-color: #00d4ff; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto;"></div>
+            <p style="margin-top: 10px;">Loading trailer...</p>
+        `;
+        document.body.appendChild(loadingDiv);
+        
+        if (!document.getElementById('spin-keyframes')) {
+            const style = document.createElement('style');
+            style.id = 'spin-keyframes';
+            style.textContent = `@keyframes spin { to { transform: rotate(360deg); } }`;
+            document.head.appendChild(style);
+        }
+    }
+    loadingDiv.style.display = 'block';
+}
+
+function hideModalLoading() {
+    const loadingDiv = document.getElementById('modal-loading');
+    if (loadingDiv) loadingDiv.style.display = 'none';
+}
+
+/**
+ * Show "No Trailer" modal (optional fallback)
+ */
+function showNoTrailerModal() {
+    hideModalLoading();
+    
+    let modal = document.getElementById('no-trailer-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'no-trailer-modal';
+        modal.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        `;
+        modal.innerHTML = `
+            <div style="background: #1a1a1a; border-radius: 15px; max-width: 400px; width: 90%; padding: 30px; text-align: center; border: 1px solid #00d4ff;">
+                <div style="font-size: 64px; margin-bottom: 20px;">🎬</div>
+                <h2 style="color: #fff;">No Trailer Available</h2>
+                <p style="color: #ccc; margin: 15px 0;">No official trailer found for "${window.movieTitle}" in TMDB.</p>
+                <button id="close-no-trailer" style="background: #00d4ff; color: #000; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">Close</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        document.getElementById('close-no-trailer')?.addEventListener('click', () => {
+            modal.remove();
+        });
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.remove();
+        });
+    }
+    modal.style.display = 'flex';
+}
+
+// --- RENDER FUNCTIONS ---
 
 function renderHero(data) {
     const heroBg = document.getElementById('movie-hero');
@@ -87,12 +308,10 @@ function renderHero(data) {
         `;
     }
     
-    // Set hero background image
     if (heroBg && data.backdrop_path) {
         heroBg.style.backgroundImage = `linear-gradient(to top, #0a0a0a 15%, rgba(0,0,0,0.4)), url('${TMDB_IMG}${data.backdrop_path}')`;
         heroBg.style.backgroundSize = 'cover';
         heroBg.style.backgroundPosition = 'center top';
-        console.log("✅ Hero background image set");
     }
 }
 
@@ -164,6 +383,8 @@ function updateVideoPlayer(server) {
     };
 }
 
+// --- UTILITIES ---
+
 function showNotification(message) {
     let notif = document.getElementById('temp-notification');
     if (!notif) {
@@ -221,15 +442,26 @@ function showErrorMessage(message) {
     showNotification(message);
 }
 
+// --- EVENT LISTENERS ---
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Watch Full Movie button
     document.getElementById('scroll-to-player')?.addEventListener('click', () => {
         updateVideoPlayer('vidsrc');
         document.getElementById('player-section')?.scrollIntoView({ behavior: 'smooth' });
     });
-
+    
+    // ✅ Trailer button - uses modal like main branch!
+    document.getElementById('play-trailer-btn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        playTrailer();
+    });
+    
+    // Server switcher
     document.getElementById('server-select')?.addEventListener('change', (e) => {
         updateVideoPlayer(e.target.value);
     });
 });
 
+// START!
 initMoviePage();
