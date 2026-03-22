@@ -410,7 +410,7 @@ body {
 }
 
 /* ============================================ */
-/* MOBILE VIEW - FULL WIDTH, HORIZONTAL SCROLL CAST */
+/* MOBILE VIEW - HIDE POSTER, HORIZONTAL CAST */
 /* ============================================ */
 
 @media (max-width: 768px) {
@@ -475,6 +475,16 @@ body {
         min-height: 200px !important;
     }
     
+    /* ============================================ */
+    /* HIDE POSTER ON MOBILE */
+    /* ============================================ */
+    .poster-side {
+        display: none !important;
+    }
+    
+    /* ============================================ */
+    /* STORY FULL WIDTH */
+    /* ============================================ */
     .movie-info-grid {
         grid-template-columns: 1fr !important;
         gap: 15px !important;
@@ -482,14 +492,10 @@ body {
         padding: 0 10px !important;
     }
     
-    .poster-side {
-        max-width: 140px !important;
-        margin: 0 auto !important;
-    }
-    
     .details-side {
         text-align: center !important;
         padding: 0 !important;
+        width: 100% !important;
     }
     
     .details-side h2 {
@@ -502,17 +508,19 @@ body {
         line-height: 1.4 !important;
     }
     
+    /* ============================================ */
     /* CAST SECTION - HORIZONTAL SCROLL */
+    /* ============================================ */
     .cast-section {
-        margin-top: 15px !important;
+        margin-top: 20px !important;
         padding: 0 10px !important;
         width: 100% !important;
-        overflow-x: auto !important;
     }
     
     .cast-section h3 {
         font-size: 1rem !important;
         margin-bottom: 10px !important;
+        text-align: left !important;
     }
     
     .cast-list {
@@ -575,6 +583,9 @@ body {
         text-overflow: ellipsis !important;
     }
     
+    /* ============================================ */
+    /* SIMILAR MOVIES */
+    /* ============================================ */
     .similar-section {
         margin-top: 20px !important;
         padding: 0 10px !important;
@@ -589,6 +600,9 @@ body {
         margin-top: 5px !important;
     }
     
+    /* ============================================ */
+    /* CONTROLS BAR */
+    /* ============================================ */
     .controls-bar {
         flex-direction: column !important;
         align-items: flex-start !important;
@@ -624,6 +638,9 @@ body {
         right: 5px !important;
     }
     
+    /* ============================================ */
+    /* FOOTER */
+    /* ============================================ */
     footer {
         padding: 30px 10px !important;
     }
@@ -647,7 +664,10 @@ body {
     }
 }
 
-/* Extra Small Devices */
+/* ============================================ */
+/* EXTRA SMALL DEVICES (below 480px) */
+/* ============================================ */
+
 @media (max-width: 480px) {
     .hero-info-content h1 {
         font-size: 1rem !important;
