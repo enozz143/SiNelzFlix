@@ -520,3 +520,80 @@ body {
         overflow: hidden;
     }
 }
+
+/* ============================================ */
+/* FIX: ALIGNMENT FIX FOR INFO GRID */
+/* ============================================ */
+
+.movie-info-grid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 60px;
+    align-items: start;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.details-side {
+    width: 100%;
+    overflow: hidden;
+}
+
+#movie-overview {
+    width: 100%;
+    max-width: 100%;
+    word-wrap: break-word;
+}
+
+.cast-section {
+    width: 100%;
+    margin-top: 40px;
+}
+
+.cast-list {
+    width: 100%;
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding: 15px 0 25px 0;
+    scrollbar-width: thin;
+}
+
+/* Ensure similar section aligns */
+.similar-section {
+    width: 100%;
+    margin-top: 60px;
+}
+
+.similar-grid {
+    width: 100%;
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding-bottom: 20px;
+}
+
+/* Mobile: switch to single column */
+@media (max-width: 900px) {
+    .movie-info-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 30px;
+    }
+    
+    .details-side {
+        text-align: center;
+    }
+    
+    .cast-section h3:after {
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+    }
+    
+    .cast-list {
+        justify-content: center;
+    }
+}
