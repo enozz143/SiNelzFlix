@@ -114,6 +114,7 @@
         .hero-actions {
             display: flex;
             gap: 15px;
+            flex-wrap: wrap;
         }
         
         .watch-now {
@@ -133,6 +134,28 @@
         .watch-now:hover {
             transform: translateY(-3px);
             box-shadow: 0 0 20px rgba(0,212,255,0.5);
+        }
+        
+        /* Trailer Button Style */
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 35px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1rem;
+            backdrop-filter: blur(5px);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+            border-color: #00d4ff;
         }
         
         @media (max-width: 768px) {
@@ -161,7 +184,7 @@
                 -webkit-line-clamp: 3;
             }
             
-            .watch-now {
+            .watch-now, .btn-secondary {
                 padding: 8px 20px;
                 font-size: 0.85rem;
             }
@@ -191,6 +214,7 @@
             <p id="movie-description-hero">Fetching cinematic details...</p>
             <div class="hero-actions">
                 <button id="scroll-to-player" class="watch-now">▶ WATCH FULL MOVIE</button>
+                <button id="play-trailer-btn" class="btn-secondary">🎬 WATCH TRAILER</button>
             </div>
         </div>
     </section>
