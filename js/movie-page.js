@@ -1,6 +1,6 @@
 /**
  * CINElzFlix - Movie Page Engine
- * Version: 4.3 (With Modal Trailer - Like Main Branch)
+ * Version: 4.4 (Improved Cast Display + Modal Trailer)
  */
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -42,7 +42,7 @@ async function initMoviePage() {
         
         renderHero(data);
         renderDetails(data);
-        renderCast(data.credits);
+        renderCast(data.credits);  // ✅ Updated cast render
         renderSimilar(data.similar);
 
         updateVideoPlayer('vidsrc');
@@ -59,7 +59,7 @@ async function initMoviePage() {
 }
 
 /**
- * ✅ NEW: Play Trailer with Modal (Same as Main Branch!)
+ * ✅ Play Trailer with Modal (Same as Main Branch!)
  */
 async function playTrailer() {
     if (!window.currentMovieData) {
@@ -70,17 +70,14 @@ async function playTrailer() {
     console.log("🎬 Opening trailer for:", window.movieTitle);
     
     try {
-        // Show loading in modal
         showModalLoading();
         
-        // Fetch videos from TMDB
         const videoUrl = `${BASE_URL}?endpoint=/${mediaType}/${movieId}/videos`;
         console.log("📡 Fetching videos:", videoUrl);
         
         const response = await fetch(videoUrl);
         const videoData = await response.json();
         
-        // Find trailer in TMDB videos
         const trailer = videoData.results?.find(v => 
             v.type === "Trailer" && 
             v.site === "YouTube" &&
@@ -90,11 +87,9 @@ async function playTrailer() {
         
         if (trailer) {
             console.log("✅ Trailer found:", trailer.key);
-            // Show modal with trailer
             showTrailerModal(trailer.key);
         } else {
             console.log("❌ No trailer found in TMDB");
-            // Optional: Fallback to YouTube search
             showNoTrailerModal();
         }
         
@@ -109,7 +104,6 @@ async function playTrailer() {
  * Show modal with YouTube trailer
  */
 function showTrailerModal(trailerKey) {
-    // Check if modal exists, if not create it
     let modal = document.getElementById('trailer-modal');
     if (!modal) {
         modal = document.createElement('div');
@@ -162,7 +156,6 @@ function showTrailerModal(trailerKey) {
         
         document.body.appendChild(modal);
         
-        // Close modal on click
         document.getElementById('close-modal-btn')?.addEventListener('click', () => {
             closeTrailerModal();
         });
@@ -171,7 +164,6 @@ function showTrailerModal(trailerKey) {
             if (e.target === modal) closeTrailerModal();
         });
         
-        // Add fadeIn animation if not exists
         if (!document.getElementById('modal-animation')) {
             const style = document.createElement('style');
             style.id = 'modal-animation';
@@ -180,32 +172,24 @@ function showTrailerModal(trailerKey) {
         }
     }
     
-    // Set trailer iframe source
     const trailerIframe = document.getElementById('trailer-iframe');
     if (trailerIframe) {
         trailerIframe.src = `https://www.youtube.com/embed/${trailerKey}?autoplay=1&rel=0&modestbranding=1`;
     }
     
-    // Show modal
     modal.style.display = 'flex';
     hideModalLoading();
 }
 
-/**
- * Close trailer modal
- */
 function closeTrailerModal() {
     const modal = document.getElementById('trailer-modal');
     if (modal) {
         const iframe = document.getElementById('trailer-iframe');
-        if (iframe) iframe.src = ''; // Stop video
+        if (iframe) iframe.src = '';
         modal.style.display = 'none';
     }
 }
 
-/**
- * Show modal loading state
- */
 function showModalLoading() {
     let loadingDiv = document.getElementById('modal-loading');
     if (!loadingDiv) {
@@ -244,9 +228,6 @@ function hideModalLoading() {
     if (loadingDiv) loadingDiv.style.display = 'none';
 }
 
-/**
- * Show "No Trailer" modal (optional fallback)
- */
 function showNoTrailerModal() {
     hideModalLoading();
     
@@ -325,19 +306,42 @@ function renderDetails(data) {
     if (vote) vote.innerText = data.vote_average ? data.vote_average.toFixed(1) : "0.0";
 }
 
+/**
+ * ✅ IMPROVED: Render Cast with better styling
+ */
 function renderCast(credits) {
     const castList = document.getElementById('movie-cast');
-    if (!castList || !credits?.cast) return;
+    if (!castList) {
+        console.warn("Cast container not found");
+        return;
+    }
     
-    castList.innerHTML = credits.cast.slice(0, 8).map(actor => `
+    if (!credits?.cast || credits.cast.length === 0) {
+        castList.innerHTML = '<p style="color: #888; text-align: center; width: 100%;">No cast information available.</p>';
+        return;
+    }
+    
+    // Get top 10 cast members
+    const topCast = credits.cast.slice(0, 10);
+    
+    castList.innerHTML = topCast.map(actor => `
         <div class="cast-item">
             <div class="cast-img-wrapper">
-                <img src="${actor.profile_path ? 'https://image.tmdb.org/t/p/w185' + actor.profile_path : 'https://via.placeholder.com/100x100?text=No+Photo'}" alt="${actor.name}" loading="lazy">
+                <img 
+                    src="${actor.profile_path ? 'https://image.tmdb.org/t/p/w185' + actor.profile_path : 'https://via.placeholder.com/185x278?text=No+Photo'}" 
+                    alt="${actor.name}"
+                    loading="lazy"
+                    onerror="this.src='https://via.placeholder.com/185x278?text=No+Photo'"
+                >
             </div>
-            <p><strong>${actor.name}</strong></p>
-            <p style="font-size: 0.7rem; color: #777;">${actor.character || 'Cast'}</p>
+            <div class="cast-info">
+                <p class="cast-name"><strong>${actor.name}</strong></p>
+                <p class="cast-character">${actor.character || 'Unknown Role'}</p>
+            </div>
         </div>
     `).join('');
+    
+    console.log(`✅ Cast rendered: ${topCast.length} actors`);
 }
 
 function renderSimilar(similar) {
@@ -451,7 +455,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('player-section')?.scrollIntoView({ behavior: 'smooth' });
     });
     
-    // ✅ Trailer button - uses modal like main branch!
+    // Trailer button - uses modal like main branch!
     document.getElementById('play-trailer-btn')?.addEventListener('click', (e) => {
         e.preventDefault();
         playTrailer();
