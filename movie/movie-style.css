@@ -528,3 +528,199 @@ body {
         overflow: hidden;
     }
 }
+
+/* ============================================ */
+/* MOBILE VIEW FIX - PARA SA MOVIE PAGE */
+/* ============================================ */
+
+@media (max-width: 768px) {
+    
+    /* Hero Section - Pinaliit para sa mobile */
+    #movie-hero {
+        height: 50vh !important;
+        margin-top: 70px !important;
+    }
+    
+    .hero-info-content {
+        bottom: 8% !important;
+        left: 5% !important;
+        right: 5% !important;
+        max-width: 90% !important;
+        text-align: center !important;
+    }
+    
+    .hero-info-content h1 {
+        font-size: 1.4rem !important;
+        margin-bottom: 8px !important;
+    }
+    
+    .hero-meta span {
+        font-size: 0.7rem !important;
+        margin-right: 8px !important;
+    }
+    
+    #movie-description-hero {
+        font-size: 0.75rem !important;
+        -webkit-line-clamp: 2 !important;
+        margin-bottom: 12px !important;
+    }
+    
+    /* Buttons - Magkapatong sa mobile */
+    .hero-actions {
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 10px !important;
+    }
+    
+    .watch-now, .btn-secondary {
+        padding: 8px 20px !important;
+        font-size: 0.75rem !important;
+        width: 100% !important;
+        max-width: 200px !important;
+    }
+    
+    /* Player */
+    .player-wrapper {
+        margin-bottom: 20px !important;
+    }
+    
+    #movie-iframe {
+        height: 40vh !important;
+        min-height: 250px !important;
+    }
+    
+    /* Info Grid - Naka-stack sa mobile */
+    .movie-info-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+        text-align: center !important;
+    }
+    
+    .poster-side {
+        max-width: 180px !important;
+        margin: 0 auto !important;
+    }
+    
+    .details-side {
+        text-align: center !important;
+        padding: 0 10px !important;
+    }
+    
+    .details-side h2 {
+        font-size: 1.3rem !important;
+    }
+    
+    #movie-overview {
+        font-size: 0.85rem !important;
+        line-height: 1.5 !important;
+    }
+    
+    /* Cast Section - Mas maliit na circles */
+    .cast-section {
+        margin-top: 20px !important;
+    }
+    
+    .cast-section h3 {
+        font-size: 1.1rem !important;
+    }
+    
+    .cast-list {
+        gap: 12px !important;
+        padding: 10px 0 15px 0 !important;
+    }
+    
+    .cast-item {
+        width: 80px !important;
+    }
+    
+    .cast-img-wrapper {
+        width: 70px !important;
+        height: 70px !important;
+    }
+    
+    .cast-name {
+        font-size: 0.65rem !important;
+    }
+    
+    .cast-character {
+        font-size: 0.55rem !important;
+    }
+    
+    /* Similar Movies */
+    .similar-section {
+        margin-top: 30px !important;
+    }
+    
+    .similar-card {
+        min-width: 110px !important;
+    }
+    
+    .similar-card p {
+        font-size: 0.7rem !important;
+    }
+    
+    /* Controls Bar - Stack vertically */
+    .controls-bar {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+    }
+    
+    .back-btn {
+        padding: 6px 15px !important;
+        font-size: 0.75rem !important;
+    }
+    
+    .server-box {
+        width: 100% !important;
+        text-align: center !important;
+    }
+    
+    /* Rating Badge */
+    .rating-badge {
+        font-size: 0.7rem !important;
+        padding: 3px 8px !important;
+    }
+}
+
+/* Extra Small Devices (below 480px) */
+@media (max-width: 480px) {
+    .hero-info-content h1 {
+        font-size: 1.2rem !important;
+    }
+    
+    #movie-description-hero {
+        font-size: 0.7rem !important;
+    }
+    
+    .watch-now, .btn-secondary {
+        padding: 6px 16px !important;
+        font-size: 0.7rem !important;
+        max-width: 160px !important;
+    }
+    
+    .cast-item {
+        width: 70px !important;
+    }
+    
+    .cast-img-wrapper {
+        width: 60px !important;
+        height: 60px !important;
+    }
+    
+    .cast-name {
+        font-size: 0.6rem !important;
+    }
+    
+    .cast-character {
+        font-size: 0.5rem !important;
+    }
+    
+    .similar-card {
+        min-width: 95px !important;
+    }
+    
+    .similar-card p {
+        font-size: 0.65rem !important;
+    }
+}
