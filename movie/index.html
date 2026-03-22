@@ -263,7 +263,7 @@
         </section>
     </main>
 
-    <!-- ✅ UPDATED FOOTER - Same as Main Site -->
+    <!-- Footer - Same as Main Site -->
     <footer id="site-footer">
         <div class="footer-container">
             <div class="footer-links">
@@ -274,7 +274,7 @@
                 <a href="/">Terms of Service</a>
                 <a href="/">DMCA</a>
             </div>
-            <p class="disclaimer"><strong>Disclaimer:</strong> CINElzFlix does not host any files on its servers. It was provided by Non-Affiliated third parties.</p>
+            <p class="disclaimer"><strong>Disclaimer:</strong> CINElzFlix does not host any files on its servers.</p>
             <p class="copyright">&copy; 2026 CINElzFlix.com. All Rights Reserved.</p>
         </div>
     </footer>
@@ -286,7 +286,22 @@
 
     <script type="module">
         import { handleSearch } from '../js/ui.js';
+        
+        // Make handleSearch available globally
         window.handleSearch = handleSearch;
+        
+        // Enter key redirect to homepage search
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const query = this.value.trim();
+                    if (query) {
+                        window.location.href = `/?search=${encodeURIComponent(query)}`;
+                    }
+                }
+            });
+        }
     </script>
     
     <script src="../js/movie-page.js"></script>
