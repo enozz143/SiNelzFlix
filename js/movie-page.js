@@ -1,6 +1,6 @@
 /**
  * CINElzFlix - Movie Page Engine
- * Version: 4.5 (Working Cast Display + Modal Trailer)
+ * Version: 5.0 (Working Cast & Similar Movies)
  */
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -11,7 +11,6 @@ const BASE_URL = 'https://cinelzflix-worker.baquial-enozz.workers.dev/';
 const TMDB_IMG = 'https://image.tmdb.org/t/p/original';
 const TMDB_POSTER = 'https://image.tmdb.org/t/p/w500';
 
-// Global store
 window.currentMovieData = null;
 window.movieTitle = "";
 
@@ -26,22 +25,16 @@ async function initMoviePage() {
     try {
         showLoadingState();
         
-        // ✅ CORRECT API URL with credits
         const apiUrl = `${BASE_URL}?endpoint=/${mediaType}/${movieId}&append_to_response=videos,credits,similar`;
-        console.log("📡 Fetching URL:", apiUrl);
+        console.log("📡 Fetching:", apiUrl);
         
         const response = await fetch(apiUrl);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         
         const data = await response.json();
-        console.log("📡 API Response received");
-        console.log("📡 Movie title:", data.title || data.name);
-        console.log("📡 Credits data exists:", !!data.credits);
-        console.log("📡 Cast count:", data.credits?.cast?.length || 0);
         
         if (!data || data.success === false) throw new Error("Invalid API Data");
 
-        // Store current movie data
         window.currentMovieData = data;
         window.movieTitle = data.title || data.name || "Unknown Title";
         
@@ -51,7 +44,7 @@ async function initMoviePage() {
         // Render all sections
         renderHero(data);
         renderDetails(data);
-        renderCast(data.credits);  // Pass credits directly
+        renderCast(data);  // Pass full data object
         renderSimilar(data.similar);
 
         updateVideoPlayer('vidsrc');
@@ -82,8 +75,6 @@ async function playTrailer() {
         showModalLoading();
         
         const videoUrl = `${BASE_URL}?endpoint=/${mediaType}/${movieId}/videos`;
-        console.log("📡 Fetching videos:", videoUrl);
-        
         const response = await fetch(videoUrl);
         const videoData = await response.json();
         
@@ -98,13 +89,13 @@ async function playTrailer() {
             console.log("✅ Trailer found:", trailer.key);
             showTrailerModal(trailer.key);
         } else {
-            console.log("❌ No trailer found in TMDB");
+            console.log("❌ No trailer found");
             showNoTrailerModal();
         }
         
     } catch (err) {
         console.error("Trailer fetch error:", err);
-        showNotification("Failed to load trailer. Please try again.");
+        showNotification("Failed to load trailer.");
         hideModalLoading();
     }
 }
@@ -148,7 +139,7 @@ function showTrailerModal(trailerKey) {
                     z-index: 10;
                     font-weight: bold;
                 ">✕</button>
-                <div id="trailer-player-container" style="position: relative; padding-bottom: 56.25%; height: 0;">
+                <div style="position: relative; padding-bottom: 56.25%; height: 0;">
                     <iframe 
                         id="trailer-iframe"
                         style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
@@ -316,43 +307,24 @@ function renderDetails(data) {
 }
 
 /**
- * ✅ FULLY FIXED: Render Cast with proper data handling
+ * ✅ WORKING: Render Cast from full data object
  */
-function renderCast(credits) {
+function renderCast(data) {
     const castList = document.getElementById('movie-cast');
     
-    console.log("🎨 renderCast called");
-    console.log("🎨 Credits object:", credits);
-    console.log("🎨 Cast list element exists:", !!castList);
-    
     if (!castList) {
-        console.warn("❌ Cast container element not found!");
+        console.warn("Cast container not found");
         return;
     }
     
-    // Check if credits exists and has cast
-    if (!credits) {
-        console.warn("❌ No credits data received");
-        castList.innerHTML = '<p style="color: #888; text-align: center; width: 100%; padding: 20px;">No cast data received from API.</p>';
+    // Check if credits and cast exist
+    if (!data?.credits?.cast || data.credits.cast.length === 0) {
+        castList.innerHTML = '<p style="color: #888; text-align: center; width: 100%; padding: 20px;">No cast information available for this title.</p>';
         return;
     }
     
-    if (!credits.cast) {
-        console.warn("❌ Credits.cast is undefined");
-        castList.innerHTML = '<p style="color: #888; text-align: center; width: 100%; padding: 20px;">Cast information not available for this title.</p>';
-        return;
-    }
-    
-    if (credits.cast.length === 0) {
-        console.warn("❌ Cast array is empty");
-        castList.innerHTML = '<p style="color: #888; text-align: center; width: 100%; padding: 20px;">No cast members found for this title.</p>';
-        return;
-    }
-    
-    console.log(`✅ Found ${credits.cast.length} cast members`);
-    
-    // Get top 10 cast members
-    const topCast = credits.cast.slice(0, 10);
+    // Get top 8 cast members
+    const topCast = data.credits.cast.slice(0, 8);
     
     castList.innerHTML = topCast.map(actor => {
         const profileUrl = actor.profile_path 
@@ -377,11 +349,15 @@ function renderCast(credits) {
         `;
     }).join('');
     
-    console.log(`✅ Cast rendered successfully: ${topCast.length} actors shown`);
+    console.log(`✅ Cast rendered: ${topCast.length} actors`);
 }
 
+/**
+ * Render Similar Movies (Recommendations)
+ */
 function renderSimilar(similar) {
     const container = document.getElementById('similar-movies-container');
+    
     if (!container) {
         console.warn("Similar container not found");
         return;
@@ -393,7 +369,7 @@ function renderSimilar(similar) {
     }
     
     container.innerHTML = `
-        <h2 style="margin: 30px 0 15px;">More Like This</h2>
+        <h2 style="margin: 30px 0 15px;">You Might Also Like</h2>
         <div class="similar-grid" style="display: flex; gap: 15px; overflow-x: auto; padding-bottom: 20px;">
             ${similar.results.slice(0, 12).map(m => `
                 <div class="similar-card" style="min-width: 160px; cursor: pointer;" onclick="window.location.href='?id=${m.id}&type=${mediaType}'">
@@ -497,18 +473,13 @@ function showErrorMessage(message) {
 // --- EVENT LISTENERS ---
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("📄 DOM Ready - Setting up event listeners");
-    
     // Watch Full Movie button
     const watchBtn = document.getElementById('scroll-to-player');
     if (watchBtn) {
         watchBtn.addEventListener('click', () => {
-            console.log("🎬 Watch Full Movie clicked");
             updateVideoPlayer('vidsrc');
             document.getElementById('player-section')?.scrollIntoView({ behavior: 'smooth' });
         });
-    } else {
-        console.warn("⚠️ Watch button not found");
     }
     
     // Trailer button
@@ -516,24 +487,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (trailerBtn) {
         trailerBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            console.log("🎬 Trailer button clicked");
             playTrailer();
         });
-        console.log("✅ Trailer button listener attached");
-    } else {
-        console.warn("⚠️ Trailer button not found");
     }
     
     // Server switcher
     const serverSelect = document.getElementById('server-select');
     if (serverSelect) {
         serverSelect.addEventListener('change', (e) => {
-            console.log("🔄 Server changed to:", e.target.value);
             updateVideoPlayer(e.target.value);
         });
-        console.log("✅ Server select listener attached");
-    } else {
-        console.warn("⚠️ Server select not found");
     }
 });
 
