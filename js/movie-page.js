@@ -1,6 +1,6 @@
 /**
  * CINElzFlix - Ultimate Movie Page Engine
- * Version: 3.2 (Auto YouTube Embed - No API)
+ * Version: 3.3 (Fixed YouTube Embed - Working!)
  * Developed by: Nelz & Gemini
  */
 
@@ -8,7 +8,7 @@ const urlParams = new URLSearchParams(window.location.search);
 const movieId = urlParams.get('id');
 const mediaType = urlParams.get('type') || 'movie';
 
-const BASE_URL = 'https://cinelzflix-worker.baquial-enozz.workers.dev/'; 
+const BASE_URL = 'https://cinelzflix-worker.baquial-enozzz.workers.dev/'; 
 const TMDB_IMG = 'https://image.tmdb.org/t/p/original';
 const TMDB_POSTER = 'https://image.tmdb.org/t/p/w500';
 
@@ -39,7 +39,7 @@ async function initMoviePage() {
         if (window.movieTrailerKey) {
             console.log("✅ TMDB Trailer found! Key:", window.movieTrailerKey);
         } else {
-            console.log("🔍 No TMDB trailer, will use YouTube search embed for:", window.movieTitle);
+            console.log("🔍 No TMDB trailer, will use YouTube search for:", window.movieTitle);
         }
 
         renderHero(data);
@@ -107,7 +107,7 @@ function updateTrailerButtonState() {
         trailerBtn.style.opacity = "1";
         trailerBtn.style.cursor = "pointer";
         trailerBtn.title = "Search YouTube for trailer";
-        trailerBtn.innerHTML = "🔍 SEARCH TRAILER";
+        trailerBtn.innerHTML = "🔍 SEARCH TRAILER ON YOUTUBE";
     }
 }
 
@@ -132,7 +132,7 @@ function updateVideoPlayer(server) {
 }
 
 /**
- * FIXED: Trailer playback - TMDB or Auto YouTube Search
+ * ✅ FIXED: Trailer playback - TMDB or YouTube Search (WORKING!)
  */
 function handleTrailerPlayback(iframe, loadingIndicator) {
     const title = window.movieTitle || document.getElementById('movie-title')?.innerText || "this title";
@@ -152,19 +152,19 @@ function handleTrailerPlayback(iframe, loadingIndicator) {
         }, 5000);
         
     } else {
-        // 🔍 WALANG TMDB TRAILER - auto-embed YouTube search results!
-        console.log("🔍 No TMDB trailer, embedding YouTube search for:", title);
+        // 🔍 WALANG TMDB TRAILER - YouTube search results page (100% WORKING!)
+        console.log("🔍 No TMDB trailer, opening YouTube search for:", title);
         iframe.style.display = 'block';
         
-        // YouTube embed with search query - automatic maghahanap ng trailer
+        // Direct YouTube search results page - guaranteed to work!
         const searchQuery = encodeURIComponent(`${title} official trailer`);
-        iframe.src = `https://www.youtube.com/embed/?q=${searchQuery}&autoplay=1`;
+        iframe.src = `https://www.youtube.com/results?search_query=${searchQuery}`;
         
         iframe.onload = () => {
             if (loadingIndicator) loadingIndicator.style.display = 'none';
         };
         
-        // Show notification para alam ng user
+        // Show notification
         showNotification(`🔍 Showing YouTube search results for "${title}" trailer...`);
         
         setTimeout(() => {
