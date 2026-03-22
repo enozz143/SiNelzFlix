@@ -52,7 +52,6 @@
             text-align: center;
         }
         
-        /* Hero section with backdrop image only */
         #movie-hero {
             position: relative;
             width: 100%;
@@ -136,7 +135,6 @@
             box-shadow: 0 0 20px rgba(0,212,255,0.5);
         }
         
-        /* Trailer Button Style */
         .btn-secondary {
             background: rgba(255, 255, 255, 0.15);
             color: white;
@@ -157,43 +155,10 @@
             transform: translateY(-3px);
             border-color: #00d4ff;
         }
-        
-        @media (max-width: 768px) {
-            #movie-hero {
-                height: 60vh;
-                margin-top: 70px;
-            }
-            
-            #movie-iframe {
-                height: 50vh;
-                min-height: 300px;
-            }
-            
-            .hero-info-content {
-                bottom: 10%;
-                left: 5%;
-                right: 5%;
-            }
-            
-            .hero-info-content h1 {
-                font-size: 1.6rem;
-            }
-            
-            #movie-description-hero {
-                font-size: 0.85rem;
-                -webkit-line-clamp: 3;
-            }
-            
-            .watch-now, .btn-secondary {
-                padding: 8px 20px;
-                font-size: 0.85rem;
-            }
-        }
     </style>
 </head>
 <body>
     
-    <!-- Navbar -->
     <nav id="navbar">
         <div class="logo">
             <a href="/" style="text-decoration: none;">
@@ -205,7 +170,6 @@
         </div>
     </nav>
     
-    <!-- Hero Section with Backdrop Image -->
     <section id="movie-hero">
         <div class="hero-overlay"></div>
         <div class="hero-info-content">
@@ -263,7 +227,6 @@
         </section>
     </main>
 
-    <!-- Footer - Same as Main Site -->
     <footer id="site-footer">
         <div class="footer-container">
             <div class="footer-links">
@@ -286,11 +249,8 @@
 
     <script type="module">
         import { handleSearch } from '../js/ui.js';
-        
-        // Make handleSearch available globally
         window.handleSearch = handleSearch;
         
-        // Enter key redirect to homepage search
         const searchInput = document.getElementById('search-input');
         if (searchInput) {
             searchInput.addEventListener('keypress', function(e) {
