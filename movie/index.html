@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title id="page-title">Loading - CINElzFlix</title>
     <link rel="stylesheet" href="../style.css?v=1.6">
     <link rel="stylesheet" href="../css/hero.css"> 
@@ -154,6 +154,225 @@
             background: rgba(255, 255, 255, 0.3);
             transform: translateY(-3px);
             border-color: #00d4ff;
+        }
+        
+        /* ============================================ */
+        /* MOBILE FIX - DIRECT SA HTML */
+        /* ============================================ */
+        
+        @media (max-width: 768px) {
+            #movie-hero {
+                height: 45vh !important;
+                margin-top: 70px !important;
+            }
+            
+            .hero-info-content {
+                bottom: 5% !important;
+                left: 5% !important;
+                right: 5% !important;
+                max-width: 90% !important;
+                text-align: center !important;
+            }
+            
+            .hero-info-content h1 {
+                font-size: 1.2rem !important;
+                margin-bottom: 5px !important;
+            }
+            
+            .hero-meta span {
+                font-size: 0.65rem !important;
+                margin-right: 5px !important;
+            }
+            
+            #movie-description-hero {
+                font-size: 0.7rem !important;
+                -webkit-line-clamp: 2 !important;
+                margin-bottom: 8px !important;
+                line-height: 1.3 !important;
+            }
+            
+            .hero-actions {
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 8px !important;
+                margin-top: 10px !important;
+            }
+            
+            .watch-now, .btn-secondary {
+                padding: 6px 16px !important;
+                font-size: 0.7rem !important;
+                width: auto !important;
+                min-width: 140px !important;
+            }
+            
+            .player-wrapper {
+                margin-bottom: 15px !important;
+            }
+            
+            #movie-iframe {
+                height: 35vh !important;
+                min-height: 200px !important;
+            }
+            
+            .movie-info-grid {
+                grid-template-columns: 1fr !important;
+                gap: 15px !important;
+                text-align: center !important;
+            }
+            
+            .poster-side {
+                max-width: 140px !important;
+                margin: 0 auto !important;
+            }
+            
+            .details-side {
+                text-align: center !important;
+                padding: 0 8px !important;
+            }
+            
+            .details-side h2 {
+                font-size: 1.2rem !important;
+                margin-bottom: 8px !important;
+            }
+            
+            #movie-overview {
+                font-size: 0.75rem !important;
+                line-height: 1.4 !important;
+            }
+            
+            .cast-section {
+                margin-top: 15px !important;
+            }
+            
+            .cast-section h3 {
+                font-size: 1rem !important;
+                margin-bottom: 10px !important;
+            }
+            
+            .cast-list {
+                gap: 10px !important;
+                padding: 5px 0 10px 0 !important;
+                justify-content: flex-start !important;
+            }
+            
+            .cast-item {
+                width: 70px !important;
+            }
+            
+            .cast-img-wrapper {
+                width: 60px !important;
+                height: 60px !important;
+                margin-bottom: 5px !important;
+            }
+            
+            .cast-name {
+                font-size: 0.6rem !important;
+            }
+            
+            .cast-character {
+                font-size: 0.5rem !important;
+            }
+            
+            .similar-section {
+                margin-top: 20px !important;
+            }
+            
+            .similar-card {
+                min-width: 100px !important;
+            }
+            
+            .similar-card p {
+                font-size: 0.65rem !important;
+                margin-top: 5px !important;
+            }
+            
+            .controls-bar {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 8px !important;
+                margin-bottom: 10px !important;
+            }
+            
+            .back-btn {
+                padding: 5px 12px !important;
+                font-size: 0.7rem !important;
+            }
+            
+            .server-box {
+                width: 100% !important;
+                text-align: center !important;
+                padding: 5px 10px !important;
+            }
+            
+            .server-box label {
+                font-size: 0.7rem !important;
+            }
+            
+            #server-select {
+                padding: 4px 8px !important;
+                font-size: 0.65rem !important;
+            }
+            
+            .rating-badge {
+                font-size: 0.65rem !important;
+                padding: 2px 6px !important;
+                bottom: 5px !important;
+                right: 5px !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-info-content h1 {
+                font-size: 1rem !important;
+            }
+            
+            #movie-description-hero {
+                font-size: 0.65rem !important;
+            }
+            
+            .watch-now, .btn-secondary {
+                padding: 5px 12px !important;
+                font-size: 0.65rem !important;
+                min-width: 120px !important;
+            }
+            
+            #movie-iframe {
+                height: 30vh !important;
+                min-height: 180px !important;
+            }
+            
+            .cast-item {
+                width: 60px !important;
+            }
+            
+            .cast-img-wrapper {
+                width: 50px !important;
+                height: 50px !important;
+            }
+            
+            .cast-name {
+                font-size: 0.55rem !important;
+            }
+            
+            .cast-character {
+                font-size: 0.45rem !important;
+            }
+            
+            .similar-card {
+                min-width: 85px !important;
+            }
+            
+            .similar-card p {
+                font-size: 0.6rem !important;
+            }
+            
+            .details-side h2 {
+                font-size: 1rem !important;
+            }
+            
+            #movie-overview {
+                font-size: 0.7rem !important;
+            }
         }
     </style>
 </head>
