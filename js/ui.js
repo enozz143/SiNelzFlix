@@ -1,63 +1,43 @@
-// js/ui.js
 import { IMG_URL, fetchMovies } from './api.js';
-import { showDetails, playTrailer } from './modal.js';
 
 let currentPage = 1;
 let currentGenre = 'all';
 let debounceTimer;
 
 /**
- * --- MOVIE CARDS & LISTS ---
+ * --- CREATE MOVIE CARD (CLEAN VERSION) ---
+ * Clickable ang buong card, wala nang buttons na humaharang.
  */
 export function createMovieCard(item) {
+    const type = item.title ? "movie" : "tv";
     const card = document.createElement("div");
+    
+    // Nilagyan natin ng classes at data attributes para sa CSS at Script.js
     card.className = "movie-card";
+    card.setAttribute('data-id', item.id);
+    card.setAttribute('data-type', type);
     
-    const img = document.createElement("img");
-    img.src = item.poster_path ? `${IMG_URL}${item.poster_path}` : 'https://via.placeholder.com/500x750?text=No+Image';
-    img.loading = "lazy";
-    
-    const overlay = document.createElement("div");
-    overlay.className = "trailer-overlay";
-    
-    const trailerBtn = document.createElement("button");
-    trailerBtn.className = "hover-btn trailer-btn";
-    trailerBtn.innerHTML = "Play Trailer";
-    trailerBtn.onclick = (e) => { 
-        e.stopPropagation(); 
-        playTrailer(item.id, item.title ? "movie" : "tv"); 
+    const posterPath = item.poster_path 
+        ? `${IMG_URL}${item.poster_path}` 
+        : 'https://via.placeholder.com/500x750?text=No+Image';
+
+    card.innerHTML = `
+        <div class="poster-wrapper">
+            <img src="${posterPath}" alt="${item.title || item.name}" loading="lazy">
+            <div class="card-overlay">
+                <div class="card-info">
+                    <span class="card-rating">⭐ ${item.vote_average ? item.vote_average.toFixed(1) : '0.0'}</span>
+                    <h3 class="card-title">${item.title || item.name}</h3>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Direct Click Navigation
+    card.onclick = () => {
+        window.location.href = `/movie/?id=${item.id}&type=${type}`;
     };
 
-    const fullMovieBtn = document.createElement("button");
-    fullMovieBtn.className = "hover-btn movie-btn";
-    fullMovieBtn.innerHTML = "Full Movie";
-    fullMovieBtn.onclick = (e) => { 
-        e.stopPropagation(); 
-        showDetails(item); 
-    };
-
-    const shareBtn = document.createElement("button");
-    shareBtn.className = "share-mini-btn";
-    shareBtn.innerHTML = "🔗 Share";
-    shareBtn.onclick = (e) => {
-        e.stopPropagation();
-        const type = item.title ? "movie" : "tv";
-        const titleSlug = (item.title || item.name).toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
-        const shareUrl = `${window.location.origin}${window.location.pathname}?${type}=${item.id}-${titleSlug}`;
-        
-        if (navigator.share) {
-            navigator.share({ title: item.title || item.name, text: `Panoorin natin 'to sa CINElzFlix!`, url: shareUrl });
-        } else {
-            navigator.clipboard.writeText(shareUrl);
-            alert("Movie link copied to clipboard, bro!");
-        }
-    };
-    
-    overlay.appendChild(trailerBtn);
-    overlay.appendChild(fullMovieBtn);
-    overlay.appendChild(shareBtn);
-    card.appendChild(img);
-    card.appendChild(overlay);
     return card;
 }
 
@@ -65,20 +45,18 @@ export function displayList(items, containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
     container.innerHTML = "";
+    if (!items) return;
     items.forEach(item => {
         if (item.poster_path) container.appendChild(createMovieCard(item));
     });
 }
 
-/**
- * --- SPECIAL UI HANDLERS ---
- */
 export function displaySimilar(items) {
     let container = document.getElementById("similar-movies-container");
     if (!container) return;
 
     container.innerHTML = `
-        <h3 style="margin: 20px 0 10px 0; color: #fff;">You Might Also Like</h3>
+        <h3 style="margin: 30px 0 15px 0; color: #fff; font-size: 1.5rem;">You Might Also Like</h3>
         <div id="similar-movies" class="movie-row"></div>
     `;
 
@@ -90,12 +68,8 @@ export function displaySimilar(items) {
     });
 }
 
-// Global reference para sa modal.js
 window.displaySimilar = displaySimilar;
 
-/**
- * --- SEARCH, FILTERS & LOAD MORE ---
- */
 export async function handleSearch(q) {
     if (!q.trim()) {
         document.getElementById("search-results-section").style.display = "none";
@@ -115,8 +89,8 @@ export async function handleSearch(q) {
 export async function filterGenre(genreId) {
     currentGenre = genreId;
     currentPage = 1; 
-    
     document.querySelectorAll('.genre-btn').forEach(btn => btn.classList.remove('active'));
+    
     if (event && event.target) event.target.classList.add('active');
     
     const trendingRow = document.getElementById("movies-list");
@@ -128,10 +102,10 @@ export async function filterGenre(genreId) {
         }
     });
 
-    if (genreId !== 'all') {
-        trendingRow.classList.remove("horizontal-scroll");
-    } else {
-        trendingRow.classList.add("horizontal-scroll");
+    if (genreId !== 'all') { 
+        trendingRow.classList.remove("horizontal-scroll"); 
+    } else { 
+        trendingRow.classList.add("horizontal-scroll"); 
     }
 
     const filteredMovies = await fetchMovies("movie", 1, genreId);
@@ -142,32 +116,20 @@ export async function loadMore() {
     currentPage++; 
     const loadBtn = document.getElementById("load-more-btn");
     const trendingRow = document.getElementById("movies-list");
-    const trendingSection = trendingRow.parentElement; 
     
     loadBtn.textContent = "Loading Results...";
     loadBtn.disabled = true;
 
-    const allSections = document.querySelectorAll('#trending-section section.category-section');
-    allSections.forEach(sec => {
-        if (!sec.contains(trendingRow)) {
-            sec.style.display = "none";
-        }
-    });
-
-    trendingRow.classList.remove("horizontal-scroll");
-    trendingSection.scrollIntoView({ behavior: 'smooth' });
-
     const moreMovies = await fetchMovies("movie", currentPage, currentGenre);
-    
     if (moreMovies && moreMovies.length > 0) {
         moreMovies.forEach(item => {
-            if (item.poster_path) {
-                trendingRow.appendChild(createMovieCard(item));
+            if (item.poster_path) { 
+                trendingRow.appendChild(createMovieCard(item)); 
             }
         });
-        loadBtn.textContent = "Show Even More";
+        loadBtn.textContent = "Explore More Movies";
         loadBtn.disabled = false;
-    } else {
+    } else { 
         loadBtn.style.display = "none"; 
     }
 }

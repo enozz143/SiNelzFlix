@@ -1,31 +1,31 @@
-/* --- HERO SLIDER FIXED BY GEMINI --- */
+/* --- HERO SLIDER FINAL NUCLEAR & LIGHTNING FIX --- */
 #hero-slider-container {
     position: relative;
     width: 100%; 
     height: 85vh;
     overflow: hidden; 
     background: #000;
+    z-index: 1;
 }
 
 #hero-slider {
     position: relative;
     width: 100%; 
     height: 100%;
-    display: block !important;
+    z-index: 2;
 }
 
 .hero-slide {
     position: absolute; 
     top: 0; left: 0; 
     width: 100%; height: 100%;
-    /* FIX: Tinanggal ang background-image setup para video lang ang lumitaw */
     background: transparent !important; 
     display: flex !important; 
     align-items: center;
     opacity: 0; 
     visibility: hidden;
     transition: opacity 1s ease-in-out;
-    z-index: 1;
+    z-index: 5;
 }
 
 .hero-slide.active { 
@@ -39,12 +39,12 @@
     position: absolute; 
     top: 0; left: 0; 
     width: 100%; height: 100%; 
-    z-index: 1;
+    z-index: -1; 
     background: #000;
+    pointer-events: none !important;
 }
 
 .hero-video-container iframe {
-    /* Ang calculation na ito ay para maging "cover" ang youtube video */
     width: 100vw; 
     height: 56.25vw; 
     min-height: 100vh; 
@@ -52,77 +52,90 @@
     position: absolute; 
     top: 50%; left: 50%; 
     transform: translate(-50%, -50%);
-    
-    /* FIX: Tinaasan ang opacity (0.8) para malinaw ang playback, brightness for cinematic feel */
     opacity: 0.8; 
-    pointer-events: none;
-    filter: brightness(0.9) contrast(1.1);
+    pointer-events: none !important;
+    filter: brightness(0.8) contrast(1.1);
 }
 
-/* FIX: In-adjust ang gradient para mas madilim sa text area pero kitang-kita ang video sa gitna/kanan */
 .hero-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     background: linear-gradient(to right, 
         rgba(0,0,0,0.9) 0%, 
         rgba(0,0,0,0.6) 30%, 
         rgba(0,0,0,0) 70%
     );
-    z-index: 2;
+    z-index: 1;
+    pointer-events: none !important;
 }
 
 .hero-content { 
     position: relative; 
-    z-index: 15; 
+    z-index: 999 !important; 
     padding: 0 8%; 
     max-width: 850px; 
+    pointer-events: auto !important;
 }
 
-/* --- SHIMMER BUTTONS & ANIMATIONS --- */
-.btn-watch, .movie-btn {
+/* --- LIGHTNING BUTTON FIX --- */
+.watch-now, .btn-watch {
     position: relative;
-    overflow: hidden;
-}
-
-.btn-watch::before, .movie-btn::before {
-    content: '';
-    position: absolute;
-    top: 0; left: -100%;
-    width: 100%; height: 100%;
-    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-}
-
-.btn-watch::before { animation: btnShimmer 3s infinite; }
-.movie-btn::before { animation: btnShimmer 4s infinite; }
-
-@keyframes btnShimmer {
-    0% { left: -100%; }
-    30% { left: 100%; }
-    100% { left: 100%; }
-}
-
-.btn-watch {
+    display: inline-block;
     background: var(--primary-blue, #00d4ff);
     color: #020b1a; 
     border: none;
-    padding: 12px 35px; 
+    padding: 14px 40px; 
     border-radius: 5px;
     font-weight: bold; 
-    cursor: pointer;
+    cursor: pointer !important;
     transition: all 0.3s ease;
     margin-right: 15px;
     text-transform: uppercase;
     letter-spacing: 1px;
+    text-decoration: none;
+    z-index: 1000 !important;
+    pointer-events: auto !important;
+    overflow: hidden; /* Important para sa lightning slash */
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+    animation: lightningPulse 3s infinite ease-in-out;
 }
 
-.btn-watch:hover { 
+/* The Lightning Strike Effect */
+.watch-now::before, .btn-watch::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.6), 
+        rgba(0, 212, 255, 0.6),
+        transparent
+    );
+    animation: lightningStrike 4s infinite;
+}
+
+.watch-now:hover, .btn-watch:hover { 
     background: #fff; 
-    transform: translateY(-3px) scale(1.05); 
-    box-shadow: 0 10px 20px rgba(0, 212, 255, 0.4);
+    transform: translateY(-5px) scale(1.05); 
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.8), 0 0 50px rgba(0, 212, 255, 0.4);
     color: #000;
+}
+
+/* --- LIGHTNING ANIMATIONS --- */
+@keyframes lightningPulse {
+    0%, 100% { box-shadow: 0 0 15px rgba(0, 212, 255, 0.5); }
+    50% { box-shadow: 0 0 30px rgba(0, 212, 255, 0.8), 0 0 10px #fff; }
+}
+
+@keyframes lightningStrike {
+    0% { left: -150%; }
+    20% { left: 150%; }
+    100% { left: 150%; }
 }
 
 /* --- SLIDER DOTS --- */
@@ -133,21 +146,24 @@
     transform: translateX(-50%);
     display: flex; 
     gap: 12px; 
-    z-index: 20;
+    z-index: 1001;
+    pointer-events: auto;
 }
 
 .dot { 
-    width: 10px; 
-    height: 10px; 
+    width: 12px; height: 12px; 
     background: rgba(255,255,255,0.3); 
     border-radius: 50%; 
     cursor: pointer; 
-    transition: all 0.3s ease; 
 }
 
 .dot.active { 
     background: var(--primary-blue, #00d4ff); 
-    width: 25px; 
+    width: 30px; 
     border-radius: 10px;
     box-shadow: 0 0 10px var(--primary-blue, #00d4ff);
+}
+
+#hero-slider-container::after, #hero-slider-container::before {
+    display: none !important;
 }

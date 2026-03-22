@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Loading - CINElzFlix</title>
+    <link rel="stylesheet" href="../style.css?v=1.6">
+    <link rel="stylesheet" href="../css/hero.css"> 
+    <link rel="stylesheet" href="movie-style.css"> 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .player-wrapper {
+            position: relative;
+            background: #000;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        #movie-iframe {
+            width: 100%;
+            height: 70vh;
+            min-height: 400px;
+            border: none;
+        }
+        
+        #player-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            background: rgba(0,0,0,0.8);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        #global-loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            background: rgba(0,0,0,0.9);
+            padding: 20px 30px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        /* Hero section with backdrop image only */
+        #movie-hero {
+            position: relative;
+            width: 100%;
+            height: 75vh;
+            background-size: cover;
+            background-position: center top;
+            background-repeat: no-repeat;
+            margin-top: 85px;
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, #0a0a0a 15%, rgba(0,0,0,0.5) 60%);
+            z-index: 1;
+        }
+        
+        .hero-info-content {
+            position: absolute;
+            bottom: 15%;
+            left: 5%;
+            z-index: 2;
+            max-width: 700px;
+        }
+        
+        .hero-info-content h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 15px;
+            font-weight: 800;
+            text-shadow: 2px 2px 20px rgba(0,0,0,1);
+        }
+        
+        .hero-meta {
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #00d4ff;
+            font-size: 1rem;
+        }
+        
+        .hero-meta span {
+            margin-right: 15px;
+        }
+        
+        #movie-description-hero {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #ddd;
+            text-shadow: 1px 1px 10px rgba(0,0,0,0.8);
+            margin-bottom: 25px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .hero-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .watch-now {
+            background: #00d4ff;
+            color: #000;
+            border: none;
+            padding: 12px 35px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1rem;
+        }
+        
+        .watch-now:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 20px rgba(0,212,255,0.5);
+        }
+        
+        /* Trailer Button Style */
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 35px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1rem;
+            backdrop-filter: blur(5px);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+            border-color: #00d4ff;
+        }
+        
+        @media (max-width: 768px) {
+            #movie-hero {
+                height: 60vh;
+                margin-top: 70px;
+            }
+            
+            #movie-iframe {
+                height: 50vh;
+                min-height: 300px;
+            }
+            
+            .hero-info-content {
+                bottom: 10%;
+                left: 5%;
+                right: 5%;
+            }
+            
+            .hero-info-content h1 {
+                font-size: 1.6rem;
+            }
+            
+            #movie-description-hero {
+                font-size: 0.85rem;
+                -webkit-line-clamp: 3;
+            }
+            
+            .watch-now, .btn-secondary {
+                padding: 8px 20px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Navbar -->
+    <nav id="navbar">
+        <div class="logo">
+            <a href="/" style="text-decoration: none;">
+                <img src="../logo.png" alt="CINElzFlix Logo" id="site-logo">
+            </a>
+        </div>
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="Search movies, anime..." oninput="handleSearch(this.value)">
+        </div>
+    </nav>
+    
+    <!-- Hero Section with Backdrop Image -->
+    <section id="movie-hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-info-content">
+            <div class="hero-meta" id="movie-meta-hero"></div>
+            <h1 id="movie-title">Loading Title...</h1>
+            <p id="movie-description-hero">Fetching cinematic details...</p>
+            <div class="hero-actions">
+                <button id="scroll-to-player" class="watch-now">▶ WATCH FULL MOVIE</button>
+                <button id="play-trailer-btn" class="btn-secondary">🎬 WATCH TRAILER</button>
+            </div>
+        </div>
+    </section>
+
+    <main class="movie-page-container" id="player-section">
+        <div class="controls-bar">
+            <div class="back-link">
+                <a href="/" class="back-btn">← Back to Home</a>
+            </div>
+            <div class="server-box">
+                <label for="server-select">Switch Server: </label>
+                <select id="server-select">
+                    <option value="vidsrc">Server 1 (VidSrc)</option>
+                    <option value="vidsrc2">Server 2 (Net)</option>
+                    <option value="videasy">Server 3 (Easy)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="player-wrapper">
+            <iframe id="movie-iframe" src="" allowfullscreen></iframe>
+            <div id="player-loading" style="display: none;">
+                <div style="width: 40px; height: 40px; border: 3px solid #333; border-top-color: #00d4ff; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto;"></div>
+                <p style="color: #00d4ff; margin-top: 10px;">Loading player...</p>
+            </div>
+        </div>
+
+        <div class="movie-info-grid">
+            <div class="poster-side">
+                <img id="movie-poster" src="" alt="Poster">
+                <div class="rating-badge" id="vote-avg">0.0</div>
+            </div>
+            <div class="details-side">
+                <h2>The Story</h2>
+                <p id="movie-overview">Loading overview...</p>
+                
+                <div class="cast-section">
+                    <h3>Top Cast</h3>
+                    <div id="movie-cast" class="cast-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <section class="similar-section">
+            <div id="similar-movies-container"></div>
+        </section>
+    </main>
+
+    <!-- Footer - Same as Main Site -->
+    <footer id="site-footer">
+        <div class="footer-container">
+            <div class="footer-links">
+                <a href="/">Home</a>
+                <a href="/">Movies</a>
+                <a href="/">TV Shows</a>
+                <a href="/">Privacy Policy</a>
+                <a href="/">Terms of Service</a>
+                <a href="/">DMCA</a>
+            </div>
+            <p class="disclaimer"><strong>Disclaimer:</strong> CINElzFlix does not host any files on its servers.</p>
+            <p class="copyright">&copy; 2026 CINElzFlix.com. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <div id="global-loading" style="display: none;">
+        <div style="width: 50px; height: 50px; border: 3px solid #333; border-top-color: #00d4ff; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto;"></div>
+        <p style="color: #00d4ff; margin-top: 10px;">Loading movie data...</p>
+    </div>
+
+    <script type="module">
+        import { handleSearch } from '../js/ui.js';
+        
+        // Make handleSearch available globally
+        window.handleSearch = handleSearch;
+        
+        // Enter key redirect to homepage search
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const query = this.value.trim();
+                    if (query) {
+                        window.location.href = `/?search=${encodeURIComponent(query)}`;
+                    }
+                }
+            });
+        }
+    </script>
+    
+    <script src="../js/movie-page.js"></script>
+</body>
+</html>
