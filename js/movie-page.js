@@ -1,6 +1,6 @@
 /**
  * CINElzFlix - Ultimate Movie Page Engine
- * Version: 3.5 (FIXED: Trailer Security & Iframe Logic)
+ * Version: 3.6 (FIXED: Direct Iframe Trailer Embed)
  * Developed by: Nelz & Gemini
  */
 
@@ -17,10 +17,7 @@ window.movieTrailerKey = "";
 window.movieTitle = "";
 
 async function initMoviePage() {
-    console.log("🎬 Engine Starting...");
-    
     if (!movieId) {
-        console.error("❌ No movie ID found!");
         window.location.href = '../';
         return;
     }
@@ -30,31 +27,27 @@ async function initMoviePage() {
         
         const apiUrl = `${BASE_URL}?endpoint=/${mediaType}/${movieId}&append_to_response=videos,credits,similar`;
         const response = await fetch(apiUrl);
-        
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         
         const data = await response.json();
         if (!data || data.success === false) throw new Error("Invalid API Data");
 
         window.movieTitle = data.title || data.name || "Unknown Title";
-        
-        // --- TRAILER LOGIC ---
         window.movieTrailerKey = await getTrailerKey(data);
         
-        // --- UI RENDERING ---
         renderHero(data);
         renderDetails(data);
         renderCast(data.credits);
         renderSimilar(data.similar);
         updateTrailerButtonState();
 
-        // Auto-load movie server on start
+        // Load movie server by default
         updateVideoPlayer('vidsrc');
         
-        console.log("✅ INITIALIZATION COMPLETE!");
+        console.log("✅ Engine Ready");
 
     } catch (err) {
-        console.error("🚨 CRITICAL ERROR:", err);
+        console.error("🚨 Error:", err);
         showErrorMessage(`Failed to load: ${err.message}`);
     } finally {
         hideLoadingState();
@@ -63,12 +56,9 @@ async function initMoviePage() {
 
 async function getTrailerKey(data) {
     if (!data.videos || !data.videos.results.length) return "";
-    
     const priority = ["Trailer", "Teaser", "Clip"];
     for (const type of priority) {
-        const video = data.videos.results.find(v => 
-            v.type === type && v.site === "YouTube" && v.key
-        );
+        const video = data.videos.results.find(v => v.type === type && v.site === "YouTube" && v.key);
         if (video) return video.key;
     }
     return data.videos.results[0]?.key || "";
@@ -77,14 +67,8 @@ async function getTrailerKey(data) {
 function updateTrailerButtonState() {
     const trailerBtn = document.getElementById('play-trailer-btn');
     if (!trailerBtn) return;
-    
-    if (window.movieTrailerKey) {
-        trailerBtn.innerHTML = "🎬 WATCH TRAILER";
-        trailerBtn.title = "Watch on this page";
-    } else {
-        trailerBtn.innerHTML = "🔍 SEARCH TRAILER";
-        trailerBtn.title = "Search on YouTube (New Tab)";
-    }
+    trailerBtn.innerHTML = "🎬 WATCH TRAILER";
+    trailerBtn.title = "Play Trailer in Player";
 }
 
 /**
@@ -105,33 +89,25 @@ function updateVideoPlayer(server) {
 }
 
 /**
- * ✅ FIXED: Secure Trailer Logic
- * Kapag walang key, sa bagong tab bubukas para hindi mag-error ang iframe.
+ * ✅ FIXED: Direct Iframe Embed (No Redirect)
  */
 function handleTrailerPlayback(iframe, loadingIndicator) {
     const title = window.movieTitle;
+    iframe.style.display = 'block';
     
     if (window.movieTrailerKey) {
-        // EMBED MODE: Safe i-iframe
-        iframe.style.display = 'block';
+        // May key? Embed direct video.
         iframe.src = `https://www.youtube.com/embed/${window.movieTrailerKey}?autoplay=1&rel=0&modestbranding=1`;
-        
-        iframe.onload = () => {
-            if (loadingIndicator) loadingIndicator.style.display = 'none';
-        };
     } else {
-        // EXTERNAL MODE: YouTube Search (Cannot be iframed)
-        if (loadingIndicator) loadingIndicator.style.display = 'none';
-        
+        // Walang key? Embed search results directly in player!
         const searchQuery = encodeURIComponent(`${title} official trailer`);
-        showNotification(`Opening YouTube search for "${title}"...`);
-        
-        // Buksan sa bagong tab para iwas "Refused to display" error
-        window.open(`https://www.youtube.com/results?search_query=${searchQuery}`, '_blank');
-        
-        // Ibalik ang iframe sa movie server para hindi blanko ang player section
-        handleServerPlayback('vidsrc', iframe, loadingIndicator);
+        iframe.src = `https://www.youtube.com/embed?listType=search&list=${searchQuery}&autoplay=1`;
+        showNotification(`Searching trailer for: ${title}`);
     }
+
+    iframe.onload = () => {
+        if (loadingIndicator) loadingIndicator.style.display = 'none';
+    };
 }
 
 function handleServerPlayback(server, iframe, loadingIndicator) {
@@ -149,7 +125,7 @@ function handleServerPlayback(server, iframe, loadingIndicator) {
     };
 }
 
-// --- RENDERING HELPERS (No Changes Needed Here) ---
+// --- RENDERING HELPERS ---
 
 function renderHero(data) {
     const heroBg = document.getElementById('movie-hero');
@@ -203,11 +179,11 @@ function renderSimilar(similar) {
 
 // --- UTILS ---
 
-function showNotification(message) {
+function showNotification(m) {
     let notif = document.getElementById('temp-notification') || document.createElement('div');
     notif.id = 'temp-notification';
-    notif.style.cssText = "position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:#00d4ff; color:#000; padding:10px 20px; border-radius:20px; z-index:10000; font-weight:bold;";
-    notif.textContent = message;
+    notif.style.cssText = "position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:#00d4ff; color:#000; padding:10px 20px; border-radius:20px; z-index:10000; font-weight:bold; font-size:13px;";
+    notif.textContent = m;
     document.body.appendChild(notif);
     setTimeout(() => notif.remove(), 3000);
 }
