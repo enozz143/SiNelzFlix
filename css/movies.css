@@ -10,23 +10,23 @@ section h2 {
     z-index: 5;
 }
 
-/* ✅ FIXED: Default movie-row (grid layout) */
+/* Default movie-row (grid layout) - NO !important para gaya sa lumang branch */
 .movie-row { 
-    display: grid !important;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
-    gap: 20px !important;
-    padding: 20px 5% !important;
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
+    gap: 20px; 
+    padding: 20px 5%; 
 }
 
 /* Horizontal Scroll for Mobile/Specific Sections */
 .movie-row.horizontal-scroll {
-    display: flex !important;
-    grid-template-columns: none !important;
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    overflow-y: visible !important;
-    gap: 25px !important;
-    padding: 35px 5% 45px 5% !important;
+    display: flex; 
+    grid-template-columns: none; 
+    flex-wrap: nowrap;
+    overflow-x: auto; 
+    overflow-y: visible; 
+    gap: 25px;
+    padding: 35px 5% 45px 5%; 
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
 }
@@ -37,14 +37,6 @@ section h2 {
 
 .movie-row.horizontal-scroll .movie-card {
     flex: 0 0 180px; 
-}
-
-/* ✅ FIXED: Kapag hindi horizontal-scroll, balik sa grid */
-.movie-row:not(.horizontal-scroll) {
-    display: grid !important;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
-    gap: 20px !important;
-    padding: 20px 5% !important;
 }
 
 /* --- MOVIE CARDS & NEON GLOW MAGIC --- */
@@ -181,16 +173,12 @@ section h2 {
 /* Mobile Tweaks */
 @media (max-width: 768px) {
     .movie-row { 
-        grid-template-columns: repeat(2, 1fr) !important; 
-        gap: 12px !important; 
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 12px; 
     }
     
     .movie-row.horizontal-scroll .movie-card { 
         flex: 0 0 145px; 
-    }
-    
-    .movie-row:not(.horizontal-scroll) {
-        grid-template-columns: repeat(2, 1fr) !important;
     }
     
     section h2 { 
