@@ -410,14 +410,17 @@ body {
 }
 
 /* ============================================ */
-/* MOBILE VIEW - HIDE POSTER, HORIZONTAL CAST */
+/* MOBILE VIEW - FIXED (PORTRAIT + VIDEO) */
 /* ============================================ */
 
 @media (max-width: 768px) {
+    
+    /* Container */
     .movie-page-container {
-        padding: 40px 0 !important;
+        padding: 20px 0 !important;
     }
     
+    /* Hero */
     #movie-hero {
         height: 45vh !important;
         margin-top: 70px !important;
@@ -428,7 +431,6 @@ body {
         left: 0 !important;
         right: 0 !important;
         width: 100% !important;
-        max-width: 100% !important;
         text-align: center !important;
         padding: 0 10px !important;
     }
@@ -461,17 +463,11 @@ body {
     .watch-now, .btn-secondary {
         padding: 6px 16px !important;
         font-size: 0.7rem !important;
-        width: auto !important;
-        min-width: 140px !important;
-    }
-    
-    .player-wrapper {
-        margin-bottom: 15px !important;
-        border-radius: 0 !important;
+        min-width: 130px !important;
     }
     
     /* ============================================ */
-    /* FIX: VIDEO PLAYER ZOOM ISSUE (MOBILE) */
+    /* VIDEO PLAYER - FIX ZOOM ISSUE */
     /* ============================================ */
     .player-wrapper {
         width: 100% !important;
@@ -479,8 +475,10 @@ body {
         aspect-ratio: 16 / 9 !important;
         overflow: hidden !important;
         background: #000 !important;
+        margin-bottom: 15px !important;
+        border-radius: 0 !important;
     }
-
+    
     #movie-iframe {
         width: 100% !important;
         height: 100% !important;
@@ -489,40 +487,45 @@ body {
         min-height: auto !important;
     }
     
+    /* ============================================ */
     /* HIDE POSTER ON MOBILE */
+    /* ============================================ */
     .poster-side {
         display: none !important;
     }
     
-    /* STORY FULL WIDTH */
+    /* ============================================ */
+    /* INFO GRID - STORY FULL WIDTH */
+    /* ============================================ */
     .movie-info-grid {
-        grid-template-columns: 1fr !important;
+        display: flex !important;
+        flex-direction: column !important;
         gap: 15px !important;
-        text-align: center !important;
         padding: 0 10px !important;
     }
     
     .details-side {
+        width: 100% !important;
         text-align: center !important;
         padding: 0 !important;
-        width: 100% !important;
     }
     
     .details-side h2 {
         font-size: 1.2rem !important;
-        margin-bottom: 8px !important;
+        margin: 0 0 8px 0 !important;
     }
     
     #movie-overview {
-        font-size: 0.75rem !important;
+        font-size: 0.8rem !important;
         line-height: 1.4 !important;
     }
     
+    /* ============================================ */
     /* CAST SECTION - HORIZONTAL SCROLL */
+    /* ============================================ */
     .cast-section {
         margin-top: 20px !important;
         padding: 0 10px !important;
-        width: 100% !important;
     }
     
     .cast-section h3 {
@@ -533,27 +536,10 @@ body {
     
     .cast-list {
         display: flex !important;
-        gap: 12px !important;
-        padding: 5px 0 10px 0 !important;
+        gap: 10px !important;
         overflow-x: auto !important;
-        overflow-y: hidden !important;
+        padding: 5px 0 10px 0 !important;
         scrollbar-width: thin !important;
-        -webkit-overflow-scrolling: touch !important;
-        width: 100% !important;
-    }
-    
-    .cast-list::-webkit-scrollbar {
-        height: 4px !important;
-    }
-    
-    .cast-list::-webkit-scrollbar-track {
-        background: #1a1a1a !important;
-        border-radius: 10px !important;
-    }
-    
-    .cast-list::-webkit-scrollbar-thumb {
-        background: #00d4ff !important;
-        border-radius: 10px !important;
     }
     
     .cast-item {
@@ -566,32 +552,20 @@ body {
         width: 60px !important;
         height: 60px !important;
         margin: 0 auto 5px !important;
-        border-radius: 50% !important;
-        overflow: hidden !important;
         border: 2px solid #00d4ff !important;
-    }
-    
-    .cast-img-wrapper img {
-        width: 100% !important;
-        height: 100% !important;
-        object-fit: cover !important;
     }
     
     .cast-name {
         font-size: 0.6rem !important;
-        white-space: nowrap !important;
-        overflow-x: hidden !important;
-        text-overflow: ellipsis !important;
     }
     
     .cast-character {
         font-size: 0.5rem !important;
-        white-space: nowrap !important;
-        overflow-x: hidden !important;
-        text-overflow: ellipsis !important;
     }
     
+    /* ============================================ */
     /* SIMILAR MOVIES */
+    /* ============================================ */
     .similar-section {
         margin-top: 20px !important;
         padding: 0 10px !important;
@@ -603,16 +577,17 @@ body {
     
     .similar-card p {
         font-size: 0.65rem !important;
-        margin-top: 5px !important;
     }
     
+    /* ============================================ */
     /* CONTROLS BAR */
+    /* ============================================ */
     .controls-bar {
         flex-direction: column !important;
-        align-items: flex-start !important;
+        align-items: center !important;
         gap: 8px !important;
-        margin-bottom: 10px !important;
         padding: 0 10px !important;
+        margin-bottom: 10px !important;
     }
     
     .back-btn {
@@ -623,18 +598,9 @@ body {
     .server-box {
         width: 100% !important;
         text-align: center !important;
-        padding: 5px 10px !important;
     }
     
-    .server-box label {
-        font-size: 0.7rem !important;
-    }
-    
-    #server-select {
-        padding: 4px 8px !important;
-        font-size: 0.65rem !important;
-    }
-    
+    /* Rating Badge */
     .rating-badge {
         font-size: 0.65rem !important;
         padding: 2px 6px !important;
@@ -642,7 +608,7 @@ body {
         right: 5px !important;
     }
     
-    /* FOOTER */
+    /* Footer */
     footer {
         padding: 30px 10px !important;
     }
@@ -686,12 +652,7 @@ body {
     }
     
     .player-wrapper {
-        margin-bottom: 15px !important;
-    }
-    
-    #movie-iframe {
-        min-height: 180px !important;
-        object-fit: contain !important;
+        margin-bottom: 10px !important;
     }
     
     .cast-item {
