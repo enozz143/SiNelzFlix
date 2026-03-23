@@ -96,15 +96,25 @@ export async function handleSearch(q) {
     }, 500);
 }
 
+/**
+ * ✅ FIXED: filterGenre - no need for event parameter
+ * Awtomatikong nagha-highlight ng active button base sa genreId
+ */
 export async function filterGenre(genreId) {
     console.log("🎬 filterGenre called with:", genreId);
     
     currentGenre = genreId;
     currentPage = 1; 
     
-    // Update active button style
-    document.querySelectorAll('.genre-btn').forEach(btn => btn.classList.remove('active'));
-    if (event && event.target) event.target.classList.add('active');
+    // ✅ FIXED: Update active button style without relying on event object
+    document.querySelectorAll('.genre-btn').forEach(btn => {
+        btn.classList.remove('active');
+        // Hanapin ang button na may matching onclick attribute
+        const onclickAttr = btn.getAttribute('onclick');
+        if (onclickAttr && onclickAttr.includes(`'${genreId}'`)) {
+            btn.classList.add('active');
+        }
+    });
     
     const trendingRow = document.getElementById("movies-list");
     const allSections = document.querySelectorAll('#trending-section section.category-section');
