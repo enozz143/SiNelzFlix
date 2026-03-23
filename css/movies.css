@@ -10,22 +10,23 @@ section h2 {
     z-index: 5;
 }
 
+/* ✅ FIXED: Default movie-row (grid layout) */
 .movie-row { 
-    display: grid; 
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
-    gap: 20px; 
-    padding: 20px 5%; 
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
+    gap: 20px !important;
+    padding: 20px 5% !important;
 }
 
 /* Horizontal Scroll for Mobile/Specific Sections */
 .movie-row.horizontal-scroll {
-    display: flex; 
-    grid-template-columns: none; 
-    flex-wrap: nowrap;
-    overflow-x: auto; 
-    overflow-y: visible; 
-    gap: 25px;
-    padding: 35px 5% 45px 5%; 
+    display: flex !important;
+    grid-template-columns: none !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    gap: 25px !important;
+    padding: 35px 5% 45px 5% !important;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
 }
@@ -36,6 +37,14 @@ section h2 {
 
 .movie-row.horizontal-scroll .movie-card {
     flex: 0 0 180px; 
+}
+
+/* ✅ FIXED: Kapag hindi horizontal-scroll, balik sa grid */
+.movie-row:not(.horizontal-scroll) {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
+    gap: 20px !important;
+    padding: 20px 5% !important;
 }
 
 /* --- MOVIE CARDS & NEON GLOW MAGIC --- */
@@ -50,7 +59,7 @@ section h2 {
     background: #1a1a1a;
 }
 
-/* The Glossy Kintab Effect (Still here, bro!) */
+/* The Glossy Kintab Effect */
 .movie-card::after {
     content: '';
     position: absolute;
@@ -83,10 +92,10 @@ section h2 {
 }
 
 .movie-card:hover img {
-    filter: brightness(0.7) contrast(1.1); /* Medyo didilim yung image para lumitaw yung text info */
+    filter: brightness(0.7) contrast(1.1);
 }
 
-/* --- NEW: INFO OVERLAY (NETFLIX STYLE) --- */
+/* --- INFO OVERLAY (NETFLIX STYLE) --- */
 .card-overlay {
     position: absolute;
     inset: 0;
@@ -98,7 +107,7 @@ section h2 {
     opacity: 0;
     transition: opacity 0.3s ease;
     z-index: 20;
-    pointer-events: none; /* Para tumagos ang click sa main card */
+    pointer-events: none;
 }
 
 .movie-card:hover .card-overlay {
@@ -123,15 +132,24 @@ section h2 {
 }
 
 /* --- GENRE BUTTONS --- */
-.genre-container { padding: 20px 4%; text-align: center; overflow-x: auto; white-space: nowrap; margin-top: 20px; }
+.genre-container { 
+    padding: 20px 4%; 
+    text-align: center; 
+    overflow-x: auto; 
+    white-space: nowrap; 
+    margin-top: 20px; 
+}
 
 .genre-btn {
-    padding: 8px 25px; margin: 5px;
+    padding: 8px 25px; 
+    margin: 5px;
     background: rgba(255, 255, 255, 0.05);
-    color: white; border: 1px solid rgba(0, 212, 255, 0.3);
+    color: white; 
+    border: 1px solid rgba(0, 212, 255, 0.3);
     border-radius: 30px !important; 
     cursor: pointer;
-    font-family: 'Poppins', sans-serif; transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif; 
+    transition: all 0.3s ease;
 }
 
 .genre-btn:hover, .genre-btn.active {
@@ -143,7 +161,10 @@ section h2 {
 }
 
 /* --- LOAD MORE BUTTON --- */
-.load-more-container { text-align: center; margin: 40px 0; }
+.load-more-container { 
+    text-align: center; 
+    margin: 40px 0; 
+}
 
 #load-more-btn {
     padding: 14px 40px;
@@ -151,21 +172,37 @@ section h2 {
     color: #020b1a !important;
     border: none; 
     border-radius: 50px !important; 
-    font-weight: bold; cursor: pointer;
+    font-weight: bold; 
+    cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
 }
 
 /* Mobile Tweaks */
 @media (max-width: 768px) {
-    .movie-row { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .movie-row.horizontal-scroll .movie-card { flex: 0 0 145px; }
+    .movie-row { 
+        grid-template-columns: repeat(2, 1fr) !important; 
+        gap: 12px !important; 
+    }
     
-    section h2 { font-size: 1.3rem; margin-top: 30px; }
+    .movie-row.horizontal-scroll .movie-card { 
+        flex: 0 0 145px; 
+    }
+    
+    .movie-row:not(.horizontal-scroll) {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    
+    section h2 { 
+        font-size: 1.3rem; 
+        margin-top: 30px; 
+    }
     
     .movie-card:hover {
         transform: scale(1.05) translateY(-5px);
     }
     
-    .card-title { font-size: 0.8rem; }
+    .card-title { 
+        font-size: 0.8rem; 
+    }
 }
