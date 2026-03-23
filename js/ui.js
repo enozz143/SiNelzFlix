@@ -97,48 +97,61 @@ export async function handleSearch(q) {
 }
 
 /**
- * ✅ FIXED: filterGenre - Using the working approach from old branch
+ * ✅ FIXED: filterGenre - Aggressive refresh and force scroll
  */
 export async function filterGenre(genreId) {
-    console.log("🎬 filterGenre called with:", genreId);
+    console.log("🎬 filterGenre START - genre:", genreId);
     
     currentGenre = genreId;
-    currentPage = 1; 
+    currentPage = 1;
     
-    // ✅ FROM OLD BRANCH - this works!
+    // Update active button
     document.querySelectorAll('.genre-btn').forEach(btn => btn.classList.remove('active'));
     if (event && event.target) event.target.classList.add('active');
     
     const trendingRow = document.getElementById("movies-list");
     const allSections = document.querySelectorAll('#trending-section section.category-section');
     
+    // Hide other sections
     allSections.forEach(sec => {
         if (!sec.contains(trendingRow)) {
             sec.style.display = genreId === 'all' ? "block" : "none";
         }
     });
-
-    if (genreId !== 'all') { 
-        trendingRow.classList.remove("horizontal-scroll"); 
-    } else { 
-        trendingRow.classList.add("horizontal-scroll"); 
+    
+    // Update scroll behavior
+    if (genreId !== 'all') {
+        trendingRow.classList.remove("horizontal-scroll");
+    } else {
+        trendingRow.classList.add("horizontal-scroll");
     }
-
+    
+    // Fetch movies
     console.log("📡 Fetching movies for genre:", genreId);
     const filteredMovies = await fetchMovies("movie", 1, genreId);
     console.log("📡 Received movies count:", filteredMovies.length);
     
+    // ✅ FORCE CLEAR AND UPDATE
+    trendingRow.innerHTML = "";
+    
     if (filteredMovies.length === 0) {
-        console.warn("⚠️ No movies found for this genre");
-        const container = document.getElementById("movies-list");
-        if (container) {
-            container.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">No movies found for this genre.</p>';
-        }
+        trendingRow.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">No movies found for this genre.</p>';
         return;
     }
     
-    displayList(filteredMovies, "movies-list");
-    console.log("✅ filterGenre completed");
+    // Add movies one by one
+    filteredMovies.forEach(item => {
+        if (item.poster_path) {
+            trendingRow.appendChild(createMovieCard(item));
+        }
+    });
+    
+    console.log("✅ filterGenre DONE - Movies displayed:", trendingRow.children.length);
+    
+    // ✅ FORCE SCROLL TO SEE THE MOVIES
+    setTimeout(() => {
+        trendingRow.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
 }
 
 export async function loadMore() {
