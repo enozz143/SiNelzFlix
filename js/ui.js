@@ -97,7 +97,7 @@ export async function handleSearch(q) {
 }
 
 /**
- * ✅ FIXED: filterGenre - Proper active button matching
+ * ✅ FIXED: filterGenre - Using the working approach from old branch
  */
 export async function filterGenre(genreId) {
     console.log("🎬 filterGenre called with:", genreId);
@@ -105,19 +105,9 @@ export async function filterGenre(genreId) {
     currentGenre = genreId;
     currentPage = 1; 
     
-    // ✅ FIXED: Better matching for active button
-    document.querySelectorAll('.genre-btn').forEach(btn => {
-        btn.classList.remove('active');
-        const onclickAttr = btn.getAttribute('onclick') || "";
-        const genreIdStr = String(genreId);
-        
-        // Check multiple patterns: with quotes, without quotes, and as a separate token
-        if (onclickAttr.includes(`'${genreIdStr}'`) || 
-            onclickAttr.includes(`"${genreIdStr}"`) || 
-            onclickAttr.includes(genreIdStr)) {
-            btn.classList.add('active');
-        }
-    });
+    // ✅ FROM OLD BRANCH - this works!
+    document.querySelectorAll('.genre-btn').forEach(btn => btn.classList.remove('active'));
+    if (event && event.target) event.target.classList.add('active');
     
     const trendingRow = document.getElementById("movies-list");
     const allSections = document.querySelectorAll('#trending-section section.category-section');
