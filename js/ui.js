@@ -12,7 +12,6 @@ export function createMovieCard(item) {
     const type = item.title ? "movie" : "tv";
     const card = document.createElement("div");
     
-    // Nilagyan natin ng classes at data attributes para sa CSS at Script.js
     card.className = "movie-card";
     card.setAttribute('data-id', item.id);
     card.setAttribute('data-type', type);
@@ -33,7 +32,6 @@ export function createMovieCard(item) {
         </div>
     `;
 
-    // Direct Click Navigation
     card.onclick = () => {
         window.location.href = `/movie/?id=${item.id}&type=${type}`;
     };
@@ -43,12 +41,24 @@ export function createMovieCard(item) {
 
 export function displayList(items, containerId) {
     const container = document.getElementById(containerId);
-    if (!container) return;
+    if (!container) {
+        console.warn(`Container not found: ${containerId}`);
+        return;
+    }
     container.innerHTML = "";
-    if (!items) return;
+    if (!items || items.length === 0) {
+        console.log(`No items to display in ${containerId}`);
+        return;
+    }
+    
+    let addedCount = 0;
     items.forEach(item => {
-        if (item.poster_path) container.appendChild(createMovieCard(item));
+        if (item.poster_path) {
+            container.appendChild(createMovieCard(item));
+            addedCount++;
+        }
     });
+    console.log(`✅ Displayed ${addedCount} items in ${containerId}`);
 }
 
 export function displaySimilar(items) {
@@ -87,10 +97,13 @@ export async function handleSearch(q) {
 }
 
 export async function filterGenre(genreId) {
+    console.log("🎬 filterGenre called with:", genreId);
+    
     currentGenre = genreId;
     currentPage = 1; 
-    document.querySelectorAll('.genre-btn').forEach(btn => btn.classList.remove('active'));
     
+    // Update active button style
+    document.querySelectorAll('.genre-btn').forEach(btn => btn.classList.remove('active'));
     if (event && event.target) event.target.classList.add('active');
     
     const trendingRow = document.getElementById("movies-list");
@@ -108,8 +121,21 @@ export async function filterGenre(genreId) {
         trendingRow.classList.add("horizontal-scroll"); 
     }
 
+    console.log("📡 Fetching movies for genre:", genreId);
     const filteredMovies = await fetchMovies("movie", 1, genreId);
+    console.log("📡 Received movies count:", filteredMovies.length);
+    
+    if (filteredMovies.length === 0) {
+        console.warn("⚠️ No movies found for this genre");
+        const container = document.getElementById("movies-list");
+        if (container) {
+            container.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">No movies found for this genre.</p>';
+        }
+        return;
+    }
+    
     displayList(filteredMovies, "movies-list");
+    console.log("✅ filterGenre completed");
 }
 
 export async function loadMore() {
