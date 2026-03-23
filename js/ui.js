@@ -106,12 +106,13 @@ export async function filterGenre(genreId) {
     currentGenre = genreId;
     currentPage = 1; 
     
-    // ✅ FIXED: Update active button style without relying on event object
+  // ✅ FIXED: Better matching for active button
     document.querySelectorAll('.genre-btn').forEach(btn => {
         btn.classList.remove('active');
-        // Hanapin ang button na may matching onclick attribute
-        const onclickAttr = btn.getAttribute('onclick');
-        if (onclickAttr && onclickAttr.includes(`'${genreId}'`)) {
+        const onclickAttr = btn.getAttribute('onclick') || "";
+        
+        // Mas safe na match: icheck lang kung nandun yung ID mismo
+        if (onclickAttr.includes(genreId)) {
             btn.classList.add('active');
         }
     });
