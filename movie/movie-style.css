@@ -713,11 +713,140 @@ body {
         font-size: 0.6rem !important;
     }
     
+    
     .details-side h2 {
         font-size: 1rem !important;
     }
     
     #movie-overview {
         font-size: 0.7rem !important;
+    }
+}
+/* ============================================ */
+/* FINAL MOBILE FIX - PORTRAIT VIEW */
+/* ============================================ */
+
+@media (max-width: 768px) and (orientation: portrait) {
+    
+    /* Container - walang side space */
+    .movie-page-container {
+        padding: 20px 0 !important;
+    }
+    
+    /* Poster - itago sa portrait */
+    .poster-side {
+        display: none !important;
+    }
+    
+    /* Info grid - isang column lang */
+    .movie-info-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+        padding: 0 10px !important;
+    }
+    
+    /* Story - full width */
+    .details-side {
+        width: 100% !important;
+        text-align: center !important;
+        padding: 0 !important;
+    }
+    
+    .details-side h2 {
+        font-size: 1.2rem !important;
+        margin: 0 0 8px 0 !important;
+    }
+    
+    #movie-overview {
+        font-size: 0.8rem !important;
+        line-height: 1.4 !important;
+    }
+    
+    /* Cast section - horizontal scroll */
+    .cast-section {
+        margin-top: 20px !important;
+        padding: 0 10px !important;
+    }
+    
+    .cast-section h3 {
+        font-size: 1rem !important;
+        margin-bottom: 10px !important;
+    }
+    
+    .cast-list {
+        display: flex !important;
+        gap: 10px !important;
+        overflow-x: auto !important;
+        padding: 5px 0 10px 0 !important;
+        scrollbar-width: thin !important;
+    }
+    
+    .cast-item {
+        flex: 0 0 auto !important;
+        width: 70px !important;
+        text-align: center !important;
+    }
+    
+    .cast-img-wrapper {
+        width: 60px !important;
+        height: 60px !important;
+        margin: 0 auto 5px !important;
+        border: 2px solid #00d4ff !important;
+    }
+    
+    .cast-name {
+        font-size: 0.6rem !important;
+    }
+    
+    .cast-character {
+        font-size: 0.5rem !important;
+    }
+    
+    /* Hero section */
+    #movie-hero {
+        height: 45vh !important;
+    }
+    
+    .hero-info-content h1 {
+        font-size: 1.2rem !important;
+    }
+    
+    #movie-description-hero {
+        font-size: 0.7rem !important;
+        -webkit-line-clamp: 2 !important;
+    }
+    
+    .watch-now, .btn-secondary {
+        padding: 6px 16px !important;
+        font-size: 0.7rem !important;
+        min-width: 130px !important;
+    }
+    
+    /* Player */
+    #movie-iframe {
+        height: 35vh !important;
+    }
+    
+    /* Similar movies */
+    .similar-card {
+        min-width: 100px !important;
+    }
+    
+    .similar-card p {
+        font-size: 0.65rem !important;
+    }
+    
+    /* Controls */
+    .controls-bar {
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 8px !important;
+        padding: 0 10px !important;
+    }
+    
+    .server-box {
+        width: 100% !important;
+        text-align: center !important;
     }
 }
