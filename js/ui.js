@@ -97,8 +97,7 @@ export async function handleSearch(q) {
 }
 
 /**
- * ✅ FIXED: filterGenre - no need for event parameter
- * Awtomatikong nagha-highlight ng active button base sa genreId
+ * ✅ FIXED: filterGenre - Proper active button matching
  */
 export async function filterGenre(genreId) {
     console.log("🎬 filterGenre called with:", genreId);
@@ -106,13 +105,16 @@ export async function filterGenre(genreId) {
     currentGenre = genreId;
     currentPage = 1; 
     
-  // ✅ FIXED: Better matching for active button
+    // ✅ FIXED: Better matching for active button
     document.querySelectorAll('.genre-btn').forEach(btn => {
         btn.classList.remove('active');
         const onclickAttr = btn.getAttribute('onclick') || "";
+        const genreIdStr = String(genreId);
         
-        // Mas safe na match: icheck lang kung nandun yung ID mismo
-        if (onclickAttr.includes(genreId)) {
+        // Check multiple patterns: with quotes, without quotes, and as a separate token
+        if (onclickAttr.includes(`'${genreIdStr}'`) || 
+            onclickAttr.includes(`"${genreIdStr}"`) || 
+            onclickAttr.includes(genreIdStr)) {
             btn.classList.add('active');
         }
     });
