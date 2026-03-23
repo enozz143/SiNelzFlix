@@ -18,7 +18,7 @@ function showSkeletons(containerId, count = 10) {
     container.innerHTML = skeletonHTML;
 }
 
-// --- BRIDGE TO HTML ---
+
 window.showDetails = showDetails;
 window.closeModal = closeModal;
 window.changeServer = changeServer;
