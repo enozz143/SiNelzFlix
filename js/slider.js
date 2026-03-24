@@ -21,6 +21,13 @@ export async function setupHeroSlider(movies) {
 
     for (let index = 0; index < sliderItems.length; index++) {
         const movie = sliderItems[index];
+        const slide = document.createElement("div");
+        slide.className = `hero-slide ${index === 0 ? 'active' : ''}`;
+        
+        /* 🔥 FIX: TINANGGAL ANG BACKGROUND IMAGE 
+           Dito natin tinanggal yung .style.backgroundImage para hindi 
+           na humarang yung poster sa video playback mo.
+        */
         
         let trailerKey = "";
         try {
@@ -30,10 +37,10 @@ export async function setupHeroSlider(movies) {
             if (trailer) trailerKey = trailer.key;
         } catch (err) { console.error("Slider video error:", err); }
 
-        const slide = document.createElement("div");
-        slide.className = `hero-slide ${index === 0 ? 'active' : ''}`;
-        
-        // FIXED: Nilagay natin ang 'watch-now' class at data-id para mahuli ng script.js listener
+        /* 🔥 OPTIMIZATION: Inayos ang iframe parameters 
+           - mute=1 (Required para sa autoplay sa Chrome)
+           - playlist=${trailerKey} (Required para sa loop)
+        */
         slide.innerHTML = `
             <div class="hero-video-container">
                 ${trailerKey ? `<iframe src="https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=1&controls=0&loop=1&playlist=${trailerKey}&rel=0&showinfo=0&modestbranding=1&iv_load_policy=3" frameborder="0" allow="autoplay; encrypted-media"></iframe>` : ''}
@@ -47,9 +54,9 @@ export async function setupHeroSlider(movies) {
                     <span style="border: 1px solid var(--primary-blue, #00d4ff); padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold;">CINEMATIC PREVIEW</span>
                 </div>
                 <h1>${movie.title}</h1>
-                <p>${movie.overview ? movie.overview.substring(0, 180) : ''}...</p>
+                <p>${movie.overview.substring(0, 180)}...</p>
                 <div class="hero-btns">
-                    <button class="watch-now" data-id="${movie.id}" data-type="movie">▶ Watch Now</button>
+                    <button class="btn-watch" onclick='showDetails(${JSON.stringify(movie).replace(/'/g, "&apos;")})'>▶ Watch Now</button>
                     <button class="btn-list" style="background:rgba(255,255,255,0.1); color:white; border:1px solid white; padding:12px 30px; border-radius:5px; cursor:pointer; font-weight: bold; transition: 0.3s;">+ My List</button>
                 </div>
             </div>
@@ -80,8 +87,6 @@ export function goToSlide(index) {
 export function updateSliderUI() {
     const slides = document.querySelectorAll(".hero-slide");
     const dots = document.querySelectorAll(".dot");
-    if(slides.length > 0) {
-        slides.forEach((s, i) => s.classList.toggle("active", i === sliderIndex));
-        dots.forEach((d, i) => d.classList.toggle("active", i === sliderIndex));
-    }
+    slides.forEach((s, i) => s.classList.toggle("active", i === sliderIndex));
+    dots.forEach((d, i) => d.classList.toggle("active", i === sliderIndex));
 }
