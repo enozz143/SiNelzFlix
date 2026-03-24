@@ -1,4 +1,4 @@
-// js/ui.js
+// js/ui.js - SIMPLE CLICKABLE CARDS (no buttons, keep all connections)
 import { IMG_URL, fetchMovies } from './api.js';
 import { showDetails, playTrailer } from './modal.js';
 
@@ -7,57 +7,39 @@ let currentGenre = 'all';
 let debounceTimer;
 
 /**
- * --- MOVIE CARDS & LISTS ---
+ * --- CREATE MOVIE CARD (SIMPLE CLICKABLE VERSION) ---
+ * Diretso sa movie page pag click, walang buttons.
+ * Pinanatili ang imports ng modal.js para sa ibang functions.
  */
 export function createMovieCard(item) {
+    const type = item.title ? "movie" : "tv";
     const card = document.createElement("div");
+    
     card.className = "movie-card";
+    card.setAttribute('data-id', item.id);
+    card.setAttribute('data-type', type);
     
-    const img = document.createElement("img");
-    img.src = item.poster_path ? `${IMG_URL}${item.poster_path}` : 'https://via.placeholder.com/500x750?text=No+Image';
-    img.loading = "lazy";
-    
-    const overlay = document.createElement("div");
-    overlay.className = "trailer-overlay";
-    
-    const trailerBtn = document.createElement("button");
-    trailerBtn.className = "hover-btn trailer-btn";
-    trailerBtn.innerHTML = "Play Trailer";
-    trailerBtn.onclick = (e) => { 
-        e.stopPropagation(); 
-        playTrailer(item.id, item.title ? "movie" : "tv"); 
+    const posterPath = item.poster_path 
+        ? `${IMG_URL}${item.poster_path}` 
+        : 'https://via.placeholder.com/500x750?text=No+Image';
+
+    card.innerHTML = `
+        <div class="poster-wrapper">
+            <img src="${posterPath}" alt="${item.title || item.name}" loading="lazy">
+            <div class="card-overlay">
+                <div class="card-info">
+                    <span class="card-rating">⭐ ${item.vote_average ? item.vote_average.toFixed(1) : '0.0'}</span>
+                    <h3 class="card-title">${item.title || item.name}</h3>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Diretso sa movie page pag click
+    card.onclick = () => {
+        window.location.href = `/movie/?id=${item.id}&type=${type}`;
     };
 
-    const fullMovieBtn = document.createElement("button");
-    fullMovieBtn.className = "hover-btn movie-btn";
-    fullMovieBtn.innerHTML = "Full Movie";
-    fullMovieBtn.onclick = (e) => { 
-        e.stopPropagation(); 
-        showDetails(item); 
-    };
-
-    const shareBtn = document.createElement("button");
-    shareBtn.className = "share-mini-btn";
-    shareBtn.innerHTML = "🔗 Share";
-    shareBtn.onclick = (e) => {
-        e.stopPropagation();
-        const type = item.title ? "movie" : "tv";
-        const titleSlug = (item.title || item.name).toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
-        const shareUrl = `${window.location.origin}${window.location.pathname}?${type}=${item.id}-${titleSlug}`;
-        
-        if (navigator.share) {
-            navigator.share({ title: item.title || item.name, text: `Panoorin natin 'to sa CINElzFlix!`, url: shareUrl });
-        } else {
-            navigator.clipboard.writeText(shareUrl);
-            alert("Movie link copied to clipboard, bro!");
-        }
-    };
-    
-    overlay.appendChild(trailerBtn);
-    overlay.appendChild(fullMovieBtn);
-    overlay.appendChild(shareBtn);
-    card.appendChild(img);
-    card.appendChild(overlay);
     return card;
 }
 
