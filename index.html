@@ -38,9 +38,10 @@
                 <img src="logo.png" alt="CINElzFlix Logo" id="site-logo">
             </a>
         </div>
-        <div class="search-box">
-            <input type="text" id="search-input" placeholder="Search movies, anime..." oninput="handleSearch(this.value)">
-        </div>
+       <div class="search-box" style="position: relative;">
+    <input type="text" id="search-input" placeholder="Search movies, anime..." oninput="handleSearchWithDropdown(this.value)">
+    <div id="search-dropdown" class="search-dropdown" style="display: none;"></div>
+</div>
     </nav>
     
     <main>
