@@ -14,3 +14,89 @@
 @import url('./css/footer.css');
 @import url('./css/ads.css');
 @import url('css/skeleton.css');
+
+/* ============================================ */
+/* LIVE SEARCH DROPDOWN STYLES */
+/* ============================================ */
+
+.search-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #0a192f;
+    border: 1px solid #00d4ff;
+    border-radius: 12px;
+    margin-top: 8px;
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.search-dropdown-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(0,212,255,0.1);
+    align-items: center;
+}
+
+.search-dropdown-item:hover {
+    background: rgba(0,212,255,0.15);
+    transform: translateX(5px);
+}
+
+.search-dropdown-img {
+    width: 45px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid rgba(0,212,255,0.3);
+}
+
+.search-dropdown-info {
+    flex: 1;
+}
+
+.search-dropdown-title {
+    font-weight: bold;
+    color: #fff;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+}
+
+.search-dropdown-meta {
+    font-size: 0.7rem;
+    color: #00d4ff;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.search-dropdown-year {
+    color: #888;
+}
+
+.search-dropdown-type {
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.search-dropdown-rating {
+    color: #ffc107;
+}
+
+.search-dropdown-empty {
+    padding: 20px;
+    text-align: center;
+    color: #888;
+}
+
+.search-dropdown-loading {
+    padding: 20px;
+    text-align: center;
+    color: #00d4ff;
+}

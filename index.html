@@ -38,9 +38,10 @@
                 <img src="logo.png" alt="CINElzFlix Logo" id="site-logo">
             </a>
         </div>
-        <div class="search-box">
-            <input type="text" id="search-input" placeholder="Search movies, anime..." oninput="handleSearch(this.value)">
-        </div>
+       <div class="search-box" style="position: relative;">
+    <input type="text" id="search-input" placeholder="Search movies, anime..." oninput="handleSearchWithDropdown(this.value)">
+    <div id="search-dropdown" class="search-dropdown" style="display: none;"></div>
+</div>
     </nav>
     
     <main>
@@ -160,37 +161,35 @@
 <script src="https://www.highperformanceformat.com/4677c11ed240a7ea84888be8a557f607/invoke.js"></script>
                     </div>
                 </div>
-
-                <div class="modal-footer-mini">
-                    <p>© 2026 CINElzFlix.com • Crafted by <b>Nelz</b></p>
-                    <p class="mini-disclaimer">All contents are provided by non-affiliated third parties.</p>
-                </div>
             </div>
         </div>
     </div>
 
-    <footer id="site-footer">
-        <div class="footer-container">
-            <div class="footer-links">
-                <a href="#">Home</a>
-                <a href="#">Movies</a>
-                <a href="#">TV Shows</a>
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
-                <a href="#">DMCA</a>
-            </div>
-            <p class="disclaimer">
-                <strong>Disclaimer:</strong> CINElzFlix does not host any files on its servers.
-            </p>
-            <p class="copyright">
-                &copy; 2026 CINElzFlix.com. All Rights Reserved.<br>
-                <span style="font-size: 0.75rem; color: rgba(255,255,255,0.5); letter-spacing: 1.5px; text-transform: uppercase; display: block; margin: 10px 0;">
-                    Crafted and developed by <span style="color: var(--primary-blue); font-weight: bold;">Nelz</span>
-                </span>
-            </p>
+  <footer id="site-footer">
+    <div class="footer-container">
+        <!-- Links Row -->
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="/">Movies</a>
+            <a href="/">TV Shows</a>
+            <a href="/">Anime</a>
+            <a href="/">Privacy Policy</a>
+            <a href="/">Terms of Service</a>
+            <a href="/">DMCA</a>
         </div>
-    </footer>
 
+        <!-- Disclaimer -->
+        <p class="disclaimer">
+            CINElzFlix does not host any files on its servers. All contents are provided by non-affiliated third parties.
+        </p>
+
+        <!-- Copyright & Credit -->
+        <div class="footer-copyright">
+            <p>&copy; 2026 CINElzFlix.com. All rights reserved.</p>
+            <p class="credit">Crafted with <span style="color: #00d4ff;">❤</span> by <strong>Nelz</strong></p>
+        </div>
+    </div>
+</footer>
     <script type="module" src="script.js"></script>
     
     <script>

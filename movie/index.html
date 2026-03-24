@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title id="page-title">Loading - CINElzFlix</title>
+    <link rel="stylesheet" href="../style.css?v=1.6">
+    <link rel="stylesheet" href="../css/hero.css"> 
+    <link rel="stylesheet" href="movie-style.css"> 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    
+    <nav id="navbar">
+        <div class="logo">
+            <a href="/" style="text-decoration: none;">
+                <img src="../logo.png" alt="CINElzFlix Logo" id="site-logo">
+            </a>
+        </div>
+        <!-- ✅ UPDATED SEARCH BOX with dropdown container -->
+        <div class="search-box" style="position: relative;">
+            <input type="text" id="search-input" placeholder="Search movies, anime..." oninput="handleSearchWithDropdown(this.value)">
+            <div id="search-dropdown" class="search-dropdown" style="display: none;"></div>
+        </div>
+    </nav>
+    
+    <section id="movie-hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-info-content">
+            <div class="hero-meta" id="movie-meta-hero"></div>
+            <h1 id="movie-title">Loading Title...</h1>
+            <p id="movie-description-hero">Fetching cinematic details...</p>
+            <div class="hero-actions">
+                <button id="scroll-to-player" class="watch-now">▶ WATCH FULL MOVIE</button>
+                <button id="play-trailer-btn" class="btn-secondary">🎬 WATCH TRAILER</button>
+            </div>
+        </div>
+    </section>
+
+    <main class="movie-page-container" id="player-section">
+        <div class="controls-bar">
+            <div class="back-link">
+                <a href="/" class="back-btn">← Back to Home</a>
+            </div>
+            <div class="server-box">
+                <label for="server-select">Switch Server: </label>
+                <select id="server-select">
+                    <option value="vidsrc">Server 1 (VidSrc)</option>
+                    <option value="vidsrc2">Server 2 (Net)</option>
+                    <option value="videasy">Server 3 (Easy)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="player-wrapper">
+            <iframe id="movie-iframe" src="" allowfullscreen></iframe>
+            <div id="player-loading" style="display: none;">
+                <div style="width: 40px; height: 40px; border: 3px solid #333; border-top-color: #00d4ff; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto;"></div>
+                <p style="color: #00d4ff; margin-top: 10px;">Loading player...</p>
+            </div>
+        </div>
+
+        <div class="movie-info-grid">
+            <div class="poster-side">
+                <img id="movie-poster" src="" alt="Poster">
+                <div class="rating-badge" id="vote-avg">0.0</div>
+            </div>
+            <div class="details-side">
+                <h2>The Story</h2>
+                <p id="movie-overview">Loading overview...</p>
+                
+                <div class="cast-section">
+                    <h3>Top Cast</h3>
+                    <div id="movie-cast" class="cast-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <section class="similar-section">
+            <div id="similar-movies-container"></div>
+        </section>
+    </main>
+
+    <footer id="site-footer">
+        <div class="footer-container">
+            <div class="footer-links">
+                <a href="/">Home</a>
+                <a href="/">Movies</a>
+                <a href="/">TV Shows</a>
+                <a href="/">Privacy Policy</a>
+                <a href="/">Terms of Service</a>
+                <a href="/">DMCA</a>
+            </div>
+            <p class="disclaimer"><strong>Disclaimer:</strong> CINElzFlix does not host any files on its servers.</p>
+            <p class="copyright">&copy; 2026 CINElzFlix.com. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <div id="global-loading" style="display: none;">
+        <div style="width: 50px; height: 50px; border: 3px solid #333; border-top-color: #00d4ff; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto;"></div>
+        <p style="color: #00d4ff; margin-top: 10px;">Loading movie data...</p>
+    </div>
+
+   <script type="module">
+    import { handleSearch } from '../js/ui.js';
+    import { BASE_URL } from '../js/api.js';
+    
+    window.handleSearch = handleSearch;
+    window.BASE_URL = BASE_URL;
+    
+    // Enter key redirect to homepage search
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const query = this.value.trim();
+                if (query) {
+                    window.location.href = `/?search=${encodeURIComponent(query)}`;
+                }
+            }
+        });
+    }
+    
+    // ============================================
+    // LIVE SEARCH DROPDOWN (direct copy, no export needed)
+    // ============================================
+    
+    let searchDebounceTimer;
+    
+    window.handleSearchWithDropdown = async function(query) {
+        const dropdown = document.getElementById('search-dropdown');
+        
+        if (!dropdown) return;
+        
+        if (!query || !query.trim()) {
+            dropdown.style.display = 'none';
+            return;
+        }
+        
+        dropdown.innerHTML = '<div class="search-dropdown-loading">🔍 Searching...</div>';
+        dropdown.style.display = 'block';
+        
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(async () => {
+            try {
+                const res = await fetch(`${BASE_URL}?endpoint=/search/multi&query=${encodeURIComponent(query)}`);
+                const data = await res.json();
+                const results = data.results || [];
+                
+                if (results.length === 0) {
+                    dropdown.innerHTML = `<div class="search-dropdown-empty">😢 No results found for "${escapeHtml(query)}"</div>`;
+                    return;
+                }
+                
+                dropdown.innerHTML = results.slice(0, 8).map(item => {
+                    const title = item.title || item.name || 'Unknown';
+                    const year = (item.release_date || item.first_air_date || '').split('-')[0];
+                    const type = item.title ? 'Movie' : (item.name ? 'TV' : 'Person');
+                    const rating = item.vote_average ? `⭐ ${item.vote_average.toFixed(1)}` : '';
+                    const poster = item.poster_path 
+                        ? `https://image.tmdb.org/t/p/w92${item.poster_path}` 
+                        : '';
+                    
+                    if (type === 'Person') return '';
+                    
+                    return `
+                        <div class="search-dropdown-item" onclick="window.location.href='/movie/?id=${item.id}&type=${item.title ? 'movie' : 'tv'}'">
+                            ${poster ? `<img class="search-dropdown-img" src="${poster}" alt="${escapeHtml(title)}" onerror="this.style.display='none'">` : '<div style="width:45px;"></div>'}
+                            <div class="search-dropdown-info">
+                                <div class="search-dropdown-title">${escapeHtml(title)}</div>
+                                <div class="search-dropdown-meta">
+                                    <span class="search-dropdown-type">${type}</span>
+                                    <span class="search-dropdown-year">${year || 'N/A'}</span>
+                                    <span class="search-dropdown-rating">${rating}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).filter(item => item !== '').join('');
+                
+                if (dropdown.innerHTML === '') {
+                    dropdown.innerHTML = '<div class="search-dropdown-empty">😢 No valid results found</div>';
+                }
+                
+            } catch (err) {
+                console.error('Search error:', err);
+                dropdown.innerHTML = '<div class="search-dropdown-empty">⚠️ Search failed. Please try again.</div>';
+            }
+        }, 300);
+    };
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        const searchBox = document.querySelector('.search-box');
+        const dropdown = document.getElementById('search-dropdown');
+        if (searchBox && dropdown && !searchBox.contains(e.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
+    
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const dropdown = document.getElementById('search-dropdown');
+            if (dropdown) dropdown.style.display = 'none';
+        }
+    });
+</script>
+    
+    <script src="../js/movie-page.js"></script>
+    <script src="https://pl28947937.profitablecpmratenetwork.com/a5/c3/8e/a5c38ef495583bd163602819c5112f48.js"></script>
+</body>
+</html>
