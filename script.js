@@ -219,7 +219,7 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+export { handleSearchWithDropdown };
+
 init();
 
-// ✅ EXPORT FOR USE IN MOVIE PAGE
-export { handleSearchWithDropdown };
