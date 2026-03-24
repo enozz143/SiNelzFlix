@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title id="page-title">Loading - CINElzFlix</title>
+    <link rel="stylesheet" href="../style.css?v=1.6">
+    <link rel="stylesheet" href="../css/hero.css"> 
+    <link rel="stylesheet" href="movie-style.css"> 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    
+    <nav id="navbar">
+        <div class="logo">
+            <a href="/" style="text-decoration: none;">
+                <img src="../logo.png" alt="CINElzFlix Logo" id="site-logo">
+            </a>
+        </div>
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="Search movies, anime..." oninput="handleSearch(this.value)">
+        </div>
+    </nav>
+    
+    <section id="movie-hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-info-content">
+            <div class="hero-meta" id="movie-meta-hero"></div>
+            <h1 id="movie-title">Loading Title...</h1>
+            <p id="movie-description-hero">Fetching cinematic details...</p>
+            <div class="hero-actions">
+                <button id="scroll-to-player" class="watch-now">▶ WATCH FULL MOVIE</button>
+                <button id="play-trailer-btn" class="btn-secondary">🎬 WATCH TRAILER</button>
+            </div>
+        </div>
+    </section>
+
+    <main class="movie-page-container" id="player-section">
+        <div class="controls-bar">
+            <div class="back-link">
+                <a href="/" class="back-btn">← Back to Home</a>
+            </div>
+            <div class="server-box">
+                <label for="server-select">Switch Server: </label>
+                <select id="server-select">
+                    <option value="vidsrc">Server 1 (VidSrc)</option>
+                    <option value="vidsrc2">Server 2 (Net)</option>
+                    <option value="videasy">Server 3 (Easy)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="player-wrapper">
+            <iframe id="movie-iframe" src="" allowfullscreen></iframe>
+            <div id="player-loading" style="display: none;">
+                <div style="width: 40px; height: 40px; border: 3px solid #333; border-top-color: #00d4ff; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto;"></div>
+                <p style="color: #00d4ff; margin-top: 10px;">Loading player...</p>
+            </div>
+        </div>
+
+        <div class="movie-info-grid">
+            <div class="poster-side">
+                <img id="movie-poster" src="" alt="Poster">
+                <div class="rating-badge" id="vote-avg">0.0</div>
+            </div>
+            <div class="details-side">
+                <h2>The Story</h2>
+                <p id="movie-overview">Loading overview...</p>
+                
+                <div class="cast-section">
+                    <h3>Top Cast</h3>
+                    <div id="movie-cast" class="cast-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <section class="similar-section">
+            <div id="similar-movies-container"></div>
+        </section>
+    </main>
+
+    <footer id="site-footer">
+        <div class="footer-container">
+            <div class="footer-links">
+                <a href="/">Home</a>
+                <a href="/">Movies</a>
+                <a href="/">TV Shows</a>
+                <a href="/">Privacy Policy</a>
+                <a href="/">Terms of Service</a>
+                <a href="/">DMCA</a>
+            </div>
+            <p class="disclaimer"><strong>Disclaimer:</strong> CINElzFlix does not host any files on its servers.</p>
+            <p class="copyright">&copy; 2026 CINElzFlix.com. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <div id="global-loading" style="display: none;">
+        <div style="width: 50px; height: 50px; border: 3px solid #333; border-top-color: #00d4ff; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto;"></div>
+        <p style="color: #00d4ff; margin-top: 10px;">Loading movie data...</p>
+    </div>
+
+    <script type="module">
+        import { handleSearch } from '../js/ui.js';
+        window.handleSearch = handleSearch;
+        
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const query = this.value.trim();
+                    if (query) {
+                        window.location.href = `/?search=${encodeURIComponent(query)}`;
+                    }
+                }
+            });
+        }
+    </script>
+    
+    <script src="../js/movie-page.js"></script>
+</body>
+</html>
