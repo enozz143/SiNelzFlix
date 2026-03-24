@@ -17,8 +17,10 @@
                 <img src="../logo.png" alt="CINElzFlix Logo" id="site-logo">
             </a>
         </div>
-        <div class="search-box">
-            <input type="text" id="search-input" placeholder="Search movies, anime..." oninput="handleSearch(this.value)">
+        <!-- ✅ UPDATED SEARCH BOX with dropdown container -->
+        <div class="search-box" style="position: relative;">
+            <input type="text" id="search-input" placeholder="Search movies, anime..." oninput="handleSearchWithDropdown(this.value)">
+            <div id="search-dropdown" class="search-dropdown" style="display: none;"></div>
         </div>
     </nav>
     
@@ -101,8 +103,12 @@
 
     <script type="module">
         import { handleSearch } from '../js/ui.js';
-        window.handleSearch = handleSearch;
+        import { handleSearchWithDropdown } from '../script.js';
         
+        window.handleSearch = handleSearch;
+        window.handleSearchWithDropdown = handleSearchWithDropdown;
+        
+        // Enter key redirect to homepage search
         const searchInput = document.getElementById('search-input');
         if (searchInput) {
             searchInput.addEventListener('keypress', function(e) {
