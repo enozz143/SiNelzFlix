@@ -147,6 +147,13 @@ async function init() {
         // 0. Initialize Countdown Timer
         initCountdown();
 
+        // ✅ FORCE CLEAR CONTAINERS BEFORE ADDING SKELETONS
+        const containers = ["movies-list", "upcoming-list", "tvshows-list", "anime-list", "top-rated-list"];
+        containers.forEach(id => {
+            const container = document.getElementById(id);
+            if (container) container.innerHTML = "";
+        });
+
         // --- START LOADING SKELETONS ---
         showSkeletons("movies-list", 8);
         showSkeletons("upcoming-list", 6);
@@ -220,4 +227,3 @@ document.addEventListener('keydown', (e) => {
 });
 
 init();
-
