@@ -1,3 +1,4 @@
+
 // js/modal.js
 import { BASE_URL, IMG_URL } from './api.js';
 
