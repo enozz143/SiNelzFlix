@@ -1,9 +1,9 @@
-/* css/countdown.css */
+/* css/countdown.css - SMALLER VERSION */
 
 /* 1. Ang Main Wrapper */
 #countdown-banner {
     width: 100%;
-    margin: 40px 0;
+    margin: 20px 0 !important; /* Pinaliit margin */
     display: flex !important;
     justify-content: center !important;
     align-items: center;
@@ -11,12 +11,12 @@
     box-sizing: border-box;
 }
 
-/* 2. Ang Card Mismo */
+/* 2. Ang Card Mismo - PINALIIT */
 .countdown-card {
     background: linear-gradient(135deg, #001219 0%, #003049 100%);
     border: 1px solid rgba(0, 212, 255, 0.3);
     border-radius: 20px;
-    padding: 50px 20px;
+    padding: 20px 15px !important; /* Pinaliit padding (dati 50px 20px) */
     width: 100%;
     max-width: 1000px;
     position: relative;
@@ -37,31 +37,31 @@
     justify-content: center;
 }
 
-/* 4. Title Styling */
+/* 4. Title Styling - PINALIIT */
 #countdown-event-title {
     width: 100%;
-    margin: 15px 0 25px 0;
-    font-size: clamp(1.8rem, 5vw, 2.5rem); 
+    margin: 5px 0 10px 0 !important; /* Pinaliit margin */
+    font-size: 1.3rem !important; /* Pinaliit font */
     font-weight: 700;
     color: #ffffff;
     text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
 }
 
-/* 5. Timer Container - Desktop view default */
+/* 5. Timer Container - PINALIIT */
 #timer {
     display: flex;
     justify-content: center;
-    gap: 15px;
-    margin: 10px 0 30px 0;
-    flex-wrap: nowrap; /* Siniguro na hindi mag-wrap sa desktop */
+    gap: 10px !important; /* Pinaliit gap */
+    margin: 5px 0 10px 0 !important;
+    flex-wrap: nowrap;
     width: 100%;
 }
 
 .time-box {
     background: rgba(0, 0, 0, 0.4);
-    padding: 20px;
+    padding: 8px 12px !important; /* Pinaliit padding (dati 20px) */
     border-radius: 12px;
-    min-width: 90px;
+    min-width: 65px !important; /* Pinaliit width (dati 90px) */
     border: 1px solid rgba(0, 212, 255, 0.2);
     backdrop-filter: blur(5px);
     display: flex;
@@ -72,7 +72,7 @@
 
 .time-box span {
     display: block;
-    font-size: 2.2rem;
+    font-size: 1.3rem !important; /* Pinaliit numbers (dati 2.2rem) */
     font-weight: 700;
     color: #00d4ff;
     text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
@@ -81,19 +81,19 @@
 .time-box small {
     color: #888;
     text-transform: uppercase;
-    font-size: 0.7rem;
+    font-size: 0.55rem !important; /* Pinaliit (dati 0.7rem) */
     letter-spacing: 1px;
 }
 
-/* Badge at Buttons */
+/* Badge at Buttons - PINALIIT */
 .badge {
     background: #00d4ff;
     color: #000;
-    padding: 6px 16px;
+    padding: 4px 12px !important; /* Pinaliit padding (dati 6px 16px) */
     border-radius: 50px;
     font-weight: bold;
-    font-size: 0.8rem;
-    margin-bottom: 10px;
+    font-size: 0.7rem !important; /* Pinaliit font (dati 0.8rem) */
+    margin-bottom: 5px;
     animation: pulse-glow 2s infinite;
 }
 
@@ -101,12 +101,14 @@
     background: transparent;
     border: 2px solid #00d4ff;
     color: #00d4ff;
-    padding: 12px 35px;
+    padding: 6px 20px !important; /* Pinaliit padding (dati 12px 35px) */
     border-radius: 50px;
     font-weight: 700;
     text-transform: uppercase;
+    font-size: 0.7rem !important; /* Pinaliit font */
     cursor: pointer;
     transition: 0.3s;
+    margin-top: 5px;
 }
 
 .btn-remind:hover {
@@ -115,56 +117,49 @@
     box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
 }
 
-/* --- MOBILE OPTIMIZATION (1x4 Layout) --- */
+/* --- MOBILE OPTIMIZATION (MAS MALIIT PA) --- */
 @media (max-width: 768px) {
     #countdown-banner {
-        margin: 20px 0; /* Binawasan ang margin para mas dikit sa content */
+        margin: 10px 0 !important;
     }
 
     .countdown-card {
-        padding: 25px 10px; /* Mas siksik na card padding */
+        padding: 12px 10px !important;
         border-radius: 15px;
     }
 
     #countdown-event-title {
-        font-size: 1.3rem; /* Mas maliit na title para magkasya */
-        margin: 5px 0 15px 0;
+        font-size: 1rem !important;
+        margin: 3px 0 8px 0 !important;
     }
 
     #timer {
-        display: flex !important; /* Force flex para maging row */
-        flex-direction: row !important;
-        justify-content: center;
-        gap: 6px; /* Maliit na gap para hindi mag-overflow */
-        max-width: 100%;
-        margin: 0 auto 15px auto;
-        flex-wrap: nowrap; /* Bawal bumaba ang boxes */
+        gap: 6px !important;
+        margin: 0 auto 8px auto !important;
     }
 
     .time-box {
-        min-width: 60px; /* Sapat lang para sa apat na column */
-        flex: 1; /* Pantay-pantay ang width */
-        padding: 10px 2px;
-        background: rgba(0, 0, 0, 0.6);
+        min-width: 50px !important;
+        padding: 5px 4px !important;
     }
 
     .time-box span {
-        font-size: 1.1rem; /* In-adjust ang size para sa 1x4 layout */
+        font-size: 0.9rem !important;
     }
 
     .time-box small {
-        font-size: 0.55rem;
+        font-size: 0.45rem !important;
         letter-spacing: 0;
     }
 
     .badge {
-        font-size: 0.7rem;
-        padding: 4px 12px;
+        font-size: 0.6rem !important;
+        padding: 3px 10px !important;
     }
 
     .btn-remind {
-        padding: 8px 20px;
-        font-size: 0.75rem;
+        padding: 4px 12px !important;
+        font-size: 0.6rem !important;
     }
 }
 
