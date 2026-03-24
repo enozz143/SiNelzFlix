@@ -220,3 +220,6 @@ document.addEventListener('keydown', (e) => {
 });
 
 init();
+
+// ✅ EXPORT FOR USE IN MOVIE PAGE
+export { handleSearchWithDropdown };
