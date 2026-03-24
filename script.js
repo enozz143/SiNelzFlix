@@ -219,7 +219,5 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-export { handleSearchWithDropdown };
-
 init();
 
