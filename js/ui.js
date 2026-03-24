@@ -23,6 +23,7 @@ export function createMovieCard(item) {
         ? `${IMG_URL}${item.poster_path}` 
         : 'https://via.placeholder.com/500x750?text=No+Image';
 
+    // ✅ CORRECT STRUCTURE: poster-wrapper > img + card-overlay
     card.innerHTML = `
         <div class="poster-wrapper">
             <img src="${posterPath}" alt="${item.title || item.name}" loading="lazy">
@@ -47,8 +48,12 @@ export function displayList(items, containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
     container.innerHTML = "";
+    if (!items || items.length === 0) return;
+    
     items.forEach(item => {
-        if (item.poster_path) container.appendChild(createMovieCard(item));
+        if (item.poster_path) {
+            container.appendChild(createMovieCard(item));
+        }
     });
 }
 
@@ -95,9 +100,12 @@ export async function handleSearch(q) {
 }
 
 export async function filterGenre(genreId) {
+    console.log("🎬 filterGenre called with:", genreId);
+    
     currentGenre = genreId;
     currentPage = 1; 
     
+    // Update active button
     document.querySelectorAll('.genre-btn').forEach(btn => btn.classList.remove('active'));
     if (event && event.target) event.target.classList.add('active');
     
