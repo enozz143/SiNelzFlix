@@ -1,7 +1,7 @@
 // js/api.js
 
-// FIXED: Pinalitan ang "/api" ng full Worker URL mo
-export const BASE_URL = "https://cinelzflix-worker.baquial-enozz.workers.dev/"; 
+// Ang mga constants na gagamitin sa lahat ng files
+export const BASE_URL = "/api"; 
 export const IMG_URL = "https://image.tmdb.org/t/p/original";
 
 /**
@@ -18,9 +18,6 @@ export async function fetchMovies(type, page = 1, genreId = 'all') {
             url = `${BASE_URL}?endpoint=/discover/${type}&page=${page}&with_genres=${genreId}&sort_by=popularity.desc`;
         }
         
-        // Dagdag console log para makita mo sa 'Inspect Element' kung tumitira yung worker
-        console.log("Fetching from:", url);
-
         const res = await fetch(url);
         const data = await res.json();
         
