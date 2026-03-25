@@ -1,6 +1,6 @@
 /**
  * CINElzFlix - Movie Page Engine
- * Version: 5.2 (Fixed Duplicate Heading)
+ * Version: 5.3 (More Servers + Priority Order)
  */
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -73,7 +73,8 @@ async function initMoviePage() {
         renderCast(data);
         renderSimilar(data.similar);
 
-        updateVideoPlayer('vidsrc');
+        // Default to first server (2Embed - fewer ads)
+        updateVideoPlayer('embed2');
         
         console.log("✅ Movie Page Ready!");
 
@@ -370,9 +371,6 @@ function renderCast(data) {
     console.log(`✅ Cast rendered: ${topCast.length} actors`);
 }
 
-/**
- * ✅ FIXED: Render Similar Movies - NO DUPLICATE HEADING
- */
 function renderSimilar(similar) {
     const container = document.getElementById('similar-movies-container');
     
@@ -383,7 +381,6 @@ function renderSimilar(similar) {
         return;
     }
     
-    // ✅ ETO NA - isang heading lang!
     container.innerHTML = `
         <h2 style="margin: 30px 0 15px;">You Might Also Like</h2>
         <div class="similar-grid" style="display: flex; gap: 15px; overflow-x: auto; padding-bottom: 20px;">
@@ -398,20 +395,37 @@ function renderSimilar(similar) {
     `;
 }
 
+/**
+ * ✅ UPDATED: More servers with priority order (fewer ads first)
+ */
 function updateVideoPlayer(server) {
     const iframe = document.getElementById('movie-iframe');
     const loadingIndicator = document.getElementById('player-loading');
     if (!iframe) return;
     if (loadingIndicator) loadingIndicator.style.display = 'flex';
     
+    // ✅ Priority: Fewer ads first, then backup servers
     const servers = {
-        'vidsrc': mediaType === 'movie' ? `https://vidsrc.me/embed/movie?tmdb=${movieId}` : `https://vidsrc.me/embed/tv?tmdb=${movieId}&sea=1&epi=1`,
+        // Best experience - fewer ads
+        'embed2': mediaType === 'movie' 
+            ? `https://www.2embed.cc/embed/${movieId}` 
+            : `https://www.2embed.cc/embedtv/${movieId}&s=1&e=1`,
+        'multiembed': `https://multiembed.mov/?video_id=${movieId}&tmdb=1`,
+        'autoembed': mediaType === 'movie' 
+            ? `https://autoembed.to/movie/tmdb/${movieId}` 
+            : `https://autoembed.to/tv/tmdb/${movieId}`,
+        'moviesapi': `https://moviesapi.club/movie/${movieId}`,
+        // Backup - reliable but more ads
+        'vidsrc': mediaType === 'movie' 
+            ? `https://vidsrc.me/embed/movie?tmdb=${movieId}` 
+            : `https://vidsrc.me/embed/tv?tmdb=${movieId}&sea=1&epi=1`,
         'vidsrc2': `https://vidsrc.to/embed/${mediaType}/${movieId}`,
+        'vidsrc3': `https://vidsrc.cc/v2/embed/${mediaType}/${movieId}`,
         'videasy': `https://player.videasy.net/${mediaType}/${movieId}`
     };
     
     iframe.style.display = 'block';
-    iframe.src = servers[server] || servers['vidsrc'];
+    iframe.src = servers[server] || servers['embed2'];
     
     iframe.onload = () => {
         if (loadingIndicator) loadingIndicator.style.display = 'none';
@@ -486,7 +500,7 @@ function showErrorMessage(message) {
 
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('scroll-to-player')?.addEventListener('click', () => {
-        updateVideoPlayer('vidsrc');
+        updateVideoPlayer('embed2');
         document.getElementById('player-section')?.scrollIntoView({ behavior: 'smooth' });
     });
     
