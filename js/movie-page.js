@@ -404,7 +404,7 @@ function updateVideoPlayer(server) {
     if (!iframe) return;
     if (loadingIndicator) loadingIndicator.style.display = 'flex';
     
-    // ✅ Priority: Fewer ads first, then backup servers
+    // Priority: Fewer ads first, then backup servers
     const servers = {
         // Best experience - fewer ads
         'embed2': mediaType === 'movie' 
@@ -499,19 +499,28 @@ function showErrorMessage(message) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('scroll-to-player')?.addEventListener('click', () => {
-        updateVideoPlayer('embed2');
-        document.getElementById('player-section')?.scrollIntoView({ behavior: 'smooth' });
-    });
+    const watchBtn = document.getElementById('scroll-to-player');
+    if (watchBtn) {
+        watchBtn.addEventListener('click', () => {
+            updateVideoPlayer('embed2');
+            document.getElementById('player-section')?.scrollIntoView({ behavior: 'smooth' });
+        });
+    }
     
-    document.getElementById('play-trailer-btn')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        playTrailer();
-    });
+    const trailerBtn = document.getElementById('play-trailer-btn');
+    if (trailerBtn) {
+        trailerBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            playTrailer();
+        });
+    }
     
-    document.getElementById('server-select')?.addEventListener('change', (e) => {
-        updateVideoPlayer(e.target.value);
-    });
+    const serverSelect = document.getElementById('server-select');
+    if (serverSelect) {
+        serverSelect.addEventListener('change', (e) => {
+            updateVideoPlayer(e.target.value);
+        });
+    }
 });
 
 initMoviePage();
