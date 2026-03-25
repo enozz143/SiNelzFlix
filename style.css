@@ -101,17 +101,3 @@
     color: #00d4ff;
 }
 
-/* Aggressive fix - hide then reposition */
-div[style*="position: fixed"][style*="top: 0"] {
-    position: fixed !important;
-    top: 85px !important;
-    right: 10px !important;
-    left: auto !important;
-    bottom: auto !important;
-    z-index: 999 !important;
-}
-
-/* Hide any ad that appears at the very top */
-body > div:first-child {
-    margin-top: 0 !important;
-}
