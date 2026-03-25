@@ -101,50 +101,17 @@
     color: #00d4ff;
 }
 
-/* ============================================ */
-/* FIX: Adsterra Floating Ad - Reposition */
-/* ============================================ */
-
-/* Target the floating ad that blocks the searchbox */
-body > script[src*="pl28947937"] + div,
-div[style*="position: fixed"][style*="top: 0"],
-div[id*="adsterra"][style*="fixed"],
-iframe[src*="pl28947937"] {
+/* Aggressive fix - hide then reposition */
+div[style*="position: fixed"][style*="top: 0"] {
     position: fixed !important;
     top: 85px !important;
-    left: auto !important;
     right: 10px !important;
+    left: auto !important;
     bottom: auto !important;
     z-index: 999 !important;
-    max-width: 300px !important;
 }
 
-/* For mobile */
-@media (max-width: 768px) {
-    body > script[src*="pl28947937"] + div,
-    div[style*="position: fixed"][style*="top: 0"],
-    div[id*="adsterra"][style*="fixed"] {
-        top: 70px !important;
-        right: 5px !important;
-        transform: scale(0.85) !important;
-        transform-origin: top right !important;
-    }
-}
-
-/* Ensure navbar stays on top */
-#navbar {
-    z-index: 2000 !important;
-}
-
-.search-box {
-    z-index: 2001 !important;
-}
-
-.search-dropdown {
-    z-index: 2002 !important;
-}
-
-/* Add padding to body to prevent content jump */
-body {
-    padding-top: 0 !important;
+/* Hide any ad that appears at the very top */
+body > div:first-child {
+    margin-top: 0 !important;
 }
