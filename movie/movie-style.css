@@ -134,7 +134,7 @@ body {
     margin-bottom: 50px;
     overflow: hidden;
     
-    /* ✅ Neon Border & Glow */
+    /* Neon Border & Glow */
     border: 2px solid rgba(0, 212, 255, 0.6);
     box-shadow: 0 0 20px rgba(0, 212, 255, 0.4), 0 0 40px rgba(0, 212, 255, 0.2);
     transition: all 0.3s ease;
@@ -158,25 +158,7 @@ body {
     animation: playerGlow 3s infinite ease-in-out;
 }
 
-/* Play Icon Overlay on Hover */
-.player-wrapper::before {
-    content: "▶";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 4rem;
-    color: rgba(0, 212, 255, 0.8);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: 10;
-    pointer-events: none;
-    text-shadow: 0 0 10px rgba(0,212,255,0.5);
-}
-
-.player-wrapper:hover::before {
-    opacity: 1;
-}
+/* ✅ REMOVED: Play Icon Overlay - para hindi na lumalabas sa hover */
 
 /* Iframe itself */
 #movie-iframe { 
@@ -523,10 +505,6 @@ body {
         animation: none !important;
     }
     
-    .player-wrapper::before {
-        font-size: 2.5rem !important;
-    }
-    
     #movie-iframe {
         width: 100% !important;
         height: 100% !important;
@@ -701,10 +679,6 @@ body {
     
     .player-wrapper {
         margin-bottom: 10px !important;
-    }
-    
-    .player-wrapper::before {
-        font-size: 2rem !important;
     }
     
     .cast-item {
