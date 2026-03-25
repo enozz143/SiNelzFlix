@@ -128,32 +128,39 @@ section h2 {
     display: block;
 }
 
-/* --- GENRE BUTTONS --- */
+/* ============================================ */
+/* GENRE BUTTONS - UPDATED FOR MORE GENRES */
+/* ============================================ */
+
 .genre-container { 
     padding: 20px 4%; 
     text-align: center; 
-    overflow-x: auto; 
-    white-space: nowrap; 
     margin-top: 20px; 
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
 }
 
 .genre-btn {
-    padding: 8px 25px; 
-    margin: 5px;
+    padding: 8px 18px;
+    margin: 0;
     background: rgba(255, 255, 255, 0.05);
-    color: white; 
+    color: white;
     border: 1px solid rgba(0, 212, 255, 0.3);
-    border-radius: 30px !important; 
+    border-radius: 30px;
     cursor: pointer;
-    font-family: 'Poppins', sans-serif; 
+    font-family: 'Poppins', sans-serif;
     transition: all 0.3s ease;
+    white-space: nowrap;
+    font-size: 0.85rem;
 }
 
 .genre-btn:hover, .genre-btn.active {
-    background: var(--primary-blue) !important;
-    border-color: var(--primary-blue) !important;
+    background: var(--primary-blue, #00d4ff) !important;
+    border-color: var(--primary-blue, #00d4ff) !important;
     color: #020b1a !important;
-    box-shadow: 0 0 15px var(--accent-glow) !important;
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.5) !important;
     transform: translateY(-2px);
 }
 
@@ -175,7 +182,10 @@ section h2 {
     box-shadow: 0 4px 15px var(--accent-glow);
 }
 
-/* Mobile Tweaks */
+/* ============================================ */
+/* MOBILE TWEAKS */
+/* ============================================ */
+
 @media (max-width: 768px) {
     .movie-row { 
         grid-template-columns: repeat(2, 1fr); 
@@ -191,5 +201,21 @@ section h2 {
     
     .card-title {
         font-size: 0.8rem;
+    }
+    
+    /* Mobile Genre Buttons - Horizontal Scroll */
+    .genre-container {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        overflow-x: auto;
+        gap: 8px;
+        padding: 15px 4%;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .genre-btn {
+        padding: 6px 14px;
+        font-size: 0.75rem;
+        flex-shrink: 0;
     }
 }
