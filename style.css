@@ -100,3 +100,41 @@
     text-align: center;
     color: #00d4ff;
 }
+
+/* ============================================ */
+/* FIX: Adsterra Floating Ads Reposition */
+/* ============================================ */
+
+/* Target the floating ad container */
+div[id*="adsterra"], 
+div[class*="adsterra"],
+iframe[src*="profitablecpmratenetwork"] {
+    position: fixed !important;
+    top: 85px !important;
+    left: auto !important;
+    right: 10px !important;
+    z-index: 999 !important;
+}
+
+/* For mobile */
+@media (max-width: 768px) {
+    div[id*="adsterra"], 
+    div[class*="adsterra"] {
+        top: 70px !important;
+        right: 5px !important;
+        transform: scale(0.9) !important;
+    }
+}
+
+/* Ensure navbar stays on top */
+#navbar {
+    z-index: 2000 !important;
+}
+
+.search-box {
+    z-index: 2001 !important;
+}
+
+.search-dropdown {
+    z-index: 2002 !important;
+}
