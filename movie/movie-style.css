@@ -114,7 +114,7 @@ body {
 }
 
 /* ============================================ */
-/* PLAYER SECTION */
+/* PLAYER SECTION - ENHANCED DESIGN */
 /* ============================================ */
 
 .movie-page-container { 
@@ -124,18 +124,43 @@ body {
     background: var(--bg-dark);
 }
 
+/* Player Wrapper with Neon Glow */
 .player-wrapper { 
     position: relative;
     width: 100%;
     aspect-ratio: 16/9;
     background: #000;
     border-radius: 15px;
-    box-shadow: 0 0 50px rgba(0, 212, 255, 0.2);
     margin-bottom: 50px;
     overflow: hidden;
-    border: 1px solid rgba(0, 212, 255, 0.3);
+    
+    /* Neon Border & Glow */
+    border: 2px solid rgba(0, 212, 255, 0.6);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.4), 0 0 40px rgba(0, 212, 255, 0.2);
+    transition: all 0.3s ease;
 }
 
+/* Hover Effect */
+.player-wrapper:hover {
+    border-color: #00d4ff;
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.6), 0 0 60px rgba(0, 212, 255, 0.3);
+    transform: scale(1.01);
+}
+
+/* Pulse Glow Animation */
+@keyframes playerGlow {
+    0% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.3); }
+    50% { box-shadow: 0 0 30px rgba(0, 212, 255, 0.6), 0 0 50px rgba(0, 212, 255, 0.3); }
+    100% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.3); }
+}
+
+.player-wrapper {
+    animation: playerGlow 3s infinite ease-in-out;
+}
+
+/* ✅ REMOVED: Play Icon Overlay - para hindi na lumalabas sa hover */
+
+/* Iframe itself */
 #movie-iframe { 
     width: 100% !important; 
     height: 100% !important; 
@@ -477,6 +502,7 @@ body {
         background: #000 !important;
         margin-bottom: 15px !important;
         border-radius: 0 !important;
+        animation: none !important;
     }
     
     #movie-iframe {
