@@ -1,6 +1,6 @@
 /**
  * CINElzFlix - Movie Page Engine
- * Version: 5.3 (More Servers + Priority Order)
+ * Version: 5.4 (Fixed Trailer + Global Exports)
  */
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -523,4 +523,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// ============================================
+// MAKE FUNCTIONS GLOBALLY AVAILABLE
+// ============================================
+window.playTrailer = playTrailer;
+window.updateVideoPlayer = updateVideoPlayer;
+window.showNotification = showNotification;
+
+// INITIALIZE
 initMoviePage();

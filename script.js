@@ -230,21 +230,20 @@ document.addEventListener('keydown', (e) => {
 // MOBILE BOTTOM NAVIGATION FUNCTIONS
 // ============================================
 
-window.scrollToTop = function() {
+function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-};
+}
 
-window.focusSearch = function() {
+function focusSearch() {
     const searchInput = document.getElementById('search-input');
     if (searchInput) {
         searchInput.focus();
         searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-};
+}
 
 // Create mobile genre menu with buttons
 function initMobileGenreMenu() {
-    const menu = document.getElementById('mobile-genre-menu');
     const genreList = document.getElementById('mobile-genre-list');
     
     if (!genreList) return;
@@ -257,15 +256,18 @@ function initMobileGenreMenu() {
         const clone = btn.cloneNode(true);
         clone.onclick = (e) => {
             e.stopPropagation();
-            const genreId = clone.getAttribute('onclick').match(/'([^']+)'/)[1];
-            filterGenre(genreId);
+            const onclickAttr = clone.getAttribute('onclick');
+            const match = onclickAttr.match(/'([^']+)'/);
+            if (match) {
+                filterGenre(match[1]);
+            }
             closeGenreMenu();
         };
         genreList.appendChild(clone);
     });
 }
 
-window.toggleGenreMenu = function() {
+function toggleGenreMenu() {
     let menu = document.getElementById('mobile-genre-menu');
     if (!menu) return;
     
@@ -275,12 +277,12 @@ window.toggleGenreMenu = function() {
         initMobileGenreMenu();
         menu.style.display = 'block';
     }
-};
+}
 
-window.closeGenreMenu = function() {
+function closeGenreMenu() {
     const menu = document.getElementById('mobile-genre-menu');
     if (menu) menu.style.display = 'none';
-};
+}
 
 // Close menu when clicking outside
 document.addEventListener('click', function(e) {
@@ -292,4 +294,15 @@ document.addEventListener('click', function(e) {
         menu.style.display = 'none';
     }
 });
+
+// Export for use in movie page
+export { scrollToTop, focusSearch, toggleGenreMenu, closeGenreMenu, initMobileGenreMenu };
+
+// Make available globally
+window.scrollToTop = scrollToTop;
+window.focusSearch = focusSearch;
+window.toggleGenreMenu = toggleGenreMenu;
+window.closeGenreMenu = closeGenreMenu;
+window.initMobileGenreMenu = initMobileGenreMenu;
+
 init();

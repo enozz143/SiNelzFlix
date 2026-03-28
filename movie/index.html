@@ -123,18 +123,74 @@
         window.handleSearch = handleSearch;
         window.BASE_URL = BASE_URL;
         
-        // Enter key redirect to homepage search
-        const searchInput = document.getElementById('search-input');
-        if (searchInput) {
-            searchInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    const query = this.value.trim();
-                    if (query) {
-                        window.location.href = `/?search=${encodeURIComponent(query)}`;
-                    }
+        // ============================================
+        // MOBILE BOTTOM NAVIGATION FUNCTIONS
+        // ============================================
+        
+        window.scrollToTop = function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+        
+        window.focusSearch = function() {
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                searchInput.focus();
+                searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        };
+        
+        window.toggleGenreMenu = function() {
+            const menu = document.getElementById('mobile-genre-menu');
+            if (!menu) return;
+            
+            if (menu.style.display === 'block') {
+                menu.style.display = 'none';
+            } else {
+                const genreList = document.getElementById('mobile-genre-list');
+                if (genreList && genreList.children.length === 0) {
+                    const genres = [
+                        { id: 'all', name: 'All' }, { id: '28', name: 'Action' },
+                        { id: '12', name: 'Adventure' }, { id: '35', name: 'Comedy' },
+                        { id: '27', name: 'Horror' }, { id: '10749', name: 'Romance' },
+                        { id: '878', name: 'Sci-Fi' }, { id: '14', name: 'Fantasy' },
+                        { id: '9648', name: 'Mystery' }, { id: '53', name: 'Thriller' },
+                        { id: '16', name: 'Animation' }, { id: '18', name: 'Drama' },
+                        { id: '36', name: 'History' }, { id: '10402', name: 'Music' },
+                        { id: '10751', name: 'Family' }, { id: '10752', name: 'War' },
+                        { id: '37', name: 'Western' }, { id: '99', name: 'Documentary' }
+                    ];
+                    genreList.innerHTML = '';
+                    genres.forEach(genre => {
+                        const btn = document.createElement('button');
+                        btn.className = 'genre-btn';
+                        if (genre.id === 'all') btn.classList.add('active');
+                        btn.textContent = genre.name;
+                        btn.onclick = () => {
+                            window.location.href = `/?genre=${genre.id}`;
+                            window.closeGenreMenu();
+                        };
+                        genreList.appendChild(btn);
+                    });
                 }
-            });
-        }
+                menu.style.display = 'block';
+            }
+        };
+        
+        window.closeGenreMenu = function() {
+            const menu = document.getElementById('mobile-genre-menu');
+            if (menu) menu.style.display = 'none';
+        };
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+            const menu = document.getElementById('mobile-genre-menu');
+            const menuToggle = document.getElementById('menu-toggle');
+            if (menu && menu.style.display === 'block' && 
+                !menu.contains(e.target) && 
+                !menuToggle?.contains(e.target)) {
+                menu.style.display = 'none';
+            }
+        });
         
         // ============================================
         // LIVE SEARCH DROPDOWN
@@ -230,7 +286,45 @@
                 if (dropdown) dropdown.style.display = 'none';
             }
         });
+        
+        // Enter key redirect to homepage search
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const query = this.value.trim();
+                    if (query) {
+                        window.location.href = `/?search=${encodeURIComponent(query)}`;
+                    }
+                }
+            });
+        }
     </script>
+    
+    <!-- Mobile Bottom Navigation -->
+    <div id="mobile-bottom-nav" class="mobile-nav">
+        <div class="nav-item" onclick="scrollToTop()">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label">Home</span>
+        </div>
+        <div class="nav-item" onclick="focusSearch()">
+            <span class="nav-icon">🔍</span>
+            <span class="nav-label">Search</span>
+        </div>
+        <div class="nav-item" id="menu-toggle" onclick="toggleGenreMenu()">
+            <span class="nav-icon">☰</span>
+            <span class="nav-label">Menu</span>
+        </div>
+    </div>
+
+    <!-- Mobile Genre Menu -->
+    <div id="mobile-genre-menu" class="mobile-genre-menu" style="display: none;">
+        <div class="mobile-genre-header">
+            <span>🎬 Genres</span>
+            <button onclick="closeGenreMenu()">✕</button>
+        </div>
+        <div id="mobile-genre-list" class="mobile-genre-list"></div>
+    </div>
     
     <script src="../js/movie-page.js"></script>
     <script src="https://pl28947937.profitablecpmratenetwork.com/a5/c3/8e/a5c38ef495583bd163602819c5112f48.js"></script>
