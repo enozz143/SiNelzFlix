@@ -226,4 +226,70 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+// ============================================
+// MOBILE BOTTOM NAVIGATION FUNCTIONS
+// ============================================
+
+window.scrollToTop = function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+window.focusSearch = function() {
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        searchInput.focus();
+        searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+};
+
+// Create mobile genre menu with buttons
+function initMobileGenreMenu() {
+    const menu = document.getElementById('mobile-genre-menu');
+    const genreList = document.getElementById('mobile-genre-list');
+    
+    if (!genreList) return;
+    
+    // Copy genre buttons from desktop
+    const desktopButtons = document.querySelectorAll('.genre-container .genre-btn');
+    genreList.innerHTML = '';
+    
+    desktopButtons.forEach(btn => {
+        const clone = btn.cloneNode(true);
+        clone.onclick = (e) => {
+            e.stopPropagation();
+            const genreId = clone.getAttribute('onclick').match(/'([^']+)'/)[1];
+            filterGenre(genreId);
+            closeGenreMenu();
+        };
+        genreList.appendChild(clone);
+    });
+}
+
+window.toggleGenreMenu = function() {
+    let menu = document.getElementById('mobile-genre-menu');
+    if (!menu) return;
+    
+    if (menu.style.display === 'block') {
+        menu.style.display = 'none';
+    } else {
+        initMobileGenreMenu();
+        menu.style.display = 'block';
+    }
+};
+
+window.closeGenreMenu = function() {
+    const menu = document.getElementById('mobile-genre-menu');
+    if (menu) menu.style.display = 'none';
+};
+
+// Close menu when clicking outside
+document.addEventListener('click', function(e) {
+    const menu = document.getElementById('mobile-genre-menu');
+    const menuToggle = document.getElementById('menu-toggle');
+    if (menu && menu.style.display === 'block' && 
+        !menu.contains(e.target) && 
+        !menuToggle?.contains(e.target)) {
+        menu.style.display = 'none';
+    }
+});
 init();
