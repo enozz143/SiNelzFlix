@@ -181,7 +181,7 @@
 }
 
 /* ============================================ */
-/* MOBILE BOTTOM NAVIGATION BAR */
+/* MOBILE BOTTOM NAVIGATION BAR - BRANDING UPDATE */
 /* ============================================ */
 
 .mobile-nav {
@@ -195,7 +195,7 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding: 8px 0 12px;
+    padding: 6px 0 10px; /* Mas manipis: 8px → 6px */
     z-index: 1000;
     display: none; /* Hidden by default */
 }
@@ -204,10 +204,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: 3px; /* Mas maliit na gap */
     cursor: pointer;
     transition: all 0.2s ease;
-    padding: 4px 20px;
+    padding: 4px 16px; /* Mas maliit na padding */
     border-radius: 30px;
 }
 
@@ -216,17 +216,32 @@
 }
 
 .nav-icon {
-    font-size: 1.4rem;
+    font-size: 1.3rem; /* Mas maliit na icon */
+    filter: drop-shadow(0 0 2px rgba(0, 212, 255, 0.3));
 }
 
 .nav-label {
-    font-size: 0.65rem;
-    color: #aaa;
+    font-size: 0.6rem; /* Mas maliit na label */
+    color: #888; /* Default gray */
     font-weight: 500;
+    transition: color 0.2s ease;
 }
 
 .nav-item:active .nav-icon {
     transform: scale(0.95);
+}
+
+.nav-item:active .nav-label {
+    color: #00d4ff; /* Neon blue when active */
+}
+
+/* Hover effect for branding */
+.nav-item:hover .nav-icon {
+    filter: drop-shadow(0 0 5px rgba(0, 212, 255, 0.6));
+}
+
+.nav-item:hover .nav-label {
+    color: #00d4ff;
 }
 
 /* Show mobile nav only on mobile */
@@ -235,16 +250,11 @@
         display: flex;
     }
     
-    /* ============================================ */
     /* FIX: FOOTER NOT HIDDEN BY BOTTOM NAV */
-    /* ============================================ */
-    
-    /* Add padding to main content */
     main {
         padding-bottom: 80px !important;
     }
     
-    /* Ensure footer has spacing */
     footer {
         margin-bottom: 10px !important;
         padding-bottom: 20px !important;
