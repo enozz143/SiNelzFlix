@@ -1,8 +1,12 @@
-// js/slider.js
+// js/slider.js - WITH SWIPE SUPPORT FOR MOBILE
 import { BASE_URL, IMG_URL } from './api.js';
 
 let sliderIndex = 0;
 let sliderItems = [];
+
+// Swipe variables
+let touchStartX = 0;
+let touchEndX = 0;
 
 /**
  * --- HERO SLIDER LOGIC ---
@@ -32,7 +36,7 @@ export async function setupHeroSlider(movies) {
             if (trailer) trailerKey = trailer.key;
         } catch (err) { console.error("Slider video error:", err); }
 
-        // ✅ FIXED: Watch Now button diretso sa movie page (hindi modal)
+        // ✅ FIXED: Watch Now button diretso sa movie page
         slide.innerHTML = `
             <div class="hero-video-container">
                 ${trailerKey ? `<iframe src="https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=1&controls=0&loop=1&playlist=${trailerKey}&rel=0&showinfo=0&modestbranding=1&iv_load_policy=3" frameborder="0" allow="autoplay; encrypted-media"></iframe>` : ''}
@@ -63,6 +67,9 @@ export async function setupHeroSlider(movies) {
     
     if (window.sliderInterval) clearInterval(window.sliderInterval);
     window.sliderInterval = setInterval(() => window.nextSlide(), 10000);
+    
+    // ✅ ADD SWIPE SUPPORT FOR MOBILE
+    addSwipeListeners();
 }
 
 export function nextSlide() {
@@ -82,5 +89,46 @@ export function updateSliderUI() {
     if(slides.length > 0) {
         slides.forEach((s, i) => s.classList.toggle("active", i === sliderIndex));
         dots.forEach((d, i) => d.classList.toggle("active", i === sliderIndex));
+    }
+}
+
+/**
+ * ✅ NEW: Add swipe listeners for mobile
+ */
+function addSwipeListeners() {
+    const sliderContainer = document.getElementById("hero-slider-container");
+    if (!sliderContainer) return;
+    
+    // Touch start - record starting position
+    sliderContainer.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    
+    // Touch end - detect swipe direction
+    sliderContainer.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    }, { passive: true });
+}
+
+/**
+ * Handle swipe gesture
+ */
+function handleSwipe() {
+    const swipeThreshold = 50; // minimum distance to trigger swipe (in pixels)
+    
+    // Swipe LEFT → next slide
+    if (touchEndX < touchStartX - swipeThreshold) {
+        window.nextSlide();
+    }
+    
+    // Swipe RIGHT → previous slide
+    if (touchEndX > touchStartX + swipeThreshold) {
+        const prevIndex = sliderIndex - 1;
+        if (prevIndex >= 0) {
+            window.goToSlide(prevIndex);
+        } else {
+            window.goToSlide(sliderItems.length - 1);
+        }
     }
 }
