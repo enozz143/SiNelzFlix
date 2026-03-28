@@ -81,6 +81,22 @@ export function displaySimilar(items) {
 window.displaySimilar = displaySimilar;
 
 /**
+ * --- PINOY MOVIES FETCHER ---
+ */
+export async function fetchPinoyMovies(page = 1) {
+    try {
+        const url = `${window.BASE_URL}?endpoint=/discover/movie&with_original_language=tl&with_origin_country=PH&sort_by=popularity.desc&page=${page}`;
+        console.log("📡 Fetching Pinoy movies:", url);
+        const res = await fetch(url);
+        const data = await res.json();
+        return data.results || [];
+    } catch (error) {
+        console.error("Error fetching Pinoy movies:", error);
+        return [];
+    }
+}
+
+/**
  * --- SEARCH, FILTERS & LOAD MORE ---
  */
 export async function handleSearch(q) {
@@ -124,6 +140,13 @@ export async function filterGenre(genreId) {
         trendingRow.classList.add("horizontal-scroll");
     }
 
+    // ✅ SPECIAL HANDLING FOR PINOY MOVIES
+    if (genreId === 'pinoy') {
+        const pinoyMovies = await fetchPinoyMovies(1);
+        displayList(pinoyMovies, "movies-list");
+        return;
+    }
+
     const filteredMovies = await fetchMovies("movie", 1, genreId);
     displayList(filteredMovies, "movies-list");
 }
@@ -147,7 +170,13 @@ export async function loadMore() {
     trendingRow.classList.remove("horizontal-scroll");
     trendingSection.scrollIntoView({ behavior: 'smooth' });
 
-    const moreMovies = await fetchMovies("movie", currentPage, currentGenre);
+    // ✅ Handle load more for Pinoy movies
+    let moreMovies;
+    if (currentGenre === 'pinoy') {
+        moreMovies = await fetchPinoyMovies(currentPage);
+    } else {
+        moreMovies = await fetchMovies("movie", currentPage, currentGenre);
+    }
     
     if (moreMovies && moreMovies.length > 0) {
         moreMovies.forEach(item => {
