@@ -179,3 +179,155 @@
         font-size: 0.65rem !important;
     }
 }
+
+/* ============================================ */
+/* MOBILE BOTTOM NAVIGATION BAR - BRANDING COLORS ALWAYS VISIBLE */
+/* ============================================ */
+
+.mobile-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(0, 212, 255, 0.3);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 6px 0 10px;
+    z-index: 1000;
+    display: none;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 4px 16px;
+    border-radius: 30px;
+}
+
+/* Icons - neon blue glow (always visible) */
+.nav-icon {
+    font-size: 1.3rem;
+    filter: drop-shadow(0 0 3px rgba(0, 212, 255, 0.5));
+}
+
+/* Labels - neon blue (always visible, not gray) */
+.nav-label {
+    font-size: 0.6rem;
+    color: #00d4ff; /* Neon blue agad */
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+/* Active/tap effect */
+.nav-item:active {
+    transform: scale(0.95);
+    background: rgba(0, 212, 255, 0.2);
+}
+
+.nav-item:active .nav-icon {
+    filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.8));
+}
+
+/* Show mobile nav only on mobile */
+@media (max-width: 768px) {
+    .mobile-nav {
+        display: flex;
+    }
+    
+    /* FIX: FOOTER NOT HIDDEN BY BOTTOM NAV */
+    main {
+        padding-bottom: 80px !important;
+    }
+    
+    /* ✅ INCREASED FOOTER MARGIN para hindi matabunan */
+    footer {
+        margin-bottom: 60px !important;
+        padding-bottom: 20px !important;
+    }
+    
+    /* Ensure copyright text is visible */
+    .footer-copyright p,
+    .copyright,
+    .credit {
+        margin-bottom: 5px !important;
+    }
+}
+
+/* Hide on desktop */
+@media (min-width: 769px) {
+    .mobile-nav {
+        display: none !important;
+    }
+}
+
+/* ============================================ */
+/* MOBILE GENRE MENU (Slide Up) */
+/* ============================================ */
+
+.mobile-genre-menu {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #0a192f;
+    border-top: 2px solid #00d4ff;
+    border-radius: 20px 20px 0 0;
+    z-index: 2000;
+    max-height: 70vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+.mobile-genre-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(0,212,255,0.3);
+    background: #0a192f;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.mobile-genre-header span {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #00d4ff;
+}
+
+.mobile-genre-header button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+.mobile-genre-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 15px;
+}
+
+.mobile-genre-list .genre-btn {
+    flex: 0 0 auto;
+    padding: 8px 16px;
+    font-size: 0.8rem;
+    margin: 0;
+}
