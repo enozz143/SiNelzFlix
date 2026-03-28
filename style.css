@@ -235,9 +235,19 @@
         display: flex;
     }
     
-    /* Add padding to bottom of main content so it's not hidden behind nav */
+    /* ============================================ */
+    /* FIX: FOOTER NOT HIDDEN BY BOTTOM NAV */
+    /* ============================================ */
+    
+    /* Add padding to main content */
     main {
-        padding-bottom: 70px;
+        padding-bottom: 80px !important;
+    }
+    
+    /* Ensure footer has spacing */
+    footer {
+        margin-bottom: 10px !important;
+        padding-bottom: 20px !important;
     }
 }
 
