@@ -81,7 +81,7 @@ export function displaySimilar(items) {
 window.displaySimilar = displaySimilar;
 
 /**
- * --- PINOY MOVIES FETCHER ---
+ * --- PINOY MOVIES FETCHER (EXCLUDING VIVAMAX) ---
  */
 export async function fetchPinoyMovies(page = 1) {
     try {
@@ -89,9 +89,51 @@ export async function fetchPinoyMovies(page = 1) {
         console.log("📡 Fetching Pinoy movies:", url);
         const res = await fetch(url);
         const data = await res.json();
-        return data.results || [];
+        
+        // ✅ FILTER OUT VIVAMAX MOVIES
+        const filteredMovies = (data.results || []).filter(movie => {
+            const title = (movie.title || '').toLowerCase();
+            const overview = (movie.overview || '').toLowerCase();
+            
+            // Skip if contains VivaMax keywords
+            if (title.includes('vivamax') || overview.includes('vivamax')) {
+                return false;
+            }
+            return true;
+        });
+        
+        console.log(`✅ Found ${filteredMovies.length} Pinoy movies (excluding VivaMax)`);
+        return filteredMovies;
     } catch (error) {
         console.error("Error fetching Pinoy movies:", error);
+        return [];
+    }
+}
+
+/**
+ * --- VIVAMAX MOVIES FETCHER ---
+ */
+export async function fetchVivaMaxMovies(page = 1) {
+    try {
+        // Search for "VivaMax" keyword + Filipino movies
+        const url = `${window.BASE_URL}?endpoint=/search/movie&query=VivaMax&page=${page}`;
+        console.log("📡 Fetching VivaMax movies:", url);
+        const res = await fetch(url);
+        const data = await res.json();
+        
+        // Filter to ensure VivaMax content and Filipino origin
+        const vivamaxMovies = (data.results || []).filter(movie => {
+            const title = (movie.title || '').toLowerCase();
+            const overview = (movie.overview || '').toLowerCase();
+            
+            // Include if contains VivaMax in title or overview
+            return title.includes('vivamax') || overview.includes('vivamax');
+        });
+        
+        console.log(`✅ Found ${vivamaxMovies.length} VivaMax movies`);
+        return vivamaxMovies;
+    } catch (error) {
+        console.error("Error fetching VivaMax movies:", error);
         return [];
     }
 }
@@ -140,10 +182,17 @@ export async function filterGenre(genreId) {
         trendingRow.classList.add("horizontal-scroll");
     }
 
-    // ✅ SPECIAL HANDLING FOR PINOY MOVIES
+    // ✅ SPECIAL HANDLING FOR PINOY MOVIES (NO VIVAMAX)
     if (genreId === 'pinoy') {
         const pinoyMovies = await fetchPinoyMovies(1);
         displayList(pinoyMovies, "movies-list");
+        return;
+    }
+    
+    // ✅ SPECIAL HANDLING FOR VIVAMAX
+    if (genreId === 'vivamax') {
+        const vivamaxMovies = await fetchVivaMaxMovies(1);
+        displayList(vivamaxMovies, "movies-list");
         return;
     }
 
@@ -170,10 +219,12 @@ export async function loadMore() {
     trendingRow.classList.remove("horizontal-scroll");
     trendingSection.scrollIntoView({ behavior: 'smooth' });
 
-    // ✅ Handle load more for Pinoy movies
+    // ✅ Handle load more for special genres
     let moreMovies;
     if (currentGenre === 'pinoy') {
         moreMovies = await fetchPinoyMovies(currentPage);
+    } else if (currentGenre === 'vivamax') {
+        moreMovies = await fetchVivaMaxMovies(currentPage);
     } else {
         moreMovies = await fetchMovies("movie", currentPage, currentGenre);
     }
