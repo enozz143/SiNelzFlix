@@ -202,6 +202,32 @@
         </div>
     </div>
 </footer>
+    <!-- ============================================ -->
+<!-- MOBILE BOTTOM NAVIGATION BAR (Mobile Only) -->
+<!-- ============================================ -->
+<div id="mobile-bottom-nav" class="mobile-nav">
+    <div class="nav-item" onclick="scrollToTop()">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Home</span>
+    </div>
+    <div class="nav-item" onclick="focusSearch()">
+        <span class="nav-icon">🔍</span>
+        <span class="nav-label">Search</span>
+    </div>
+    <div class="nav-item" id="menu-toggle" onclick="toggleGenreMenu()">
+        <span class="nav-icon">☰</span>
+        <span class="nav-label">Menu</span>
+    </div>
+</div>
+
+<!-- Mobile Genre Menu (Hidden by default) -->
+<div id="mobile-genre-menu" class="mobile-genre-menu" style="display: none;">
+    <div class="mobile-genre-header">
+        <span>🎬 Genres</span>
+        <button onclick="closeGenreMenu()">✕</button>
+    </div>
+    <div id="mobile-genre-list" class="mobile-genre-list"></div>
+</div>
     <script type="module" src="script.js"></script>
     
     <script>
