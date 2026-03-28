@@ -102,24 +102,55 @@
 }
 
 /* ============================================ */
-/* MOBILE SEARCH DROPDOWN FIX */
+/* MOBILE SEARCH BOX - ICON MODE (EXPAND ON FOCUS) */
 /* ============================================ */
 
 @media (max-width: 768px) {
-    /* Fix search box position */
+    /* Search box container - icon mode by default */
     .search-box {
         position: relative !important;
-        width: 100% !important;
+        width: 40px !important;
+        transition: width 0.3s ease !important;
+        overflow: hidden !important;
         z-index: 9999 !important;
+    }
+    
+    /* Expand when focused (clicked) */
+    .search-box:focus-within {
+        width: 200px !important;
+    }
+    
+    /* Search input styling */
+    #search-input {
+        width: 100% !important;
+        padding: 8px 10px 8px 35px !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid rgba(0, 212, 255, 0.5) !important;
+        border-radius: 30px !important;
+        color: white !important;
+        font-size: 0.85rem !important;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2300d4ff' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E") !important;
+        background-repeat: no-repeat !important;
+        background-position: 10px center !important;
+    }
+    
+    /* Hide placeholder when collapsed */
+    #search-input::placeholder {
+        color: transparent !important;
+    }
+    
+    /* Show placeholder when expanded */
+    .search-box:focus-within #search-input::placeholder {
+        color: rgba(255, 255, 255, 0.5) !important;
     }
     
     /* Fix dropdown position and size */
     .search-dropdown {
-        position: absolute !important;
-        top: 100% !important;
-        left: 0 !important;
-        right: 0 !important;
-        width: 100% !important;
+        position: fixed !important;
+        top: 70px !important;
+        left: 10px !important;
+        right: 10px !important;
+        width: calc(100% - 20px) !important;
         max-height: 60vh !important;
         background: #0a192f !important;
         border: 1px solid #00d4ff !important;
@@ -146,14 +177,5 @@
     
     .search-dropdown-meta {
         font-size: 0.65rem !important;
-    }
-    
-    /* Ensure dropdown appears above everything */
-    .search-dropdown {
-        position: fixed !important;
-        top: 70px !important;
-        left: 10px !important;
-        right: 10px !important;
-        width: calc(100% - 20px) !important;
     }
 }
