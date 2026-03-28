@@ -246,9 +246,17 @@
         padding-bottom: 80px !important;
     }
     
+    /* ✅ INCREASED FOOTER MARGIN para hindi matabunan */
     footer {
-        margin-bottom: 10px !important;
+        margin-bottom: 60px !important;
         padding-bottom: 20px !important;
+    }
+    
+    /* Ensure copyright text is visible */
+    .footer-copyright p,
+    .copyright,
+    .credit {
+        margin-bottom: 5px !important;
     }
 }
 
