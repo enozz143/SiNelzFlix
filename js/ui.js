@@ -8,8 +8,6 @@ let debounceTimer;
 
 /**
  * --- CREATE MOVIE CARD (SIMPLE CLICKABLE VERSION) ---
- * Diretso sa movie page pag click, walang buttons.
- * Pinanatili ang imports ng modal.js para sa ibang functions.
  */
 export function createMovieCard(item) {
     const type = item.title ? "movie" : "tv";
@@ -23,7 +21,6 @@ export function createMovieCard(item) {
         ? `${IMG_URL}${item.poster_path}` 
         : 'https://via.placeholder.com/500x750?text=No+Image';
 
-    // ✅ CORRECT STRUCTURE: poster-wrapper > img + card-overlay
     card.innerHTML = `
         <div class="poster-wrapper">
             <img src="${posterPath}" alt="${item.title || item.name}" loading="lazy">
@@ -36,7 +33,6 @@ export function createMovieCard(item) {
         </div>
     `;
 
-    // Diretso sa movie page pag click
     card.onclick = () => {
         window.location.href = `/movie/?id=${item.id}&type=${type}`;
     };
@@ -77,7 +73,6 @@ export function displaySimilar(items) {
     });
 }
 
-// Global reference para sa modal.js
 window.displaySimilar = displaySimilar;
 
 /**
@@ -90,50 +85,32 @@ export async function fetchPinoyMovies(page = 1) {
         const res = await fetch(url);
         const data = await res.json();
         
-        // ✅ FILTER OUT VIVAMAX MOVIES
+        // ✅ FILTER OUT VIVAMAX MOVIES (by title, overview, and production companies)
         const filteredMovies = (data.results || []).filter(movie => {
             const title = (movie.title || '').toLowerCase();
             const overview = (movie.overview || '').toLowerCase();
             
             // Skip if contains VivaMax keywords
             if (title.includes('vivamax') || overview.includes('vivamax')) {
+                console.log(`❌ Filtered out VivaMax: ${movie.title}`);
                 return false;
             }
+            
+            // Optional: Filter by production companies if available
+            if (movie.production_companies) {
+                const hasVivaMaxCompany = movie.production_companies.some(company => 
+                    company.name?.toLowerCase().includes('vivamax')
+                );
+                if (hasVivaMaxCompany) return false;
+            }
+            
             return true;
         });
         
-        console.log(`✅ Found ${filteredMovies.length} Pinoy movies (excluding VivaMax)`);
+        console.log(`✅ Found ${filteredMovies.length} Pinoy movies (VivaMax filtered out)`);
         return filteredMovies;
     } catch (error) {
         console.error("Error fetching Pinoy movies:", error);
-        return [];
-    }
-}
-
-/**
- * --- VIVAMAX MOVIES FETCHER ---
- */
-export async function fetchVivaMaxMovies(page = 1) {
-    try {
-        // Search for "VivaMax" keyword + Filipino movies
-        const url = `${window.BASE_URL}?endpoint=/search/movie&query=VivaMax&page=${page}`;
-        console.log("📡 Fetching VivaMax movies:", url);
-        const res = await fetch(url);
-        const data = await res.json();
-        
-        // Filter to ensure VivaMax content and Filipino origin
-        const vivamaxMovies = (data.results || []).filter(movie => {
-            const title = (movie.title || '').toLowerCase();
-            const overview = (movie.overview || '').toLowerCase();
-            
-            // Include if contains VivaMax in title or overview
-            return title.includes('vivamax') || overview.includes('vivamax');
-        });
-        
-        console.log(`✅ Found ${vivamaxMovies.length} VivaMax movies`);
-        return vivamaxMovies;
-    } catch (error) {
-        console.error("Error fetching VivaMax movies:", error);
         return [];
     }
 }
@@ -163,7 +140,6 @@ export async function filterGenre(genreId) {
     currentGenre = genreId;
     currentPage = 1; 
     
-    // Update active button
     document.querySelectorAll('.genre-btn').forEach(btn => btn.classList.remove('active'));
     if (event && event.target) event.target.classList.add('active');
     
@@ -182,17 +158,10 @@ export async function filterGenre(genreId) {
         trendingRow.classList.add("horizontal-scroll");
     }
 
-    // ✅ SPECIAL HANDLING FOR PINOY MOVIES (NO VIVAMAX)
+    // ✅ PINOY MOVIES (WITHOUT VIVAMAX)
     if (genreId === 'pinoy') {
         const pinoyMovies = await fetchPinoyMovies(1);
         displayList(pinoyMovies, "movies-list");
-        return;
-    }
-    
-    // ✅ SPECIAL HANDLING FOR VIVAMAX
-    if (genreId === 'vivamax') {
-        const vivamaxMovies = await fetchVivaMaxMovies(1);
-        displayList(vivamaxMovies, "movies-list");
         return;
     }
 
@@ -219,12 +188,9 @@ export async function loadMore() {
     trendingRow.classList.remove("horizontal-scroll");
     trendingSection.scrollIntoView({ behavior: 'smooth' });
 
-    // ✅ Handle load more for special genres
     let moreMovies;
     if (currentGenre === 'pinoy') {
         moreMovies = await fetchPinoyMovies(currentPage);
-    } else if (currentGenre === 'vivamax') {
-        moreMovies = await fetchVivaMaxMovies(currentPage);
     } else {
         moreMovies = await fetchMovies("movie", currentPage, currentGenre);
     }
