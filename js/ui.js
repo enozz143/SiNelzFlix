@@ -8,8 +8,6 @@ let debounceTimer;
 
 /**
  * --- CREATE MOVIE CARD (SIMPLE CLICKABLE VERSION) ---
- * Diretso sa movie page pag click, walang buttons.
- * Pinanatili ang imports ng modal.js para sa ibang functions.
  */
 export function createMovieCard(item) {
     const type = item.title ? "movie" : "tv";
@@ -23,7 +21,6 @@ export function createMovieCard(item) {
         ? `${IMG_URL}${item.poster_path}` 
         : 'https://via.placeholder.com/500x750?text=No+Image';
 
-    // ✅ CORRECT STRUCTURE: poster-wrapper > img + card-overlay
     card.innerHTML = `
         <div class="poster-wrapper">
             <img src="${posterPath}" alt="${item.title || item.name}" loading="lazy">
@@ -36,7 +33,6 @@ export function createMovieCard(item) {
         </div>
     `;
 
-    // Diretso sa movie page pag click
     card.onclick = () => {
         window.location.href = `/movie/?id=${item.id}&type=${type}`;
     };
@@ -77,8 +73,63 @@ export function displaySimilar(items) {
     });
 }
 
-// Global reference para sa modal.js
 window.displaySimilar = displaySimilar;
+
+/**
+ * --- PINOY MOVIES FETCHER (FILIPINO/TAGALOG ONLY, NO ADULT) ---
+ */
+export async function fetchPinoyMovies(page = 1) {
+    try {
+        // Use discover endpoint with language filter + exclude adult content
+        const url = `${window.BASE_URL}?endpoint=/discover/movie&with_original_language=tl&with_origin_country=PH&sort_by=popularity.desc&page=${page}&include_adult=false`;
+        console.log("📡 Fetching Pinoy movies (no adult):", url);
+        const res = await fetch(url);
+        const data = await res.json();
+        
+        // Additional filter to ensure no adult content
+        const filteredMovies = (data.results || []).filter(movie => {
+            // Skip if TMDB marks as adult
+            if (movie.adult === true) return false;
+            
+            const title = (movie.title || '').toLowerCase();
+            const overview = (movie.overview || '').toLowerCase();
+            
+            // List of keywords to filter out
+            const adultKeywords = [
+                'vivamax', 'sex', 'sexy', 'nude', 'adult', '18+', 
+                'scandal', 'bed scene', 'hot', 'erotic', 'sensual',
+                'intimate', 'steamy', 'provocative', 'uncensored'
+            ];
+            
+            // Check if any adult keyword is present
+            for (const keyword of adultKeywords) {
+                if (title.includes(keyword) || overview.includes(keyword)) {
+                    console.log(`❌ Filtered out adult content: ${movie.title} (${keyword})`);
+                    return false;
+                }
+            }
+            
+            // Filter by production companies if available
+            if (movie.production_companies) {
+                const hasAdultCompany = movie.production_companies.some(company => {
+                    const companyName = (company.name || '').toLowerCase();
+                    return companyName.includes('vivamax') || 
+                           companyName.includes('adult') ||
+                           companyName.includes('xxx');
+                });
+                if (hasAdultCompany) return false;
+            }
+            
+            return true;
+        });
+        
+        console.log(`✅ Found ${filteredMovies.length} Filipino/Tagalog movies (adult filtered out)`);
+        return filteredMovies;
+    } catch (error) {
+        console.error("Error fetching Pinoy movies:", error);
+        return [];
+    }
+}
 
 /**
  * --- SEARCH, FILTERS & LOAD MORE ---
@@ -105,7 +156,6 @@ export async function filterGenre(genreId) {
     currentGenre = genreId;
     currentPage = 1; 
     
-    // Update active button
     document.querySelectorAll('.genre-btn').forEach(btn => btn.classList.remove('active'));
     if (event && event.target) event.target.classList.add('active');
     
@@ -122,6 +172,13 @@ export async function filterGenre(genreId) {
         trendingRow.classList.remove("horizontal-scroll");
     } else {
         trendingRow.classList.add("horizontal-scroll");
+    }
+
+    // ✅ PINOY MOVIES (WITHOUT ADULT CONTENT)
+    if (genreId === 'pinoy') {
+        const pinoyMovies = await fetchPinoyMovies(1);
+        displayList(pinoyMovies, "movies-list");
+        return;
     }
 
     const filteredMovies = await fetchMovies("movie", 1, genreId);
@@ -147,7 +204,12 @@ export async function loadMore() {
     trendingRow.classList.remove("horizontal-scroll");
     trendingSection.scrollIntoView({ behavior: 'smooth' });
 
-    const moreMovies = await fetchMovies("movie", currentPage, currentGenre);
+    let moreMovies;
+    if (currentGenre === 'pinoy') {
+        moreMovies = await fetchPinoyMovies(currentPage);
+    } else {
+        moreMovies = await fetchMovies("movie", currentPage, currentGenre);
+    }
     
     if (moreMovies && moreMovies.length > 0) {
         moreMovies.forEach(item => {
