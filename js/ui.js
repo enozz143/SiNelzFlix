@@ -76,38 +76,54 @@ export function displaySimilar(items) {
 window.displaySimilar = displaySimilar;
 
 /**
- * --- PINOY MOVIES FETCHER (EXCLUDING VIVAMAX) ---
+ * --- PINOY MOVIES FETCHER (FILIPINO/TAGALOG ONLY, NO ADULT) ---
  */
 export async function fetchPinoyMovies(page = 1) {
     try {
-        const url = `${window.BASE_URL}?endpoint=/discover/movie&with_original_language=tl&with_origin_country=PH&sort_by=popularity.desc&page=${page}`;
-        console.log("📡 Fetching Pinoy movies:", url);
+        // Use discover endpoint with language filter + exclude adult content
+        const url = `${window.BASE_URL}?endpoint=/discover/movie&with_original_language=tl&with_origin_country=PH&sort_by=popularity.desc&page=${page}&include_adult=false`;
+        console.log("📡 Fetching Pinoy movies (no adult):", url);
         const res = await fetch(url);
         const data = await res.json();
         
-        // ✅ FILTER OUT VIVAMAX MOVIES (by title, overview, and production companies)
+        // Additional filter to ensure no adult content
         const filteredMovies = (data.results || []).filter(movie => {
+            // Skip if TMDB marks as adult
+            if (movie.adult === true) return false;
+            
             const title = (movie.title || '').toLowerCase();
             const overview = (movie.overview || '').toLowerCase();
             
-            // Skip if contains VivaMax keywords
-            if (title.includes('vivamax') || overview.includes('vivamax')) {
-                console.log(`❌ Filtered out VivaMax: ${movie.title}`);
-                return false;
+            // List of keywords to filter out
+            const adultKeywords = [
+                'vivamax', 'sex', 'sexy', 'nude', 'adult', '18+', 
+                'scandal', 'bed scene', 'hot', 'erotic', 'sensual',
+                'intimate', 'steamy', 'provocative', 'uncensored'
+            ];
+            
+            // Check if any adult keyword is present
+            for (const keyword of adultKeywords) {
+                if (title.includes(keyword) || overview.includes(keyword)) {
+                    console.log(`❌ Filtered out adult content: ${movie.title} (${keyword})`);
+                    return false;
+                }
             }
             
-            // Optional: Filter by production companies if available
+            // Filter by production companies if available
             if (movie.production_companies) {
-                const hasVivaMaxCompany = movie.production_companies.some(company => 
-                    company.name?.toLowerCase().includes('vivamax')
-                );
-                if (hasVivaMaxCompany) return false;
+                const hasAdultCompany = movie.production_companies.some(company => {
+                    const companyName = (company.name || '').toLowerCase();
+                    return companyName.includes('vivamax') || 
+                           companyName.includes('adult') ||
+                           companyName.includes('xxx');
+                });
+                if (hasAdultCompany) return false;
             }
             
             return true;
         });
         
-        console.log(`✅ Found ${filteredMovies.length} Pinoy movies (VivaMax filtered out)`);
+        console.log(`✅ Found ${filteredMovies.length} Filipino/Tagalog movies (adult filtered out)`);
         return filteredMovies;
     } catch (error) {
         console.error("Error fetching Pinoy movies:", error);
@@ -158,7 +174,7 @@ export async function filterGenre(genreId) {
         trendingRow.classList.add("horizontal-scroll");
     }
 
-    // ✅ PINOY MOVIES (WITHOUT VIVAMAX)
+    // ✅ PINOY MOVIES (WITHOUT ADULT CONTENT)
     if (genreId === 'pinoy') {
         const pinoyMovies = await fetchPinoyMovies(1);
         displayList(pinoyMovies, "movies-list");
