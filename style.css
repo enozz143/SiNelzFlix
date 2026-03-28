@@ -181,7 +181,7 @@
 }
 
 /* ============================================ */
-/* MOBILE BOTTOM NAVIGATION BAR - BRANDING UPDATE */
+/* MOBILE BOTTOM NAVIGATION BAR - BRANDING COLORS ALWAYS VISIBLE */
 /* ============================================ */
 
 .mobile-nav {
@@ -195,53 +195,44 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding: 6px 0 10px; /* Mas manipis: 8px → 6px */
+    padding: 6px 0 10px;
     z-index: 1000;
-    display: none; /* Hidden by default */
+    display: none;
 }
 
 .nav-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 3px; /* Mas maliit na gap */
+    gap: 3px;
     cursor: pointer;
     transition: all 0.2s ease;
-    padding: 4px 16px; /* Mas maliit na padding */
+    padding: 4px 16px;
     border-radius: 30px;
 }
 
-.nav-item:hover {
-    background: rgba(0, 212, 255, 0.15);
-}
-
+/* Icons - neon blue glow (always visible) */
 .nav-icon {
-    font-size: 1.3rem; /* Mas maliit na icon */
-    filter: drop-shadow(0 0 2px rgba(0, 212, 255, 0.3));
+    font-size: 1.3rem;
+    filter: drop-shadow(0 0 3px rgba(0, 212, 255, 0.5));
 }
 
+/* Labels - neon blue (always visible, not gray) */
 .nav-label {
-    font-size: 0.6rem; /* Mas maliit na label */
-    color: #888; /* Default gray */
+    font-size: 0.6rem;
+    color: #00d4ff; /* Neon blue agad */
     font-weight: 500;
-    transition: color 0.2s ease;
+    transition: all 0.2s ease;
+}
+
+/* Active/tap effect */
+.nav-item:active {
+    transform: scale(0.95);
+    background: rgba(0, 212, 255, 0.2);
 }
 
 .nav-item:active .nav-icon {
-    transform: scale(0.95);
-}
-
-.nav-item:active .nav-label {
-    color: #00d4ff; /* Neon blue when active */
-}
-
-/* Hover effect for branding */
-.nav-item:hover .nav-icon {
-    filter: drop-shadow(0 0 5px rgba(0, 212, 255, 0.6));
-}
-
-.nav-item:hover .nav-label {
-    color: #00d4ff;
+    filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.8));
 }
 
 /* Show mobile nav only on mobile */
