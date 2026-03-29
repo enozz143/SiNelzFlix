@@ -43,7 +43,16 @@
                 <a href="/" class="back-btn">← Back to Home</a>
             </div>
             <div class="server-box">
-                <label for="server-select">Switch Server: </label>
+                <!-- ✅ TV SHOW EPISODE SELECTORS (hidden by default) -->
+                <label for="season-select" id="season-label" style="display: none;">Season: </label>
+                <select id="season-select" style="display: none;">
+                    <option value="1">Season 1</option>
+                </select>
+                <label for="episode-select" id="episode-label" style="display: none;">Episode: </label>
+                <select id="episode-select" style="display: none;">
+                    <option value="1">Episode 1</option>
+                </select>
+                <label for="server-select">Server: </label>
                 <select id="server-select">
                     <option value="embed2">⭐ Server 1 (2Embed)</option>
                     <option value="multiembed">⭐ Server 2 (MultiEmbed)</option>
@@ -86,20 +95,23 @@
         </section>
     </main>
 
-<footer id="site-footer">
-    <div class="footer-container">
-        <div class="footer-links">
-            <a href="/">Home</a>
-            <a href="/terms.html">Terms of Service</a>
-            <a href="/privacy.html">Privacy Policy</a>
-            <a href="/dmca.html">DMCA</a>
+    <footer id="site-footer">
+        <div class="footer-container">
+            <div class="footer-links">
+               <a href="/">Home</a>
+                <a href="/about.html">About</a>
+                <a href="/contact.html">Contact</a>
+                <a href="/terms.html">Terms of Service</a>
+                <a href="/privacy.html">Privacy Policy</a>
+                <a href="/dmca.html">DMCA</a>
+            </div>
+            <div class="footer-copyright">
+                <p>&copy; 2026 CINElzFlix.com. All rights reserved.</p>
+                <p class="credit">Crafted with <span style="color: #00d4ff;">❤</span> by <strong>Nelz</strong></p>
+            </div>
         </div>
-        <div class="footer-copyright">
-            <p>&copy; 2026 CINElzFlix.com. All rights reserved.</p>
-            <p class="credit">Crafted with <span style="color: #00d4ff;">❤</span> by <strong>Nelz</strong></p>
-        </div>
-    </div>
-</footer>
+    </footer>
+    
     <div id="global-loading" style="display: none;">
         <div style="width: 50px; height: 50px; border: 3px solid #333; border-top-color: #00d4ff; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto;"></div>
         <p style="color: #00d4ff; margin-top: 10px;">Loading movie data...</p>
