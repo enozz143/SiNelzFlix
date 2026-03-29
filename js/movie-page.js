@@ -1,6 +1,6 @@
 /**
  * CINElzFlix - Movie Page Engine
- * Version: 5.4 (Fixed Trailer + Global Exports)
+ * Version: 5.5 (TV Show Episode Selector + Fixed Trailer)
  */
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -73,6 +73,11 @@ async function initMoviePage() {
         renderCast(data);
         renderSimilar(data.similar);
 
+        // ✅ LOAD TV SHOW EPISODE SELECTOR (if TV show)
+        if (mediaType === 'tv') {
+            await loadTVShowEpisodes();
+        }
+
         // Default to first server (2Embed - fewer ads)
         updateVideoPlayer('embed2');
         
@@ -84,6 +89,94 @@ async function initMoviePage() {
         showErrorMessage(`Failed to load: ${err.message}`);
     } finally {
         hideLoadingState();
+    }
+}
+
+/**
+ * ✅ NEW: Load TV Show Seasons and Episodes
+ */
+async function loadTVShowEpisodes() {
+    try {
+        // Fetch TV show details
+        const tvUrl = `${BASE_URL}?endpoint=/tv/${movieId}`;
+        const tvRes = await fetch(tvUrl);
+        const tvData = await tvRes.json();
+        
+        const seasons = tvData.seasons || [];
+        const seasonSelect = document.getElementById('season-select');
+        const episodeSelect = document.getElementById('episode-select');
+        const seasonLabel = document.getElementById('season-label');
+        const episodeLabel = document.getElementById('episode-label');
+        
+        if (seasonSelect && seasons.length > 0) {
+            // Show season selector
+            seasonSelect.style.display = 'inline-block';
+            if (seasonLabel) seasonLabel.style.display = 'inline-block';
+            seasonSelect.innerHTML = '';
+            
+            seasons.forEach(season => {
+                if (season.season_number > 0) {
+                    const option = document.createElement('option');
+                    option.value = season.season_number;
+                    option.textContent = `Season ${season.season_number}`;
+                    seasonSelect.appendChild(option);
+                }
+            });
+            
+            // Load episodes for first season
+            if (seasonSelect.options.length > 0) {
+                await loadEpisodes(parseInt(seasonSelect.value));
+            }
+            
+            // Season change listener
+            seasonSelect.onchange = async () => {
+                await loadEpisodes(parseInt(seasonSelect.value));
+                updateVideoPlayer(document.getElementById('server-select').value);
+            };
+        }
+        
+        // Episode change listener
+        if (episodeSelect) {
+            episodeSelect.onchange = () => {
+                updateVideoPlayer(document.getElementById('server-select').value);
+            };
+        }
+        
+    } catch (err) {
+        console.error("Error loading TV show episodes:", err);
+    }
+}
+
+/**
+ * ✅ NEW: Load episodes for a specific season
+ */
+async function loadEpisodes(seasonNumber) {
+    try {
+        const url = `${BASE_URL}?endpoint=/tv/${movieId}/season/${seasonNumber}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        
+        const episodes = data.episodes || [];
+        const episodeSelect = document.getElementById('episode-select');
+        const episodeLabel = document.getElementById('episode-label');
+        
+        if (episodeSelect && episodes.length > 0) {
+            episodeSelect.style.display = 'inline-block';
+            if (episodeLabel) episodeLabel.style.display = 'inline-block';
+            episodeSelect.innerHTML = '';
+            
+            episodes.forEach(episode => {
+                const option = document.createElement('option');
+                option.value = episode.episode_number;
+                option.textContent = `Episode ${episode.episode_number}: ${episode.name || ''}`;
+                episodeSelect.appendChild(option);
+            });
+        }
+        
+        console.log(`✅ Loaded ${episodes.length} episodes for season ${seasonNumber}`);
+        
+    } catch (err) {
+        console.error("Error loading episodes:", err);
     }
 }
 
@@ -396,7 +489,7 @@ function renderSimilar(similar) {
 }
 
 /**
- * ✅ UPDATED: More servers with priority order (fewer ads first)
+ * ✅ UPDATED: More servers with priority order + TV show season/episode support
  */
 function updateVideoPlayer(server) {
     const iframe = document.getElementById('movie-iframe');
@@ -404,24 +497,41 @@ function updateVideoPlayer(server) {
     if (!iframe) return;
     if (loadingIndicator) loadingIndicator.style.display = 'flex';
     
+    // Get selected season and episode for TV shows
+    let season = 1;
+    let episode = 1;
+    
+    if (mediaType === 'tv') {
+        const seasonSelect = document.getElementById('season-select');
+        const episodeSelect = document.getElementById('episode-select');
+        season = seasonSelect ? parseInt(seasonSelect.value) : 1;
+        episode = episodeSelect ? parseInt(episodeSelect.value) : 1;
+    }
+    
     // Priority: Fewer ads first, then backup servers
     const servers = {
         // Best experience - fewer ads
         'embed2': mediaType === 'movie' 
             ? `https://www.2embed.cc/embed/${movieId}` 
-            : `https://www.2embed.cc/embedtv/${movieId}&s=1&e=1`,
-        'multiembed': `https://multiembed.mov/?video_id=${movieId}&tmdb=1`,
+            : `https://www.2embed.cc/embedtv/${movieId}&s=${season}&e=${episode}`,
+        'multiembed': `https://multiembed.mov/?video_id=${movieId}&tmdb=1&s=${season}&e=${episode}`,
         'autoembed': mediaType === 'movie' 
             ? `https://autoembed.to/movie/tmdb/${movieId}` 
-            : `https://autoembed.to/tv/tmdb/${movieId}`,
+            : `https://autoembed.to/tv/tmdb/${movieId}/${season}/${episode}`,
         'moviesapi': `https://moviesapi.club/movie/${movieId}`,
         // Backup - reliable but more ads
         'vidsrc': mediaType === 'movie' 
             ? `https://vidsrc.me/embed/movie?tmdb=${movieId}` 
-            : `https://vidsrc.me/embed/tv?tmdb=${movieId}&sea=1&epi=1`,
-        'vidsrc2': `https://vidsrc.to/embed/${mediaType}/${movieId}`,
-        'vidsrc3': `https://vidsrc.cc/v2/embed/${mediaType}/${movieId}`,
-        'videasy': `https://player.videasy.net/${mediaType}/${movieId}`
+            : `https://vidsrc.me/embed/tv?tmdb=${movieId}&sea=${season}&epi=${episode}`,
+        'vidsrc2': mediaType === 'movie' 
+            ? `https://vidsrc.to/embed/movie/${movieId}` 
+            : `https://vidsrc.to/embed/tv/${movieId}/${season}/${episode}`,
+        'vidsrc3': mediaType === 'movie' 
+            ? `https://vidsrc.cc/v2/embed/movie/${movieId}` 
+            : `https://vidsrc.cc/v2/embed/tv/${movieId}/${season}/${episode}`,
+        'videasy': mediaType === 'movie' 
+            ? `https://player.videasy.net/movie/${movieId}` 
+            : `https://player.videasy.net/tv/${movieId}/${season}/${episode}`
     };
     
     iframe.style.display = 'block';
