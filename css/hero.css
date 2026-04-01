@@ -1,4 +1,4 @@
-/* --- HERO SLIDER FIXED BY GEMINI --- */
+/*mangopya kag code noh hahhahaa*/
 #hero-slider-container {
     position: relative;
     width: 100%; 
@@ -18,7 +18,7 @@
     position: absolute; 
     top: 0; left: 0; 
     width: 100%; height: 100%;
-    /* FIX: Tinanggal ang background-image setup para video lang ang lumitaw */
+    /* */
     background: transparent !important; 
     display: flex !important; 
     align-items: center;
@@ -34,7 +34,7 @@
     z-index: 10;
 }
 
-/* Container ng Video Preview */
+/* ContainerVideo Preview */
 .hero-video-container {
     position: absolute; 
     top: 0; left: 0; 
@@ -44,7 +44,6 @@
 }
 
 .hero-video-container iframe {
-    /* Ang calculation na ito ay para maging "cover" ang youtube video */
     width: 100vw; 
     height: 56.25vw; 
     min-height: 100vh; 
@@ -53,13 +52,13 @@
     top: 50%; left: 50%; 
     transform: translate(-50%, -50%);
     
-    /* FIX: Tinaasan ang opacity (0.8) para malinaw ang playback, brightness for cinematic feel */
+
     opacity: 0.8; 
     pointer-events: none;
     filter: brightness(0.9) contrast(1.1);
 }
 
-/* FIX: In-adjust ang gradient para mas madilim sa text area pero kitang-kita ang video sa gitna/kanan */
+
 .hero-overlay {
     position: absolute;
     top: 0;
