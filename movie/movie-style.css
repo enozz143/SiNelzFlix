@@ -734,3 +734,50 @@ body {
     background: rgba(0, 212, 255, 0.1);
     border-color: #00d4ff;
 }
+
+/* ============================================ */
+/* RANDOM AD BANNERS (Left & Right) */
+/* ============================================ */
+
+.random-ad {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 999;
+    width: 160px;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 212, 255, 0.5);
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.random-ad:hover {
+    transform: translateY(-50%) scale(1.05);
+    box-shadow: 0 0 25px rgba(0, 212, 255, 0.6);
+    border-color: #00d4ff;
+}
+
+.random-ad img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Left side */
+#random-ad-left {
+    left: 10px;
+}
+
+/* Right side */
+#random-ad-right {
+    right: 10px;
+}
+
+/* Hide on mobile */
+@media (max-width: 768px) {
+    .random-ad {
+        display: none;
+    }
+}
