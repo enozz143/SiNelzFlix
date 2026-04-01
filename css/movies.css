@@ -1,4 +1,4 @@
-/* --- MOVIE ROWS BASE --- */
+/* mangopya kag code noh hahhahaa */
 section h2 {
     padding-left: 5%;
     margin-top: 50px;
@@ -86,7 +86,7 @@ section h2 {
     filter: brightness(0.7) contrast(1.1);
 }
 
-/* --- INFO OVERLAY (NETFLIX STYLE) - SIMPLE CLICKABLE CARDS --- */
+/* --- INFO OVERLAY (NETFLIX STYLE) --- */
 .card-overlay {
     position: absolute;
     inset: 0;
