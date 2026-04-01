@@ -1,4 +1,4 @@
-/* style.css (Root) */
+/* mangopya kag code noh hahhahaa*/
 
 /* 1. Global Variables & Reset */
 @import url('./css/base.css');
@@ -220,7 +220,7 @@
 /* Labels - neon blue (always visible, not gray) */
 .nav-label {
     font-size: 0.6rem;
-    color: #00d4ff; /* Neon blue agad */
+    color: #00d4ff; 
     font-weight: 500;
     transition: all 0.2s ease;
 }
@@ -246,7 +246,7 @@
         padding-bottom: 80px !important;
     }
     
-    /* ✅ INCREASED FOOTER MARGIN para hindi matabunan */
+    /* mangopya kag code noh hahhahaa */
     footer {
         margin-bottom: 60px !important;
         padding-bottom: 20px !important;
@@ -332,7 +332,7 @@
     margin: 0;
 }
 
-/* Download Button sa Navbar */
+/* Download Button Navbar */
 .download-nav-btn {
     display: inline-flex;
     align-items: center;

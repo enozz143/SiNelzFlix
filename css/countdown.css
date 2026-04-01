@@ -1,9 +1,9 @@
-/* css/countdown.css - SMALLER VERSION */
+/*mangopya kag code noh hahhahaa */
 
-/* 1. Ang Main Wrapper */
+/**/
 #countdown-banner {
     width: 100%;
-    margin: 20px 0 !important; /* Pinaliit margin */
+    margin: 20px 0 !important; /*  */
     display: flex !important;
     justify-content: center !important;
     align-items: center;
@@ -11,7 +11,7 @@
     box-sizing: border-box;
 }
 
-/* 2. Ang Card Mismo - PINALIIT */
+/**/
 .countdown-card {
     background: linear-gradient(135deg, #001219 0%, #003049 100%);
     border: 1px solid rgba(0, 212, 255, 0.3);
@@ -28,7 +28,7 @@
     text-align: center;
 }
 
-/* 3. Ang Inner Content */
+/*/
 .countdown-content {
     width: 100%;
     display: flex;
@@ -37,7 +37,7 @@
     justify-content: center;
 }
 
-/* 4. Title Styling - PINALIIT */
+/*  */
 #countdown-event-title {
     width: 100%;
     margin: 5px 0 10px 0 !important; /* Pinaliit margin */
@@ -47,11 +47,11 @@
     text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
 }
 
-/* 5. Timer Container - PINALIIT */
+/*/
 #timer {
     display: flex;
     justify-content: center;
-    gap: 10px !important; /* Pinaliit gap */
+    gap: 10px !important; /**/
     margin: 5px 0 10px 0 !important;
     flex-wrap: nowrap;
     width: 100%;
@@ -59,9 +59,9 @@
 
 .time-box {
     background: rgba(0, 0, 0, 0.4);
-    padding: 8px 12px !important; /* Pinaliit padding (dati 20px) */
+    padding: 8px 12px !important; /*  */
     border-radius: 12px;
-    min-width: 65px !important; /* Pinaliit width (dati 90px) */
+    min-width: 65px !important; /*  */
     border: 1px solid rgba(0, 212, 255, 0.2);
     backdrop-filter: blur(5px);
     display: flex;
@@ -72,7 +72,7 @@
 
 .time-box span {
     display: block;
-    font-size: 1.3rem !important; /* Pinaliit numbers (dati 2.2rem) */
+    font-size: 1.3rem !important; /*  */
     font-weight: 700;
     color: #00d4ff;
     text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
@@ -81,18 +81,18 @@
 .time-box small {
     color: #888;
     text-transform: uppercase;
-    font-size: 0.55rem !important; /* Pinaliit (dati 0.7rem) */
+    font-size: 0.55rem !important; /*) */
     letter-spacing: 1px;
 }
 
-/* Badge at Buttons - PINALIIT */
+/* */
 .badge {
     background: #00d4ff;
     color: #000;
-    padding: 4px 12px !important; /* Pinaliit padding (dati 6px 16px) */
+    padding: 4px 12px !important; /* */
     border-radius: 50px;
     font-weight: bold;
-    font-size: 0.7rem !important; /* Pinaliit font (dati 0.8rem) */
+    font-size: 0.7rem !important; /*  */
     margin-bottom: 5px;
     animation: pulse-glow 2s infinite;
 }
@@ -101,11 +101,11 @@
     background: transparent;
     border: 2px solid #00d4ff;
     color: #00d4ff;
-    padding: 6px 20px !important; /* Pinaliit padding (dati 12px 35px) */
+    padding: 6px 20px !important; /*  */
     border-radius: 50px;
     font-weight: 700;
     text-transform: uppercase;
-    font-size: 0.7rem !important; /* Pinaliit font */
+    font-size: 0.7rem !important; /*  */
     cursor: pointer;
     transition: 0.3s;
     margin-top: 5px;
@@ -117,7 +117,7 @@
     box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
 }
 
-/* --- MOBILE OPTIMIZATION (MAS MALIIT PA) --- */
+/* --- MOBILE OPTIMIZATION  --- */
 @media (max-width: 768px) {
     #countdown-banner {
         margin: 10px 0 !important;

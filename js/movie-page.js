@@ -1,6 +1,5 @@
 /**
- * CINElzFlix - Movie Page Engine
- * Version: 5.5 (TV Show Episode Selector + Fixed Trailer)
+mangopya kag code noh hahhahaa
  */
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -25,7 +24,7 @@ async function initMoviePage() {
     try {
         showLoadingState();
         
-        // 1. FETCH MAIN MOVIE DATA
+        
         const movieUrl = `${BASE_URL}?endpoint=/${mediaType}/${movieId}`;
         console.log("📡 Fetching movie:", movieUrl);
         const movieRes = await fetch(movieUrl);
@@ -33,25 +32,25 @@ async function initMoviePage() {
         
         if (!movieData || movieData.success === false) throw new Error("Invalid Movie Data");
         
-        // 2. FETCH CREDITS (CAST)
+        
         const creditsUrl = `${BASE_URL}?endpoint=/${mediaType}/${movieId}/credits`;
         console.log("📡 Fetching credits:", creditsUrl);
         const creditsRes = await fetch(creditsUrl);
         const creditsData = await creditsRes.json();
         
-        // 3. FETCH SIMILAR MOVIES
+        
         const similarUrl = `${BASE_URL}?endpoint=/${mediaType}/${movieId}/similar`;
         console.log("📡 Fetching similar:", similarUrl);
         const similarRes = await fetch(similarUrl);
         const similarData = await similarRes.json();
         
-        // 4. FETCH VIDEOS (for trailer)
+       
         const videosUrl = `${BASE_URL}?endpoint=/${mediaType}/${movieId}/videos`;
         console.log("📡 Fetching videos:", videosUrl);
         const videosRes = await fetch(videosUrl);
         const videosData = await videosRes.json();
         
-        // Combine all data
+        
         const data = {
             ...movieData,
             credits: creditsData,
@@ -73,12 +72,12 @@ async function initMoviePage() {
         renderCast(data);
         renderSimilar(data.similar);
 
-        // ✅ LOAD TV SHOW EPISODE SELECTOR (if TV show)
+       
         if (mediaType === 'tv') {
             await loadTVShowEpisodes();
         }
 
-        // Default to first server (2Embed - fewer ads)
+        
         updateVideoPlayer('embed2');
         
         console.log("✅ Movie Page Ready!");
@@ -92,12 +91,10 @@ async function initMoviePage() {
     }
 }
 
-/**
- * ✅ NEW: Load TV Show Seasons and Episodes
- */
+
 async function loadTVShowEpisodes() {
     try {
-        // Fetch TV show details
+        
         const tvUrl = `${BASE_URL}?endpoint=/tv/${movieId}`;
         const tvRes = await fetch(tvUrl);
         const tvData = await tvRes.json();
@@ -109,7 +106,7 @@ async function loadTVShowEpisodes() {
         const episodeLabel = document.getElementById('episode-label');
         
         if (seasonSelect && seasons.length > 0) {
-            // Show season selector
+            
             seasonSelect.style.display = 'inline-block';
             if (seasonLabel) seasonLabel.style.display = 'inline-block';
             seasonSelect.innerHTML = '';
@@ -123,19 +120,19 @@ async function loadTVShowEpisodes() {
                 }
             });
             
-            // Load episodes for first season
+           
             if (seasonSelect.options.length > 0) {
                 await loadEpisodes(parseInt(seasonSelect.value));
             }
             
-            // Season change listener
+            
             seasonSelect.onchange = async () => {
                 await loadEpisodes(parseInt(seasonSelect.value));
                 updateVideoPlayer(document.getElementById('server-select').value);
             };
         }
         
-        // Episode change listener
+        
         if (episodeSelect) {
             episodeSelect.onchange = () => {
                 updateVideoPlayer(document.getElementById('server-select').value);
@@ -147,9 +144,7 @@ async function loadTVShowEpisodes() {
     }
 }
 
-/**
- * ✅ NEW: Load episodes for a specific season
- */
+
 async function loadEpisodes(seasonNumber) {
     try {
         const url = `${BASE_URL}?endpoint=/tv/${movieId}/season/${seasonNumber}`;
@@ -180,9 +175,7 @@ async function loadEpisodes(seasonNumber) {
     }
 }
 
-/**
- * Play Trailer with Modal
- */
+
 async function playTrailer() {
     if (!window.currentMovieData) {
         showNotification("Movie data not ready yet.");
@@ -220,9 +213,7 @@ async function playTrailer() {
     }
 }
 
-/**
- * Show modal with YouTube trailer
- */
+
 function showTrailerModal(trailerKey) {
     let modal = document.getElementById('trailer-modal');
     if (!modal) {
@@ -488,9 +479,7 @@ function renderSimilar(similar) {
     `;
 }
 
-/**
- * ✅ UPDATED: More servers with priority order + TV show season/episode support
- */
+
 function updateVideoPlayer(server) {
     const iframe = document.getElementById('movie-iframe');
     const loadingIndicator = document.getElementById('player-loading');

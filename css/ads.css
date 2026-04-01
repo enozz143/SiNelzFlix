@@ -1,4 +1,4 @@
-/* ads.css - CinelzFlix Ad Styling */
+/* mangopya kag code noh hahhahaa */
 
 .ad-spacer, .native-ad-container {
     margin: 40px auto;
@@ -42,18 +42,18 @@
 }
 
 /* ============================================ */
-/* AD REPOSITIONING - PARA HINDI HARANG SA SEARCHBOX */
+/* AD REPOSITIONING - */
 /* ============================================ */
 
 /* Target floating/social bar ads */
 div[id^="adsterra"], 
 div[class*="social-bar"], 
 iframe[src*="profitablecpmratenetwork"] {
-    top: 85px !important; /* Desktop: nasa baba ng navbar */
-    z-index: 999 !important; /* Mas mababa sa navbar (z-index: 2000) */
+    top: 85px !important; /* Desktop:  */
+    z-index: 999 !important; /* mangopya kag code noh */
 }
 
-/* Para sa mobile, mas mababa ang navbar */
+/* mangopya kag code noh hahhahaa */
 @media (max-width: 768px) {
     div[id^="adsterra"], 
     div[class*="social-bar"] {
@@ -61,7 +61,7 @@ iframe[src*="profitablecpmratenetwork"] {
     }
 }
 
-/* Optional: Kung gusto mong sa baba lumabas ang ad sa mobile (i-uncomment) */
+/* mangopya kag code noh hahhahaa*/
 /*
 @media (max-width: 768px) {
     div[id^="adsterra"], 

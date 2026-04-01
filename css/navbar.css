@@ -1,4 +1,4 @@
-/* --- NAVBAR & LOGO --- */
+/*mangopya kag code noh hahhahaa*/
 #navbar {
     height: 85px; 
     background: rgba(2, 11, 26, 0.85); 
@@ -46,7 +46,7 @@
     align-self: center; 
     width: 250px; 
     margin-right: 10px; 
-    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth transition para sa mobile */
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
 }
 
 .search-box:focus-within {
@@ -80,7 +80,7 @@
     100% { box-shadow: 0 0 5px rgba(0, 212, 255, 0.4); }
 }
 
-/* --- 🔥 MOBILE UPDATED (600px and below) --- */
+/* --- 🔥 MOBILE UPDATED--- */
 @media (max-width: 600px) {
     #navbar { 
         height: 70px; 
@@ -88,19 +88,19 @@
     }
     
     #site-logo { 
-        height: 55px; /* Liitan natin konti para may space sa taas/baba */
+        height: 55px; 
         max-height: 55px;
     }
 
     .search-box {
-        width: 40px; /* Mukhang icon lang sa simula */
+        width: 40px; 
         margin-right: 0;
         overflow: hidden;
     }
 
-    /* Ito yung magic: hahaba lang siya pag clinick */
+ 
     .search-box:focus-within {
-        width: 170px; /* Sapat na haba para hindi mabangga ang logo */
+        width: 170px; 
         background: rgba(0, 0, 0, 0.9);
         border-radius: 20px;
     }
@@ -108,10 +108,10 @@
     #search-input {
         padding: 8px 10px 8px 35px;
         font-size: 0.85rem;
-        background-position: 10px center; /* I-adjust ang glass icon */
+        background-position: 10px center; 
     }
 
-    /* Optional: Itago ang placeholder sa mobile para malinis */
+   
     #search-input::placeholder {
         color: transparent;
     }

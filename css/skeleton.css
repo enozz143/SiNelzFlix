@@ -1,4 +1,4 @@
-/* skeleton.css - Para sa Loading Effects */
+/* mangopya kag code noh hahhahaa */
 
 .skeleton {
     background: #1a1a1a;
@@ -19,9 +19,9 @@
     }
 }
 
-/* Para sakto ang sukat sa Movie Cards mo */
+
 .skeleton-card {
-    width: 180px; /* Sukat sa Desktop */
+    width: 180px; 
     height: 270px;
     flex: 0 0 auto;
     margin-right: 15px;
@@ -31,7 +31,7 @@
 /* Responsive adjustment */
 @media screen and (max-width: 768px) {
     .skeleton-card {
-        width: 130px; /* Sukat sa Mobile */
+        width: 130px; 
         height: 195px;
         margin-right: 10px;
     }
