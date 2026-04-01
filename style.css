@@ -331,3 +331,36 @@
     font-size: 0.8rem;
     margin: 0;
 }
+
+/* Download Button sa Navbar */
+.download-nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, #00d4ff, #0088aa);
+    color: #000;
+    padding: 8px 16px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+    margin: 0 10px;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+.download-nav-btn:hover {
+    background: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
+    color: #000;
+}
+
+/* Mobile adjustment */
+@media (max-width: 768px) {
+    .download-nav-btn {
+        padding: 6px 12px;
+        font-size: 0.7rem;
+        margin: 0 5px;
+    }
+}
