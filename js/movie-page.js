@@ -1,5 +1,6 @@
 /**
-mangopya kag code noh hahhahaa
+ * CINElzFlix - Movie Page Engine
+ * Version: 5.6 (With Random Ad Banners)
  */
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -24,7 +25,6 @@ async function initMoviePage() {
     try {
         showLoadingState();
         
-        
         const movieUrl = `${BASE_URL}?endpoint=/${mediaType}/${movieId}`;
         console.log("📡 Fetching movie:", movieUrl);
         const movieRes = await fetch(movieUrl);
@@ -32,24 +32,20 @@ async function initMoviePage() {
         
         if (!movieData || movieData.success === false) throw new Error("Invalid Movie Data");
         
-        
         const creditsUrl = `${BASE_URL}?endpoint=/${mediaType}/${movieId}/credits`;
         console.log("📡 Fetching credits:", creditsUrl);
         const creditsRes = await fetch(creditsUrl);
         const creditsData = await creditsRes.json();
-        
         
         const similarUrl = `${BASE_URL}?endpoint=/${mediaType}/${movieId}/similar`;
         console.log("📡 Fetching similar:", similarUrl);
         const similarRes = await fetch(similarUrl);
         const similarData = await similarRes.json();
         
-       
         const videosUrl = `${BASE_URL}?endpoint=/${mediaType}/${movieId}/videos`;
         console.log("📡 Fetching videos:", videosUrl);
         const videosRes = await fetch(videosUrl);
         const videosData = await videosRes.json();
-        
         
         const data = {
             ...movieData,
@@ -72,13 +68,14 @@ async function initMoviePage() {
         renderCast(data);
         renderSimilar(data.similar);
 
-       
         if (mediaType === 'tv') {
             await loadTVShowEpisodes();
         }
 
-        
         updateVideoPlayer('embed2');
+        
+        // ✅ Load random ads
+        loadRandomAds();
         
         console.log("✅ Movie Page Ready!");
 
@@ -91,10 +88,47 @@ async function initMoviePage() {
     }
 }
 
+/**
+ * Load random ad images with Smartlink
+ */
+function loadRandomAds() {
+    // ✅ YOUR SMARTLINK
+    const yourSmartlink = 'https://www.profitablecpmratenetwork.com/dtzaxbw9s3?key=77b28ae634ad720c1530bcd9c6d1c17a';
+    
+    // Ad images (palitan mo ng actual images mo)
+    const adImages = [
+        'https://via.placeholder.com/160x600/00d4ff/000?text=Movie+Deals',
+        'https://via.placeholder.com/160x600/ff00aa/fff?text=Watch+Now',
+        'https://via.placeholder.com/160x600/00aa88/fff?text=Free+Movies',
+        'https://via.placeholder.com/160x600/ff6600/fff?text=Exclusive',
+        'https://via.placeholder.com/160x600/aa00ff/fff?text=Premium+Offers'
+    ];
+    
+    // Randomly select images
+    const leftIndex = Math.floor(Math.random() * adImages.length);
+    const rightIndex = Math.floor(Math.random() * adImages.length);
+    
+    // Set left ad
+    const leftImg = document.getElementById('ad-img-left');
+    const leftLink = document.getElementById('ad-link-left');
+    if (leftImg && leftLink) {
+        leftImg.src = adImages[leftIndex];
+        leftLink.href = yourSmartlink + '&psid=left_ad';
+    }
+    
+    // Set right ad
+    const rightImg = document.getElementById('ad-img-right');
+    const rightLink = document.getElementById('ad-link-right');
+    if (rightImg && rightLink) {
+        rightImg.src = adImages[rightIndex];
+        rightLink.href = yourSmartlink + '&psid=right_ad';
+    }
+    
+    console.log('🎲 Random ads loaded');
+}
 
 async function loadTVShowEpisodes() {
     try {
-        
         const tvUrl = `${BASE_URL}?endpoint=/tv/${movieId}`;
         const tvRes = await fetch(tvUrl);
         const tvData = await tvRes.json();
@@ -106,7 +140,6 @@ async function loadTVShowEpisodes() {
         const episodeLabel = document.getElementById('episode-label');
         
         if (seasonSelect && seasons.length > 0) {
-            
             seasonSelect.style.display = 'inline-block';
             if (seasonLabel) seasonLabel.style.display = 'inline-block';
             seasonSelect.innerHTML = '';
@@ -120,18 +153,15 @@ async function loadTVShowEpisodes() {
                 }
             });
             
-           
             if (seasonSelect.options.length > 0) {
                 await loadEpisodes(parseInt(seasonSelect.value));
             }
-            
             
             seasonSelect.onchange = async () => {
                 await loadEpisodes(parseInt(seasonSelect.value));
                 updateVideoPlayer(document.getElementById('server-select').value);
             };
         }
-        
         
         if (episodeSelect) {
             episodeSelect.onchange = () => {
@@ -143,7 +173,6 @@ async function loadTVShowEpisodes() {
         console.error("Error loading TV show episodes:", err);
     }
 }
-
 
 async function loadEpisodes(seasonNumber) {
     try {
@@ -174,7 +203,6 @@ async function loadEpisodes(seasonNumber) {
         console.error("Error loading episodes:", err);
     }
 }
-
 
 async function playTrailer() {
     if (!window.currentMovieData) {
@@ -212,7 +240,6 @@ async function playTrailer() {
         hideModalLoading();
     }
 }
-
 
 function showTrailerModal(trailerKey) {
     let modal = document.getElementById('trailer-modal');
@@ -479,14 +506,12 @@ function renderSimilar(similar) {
     `;
 }
 
-
 function updateVideoPlayer(server) {
     const iframe = document.getElementById('movie-iframe');
     const loadingIndicator = document.getElementById('player-loading');
     if (!iframe) return;
     if (loadingIndicator) loadingIndicator.style.display = 'flex';
     
-    // Get selected season and episode for TV shows
     let season = 1;
     let episode = 1;
     
@@ -497,9 +522,7 @@ function updateVideoPlayer(server) {
         episode = episodeSelect ? parseInt(episodeSelect.value) : 1;
     }
     
-    // Priority: Fewer ads first, then backup servers
     const servers = {
-        // Best experience - fewer ads
         'embed2': mediaType === 'movie' 
             ? `https://www.2embed.cc/embed/${movieId}` 
             : `https://www.2embed.cc/embedtv/${movieId}&s=${season}&e=${episode}`,
@@ -508,7 +531,6 @@ function updateVideoPlayer(server) {
             ? `https://autoembed.to/movie/tmdb/${movieId}` 
             : `https://autoembed.to/tv/tmdb/${movieId}/${season}/${episode}`,
         'moviesapi': `https://moviesapi.club/movie/${movieId}`,
-        // Backup - reliable but more ads
         'vidsrc': mediaType === 'movie' 
             ? `https://vidsrc.me/embed/movie?tmdb=${movieId}` 
             : `https://vidsrc.me/embed/tv?tmdb=${movieId}&sea=${season}&epi=${episode}`,
