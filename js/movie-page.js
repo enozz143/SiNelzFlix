@@ -1,6 +1,6 @@
 /**
  * CINElzFlix - Movie Page Engine
- * Version: 5.6 (With Random Ad Banners)
+ * Version: 5.7 (No Random Ads)
  */
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -74,9 +74,6 @@ async function initMoviePage() {
 
         updateVideoPlayer('embed2');
         
-        // ✅ Load random ads
-        loadRandomAds();
-        
         console.log("✅ Movie Page Ready!");
 
     } catch (err) {
@@ -86,45 +83,6 @@ async function initMoviePage() {
     } finally {
         hideLoadingState();
     }
-}
-
-/**
- * Load random ad images with Smartlink
- */
-function loadRandomAds() {
-    // ✅ YOUR SMARTLINK
-    const yourSmartlink = 'https://www.profitablecpmratenetwork.com/dtzaxbw9s3?key=77b28ae634ad720c1530bcd9c6d1c17a';
-    
-    // Ad images (palitan mo ng actual images mo)
-    const adImages = [
-        'https://via.placeholder.com/160x600/00d4ff/000?text=Movie+Deals',
-        'https://via.placeholder.com/160x600/ff00aa/fff?text=Watch+Now',
-        'https://via.placeholder.com/160x600/00aa88/fff?text=Free+Movies',
-        'https://via.placeholder.com/160x600/ff6600/fff?text=Exclusive',
-        'https://via.placeholder.com/160x600/aa00ff/fff?text=Premium+Offers'
-    ];
-    
-    // Randomly select images
-    const leftIndex = Math.floor(Math.random() * adImages.length);
-    const rightIndex = Math.floor(Math.random() * adImages.length);
-    
-    // Set left ad
-    const leftImg = document.getElementById('ad-img-left');
-    const leftLink = document.getElementById('ad-link-left');
-    if (leftImg && leftLink) {
-        leftImg.src = adImages[leftIndex];
-        leftLink.href = yourSmartlink + '&psid=left_ad';
-    }
-    
-    // Set right ad
-    const rightImg = document.getElementById('ad-img-right');
-    const rightLink = document.getElementById('ad-link-right');
-    if (rightImg && rightLink) {
-        rightImg.src = adImages[rightIndex];
-        rightLink.href = yourSmartlink + '&psid=right_ad';
-    }
-    
-    console.log('🎲 Random ads loaded');
 }
 
 async function loadTVShowEpisodes() {
