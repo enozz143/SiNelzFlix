@@ -114,13 +114,13 @@ body {
 }
 
 /* ============================================ */
-/* PLAYER SECTION - ENHANCED DESIGN */
+/* PLAYER SECTION - FULL WIDTH */
 /* ============================================ */
 
 .movie-page-container { 
-    padding: 60px 5%; 
-    max-width: 1300px; 
-    margin: 0 auto; 
+    padding: 40px 0 !important; 
+    max-width: 100% !important;
+    margin: 0 !important;
     background: var(--bg-dark);
 }
 
@@ -130,8 +130,8 @@ body {
     width: 100%;
     aspect-ratio: 16/9;
     background: #000;
-    border-radius: 15px;
-    margin-bottom: 50px;
+    border-radius: 0;
+    margin-bottom: 0;
     overflow: hidden;
     
     /* Neon Border & Glow */
@@ -158,8 +158,6 @@ body {
     animation: playerGlow 3s infinite ease-in-out;
 }
 
-/* ✅ REMOVED: Play Icon Overlay - para hindi na lumalabas sa hover */
-
 /* Iframe itself */
 #movie-iframe { 
     width: 100% !important; 
@@ -179,6 +177,7 @@ body {
     margin-bottom: 20px;
     flex-wrap: wrap;
     gap: 15px;
+    padding: 0 10px;
 }
 
 .back-btn {
@@ -197,9 +196,11 @@ body {
 }
 
 .server-box {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(10, 10, 10, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 16px;
     padding: 8px 15px;
-    border-radius: 30px;
 }
 
 .server-box label {
@@ -208,26 +209,137 @@ body {
 }
 
 #server-select {
-    background: #1a1a1a;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
     color: white;
-    border: 1px solid var(--primary-blue);
+    border: 1px solid rgba(0, 212, 255, 0.4);
+    border-radius: 10px;
     padding: 6px 12px;
-    border-radius: 20px;
     cursor: pointer;
 }
 
+#season-select, #episode-select {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(0, 212, 255, 0.4);
+    border-radius: 10px;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+#season-select:hover, #episode-select:hover, #server-select:hover {
+    background: rgba(0, 212, 255, 0.1);
+    border-color: #00d4ff;
+}
+
 /* ============================================ */
-/* INFO GRID (Poster + Details) */
+/* TWO-COLUMN LAYOUT: Player + Similar Movies */
+/* ============================================ */
+
+.player-similar-container {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 40px;
+    padding: 0 10px;
+}
+
+/* Left Column - Player */
+.player-column {
+    flex: 2;
+    min-width: 280px;
+}
+
+.player-column .player-wrapper {
+    margin-bottom: 0;
+}
+
+/* Right Column - Similar Movies */
+.similar-column {
+    flex: 1;
+    min-width: 200px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 15px;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.similar-column h3 {
+    color: #00d4ff;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+}
+
+/* Vertical list of similar movies */
+.similar-vertical-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.similar-vertical-list .similar-card {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    min-width: auto;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.similar-vertical-list .similar-card:hover {
+    background: rgba(0, 212, 255, 0.1);
+    transform: translateX(5px);
+}
+
+.similar-vertical-list .similar-card img {
+    width: 60px;
+    border-radius: 8px;
+}
+
+.similar-vertical-list .similar-card p {
+    font-size: 0.8rem;
+    margin: 0;
+    flex: 1;
+}
+
+.similar-vertical-list .similar-card span {
+    font-size: 0.7rem;
+}
+
+/* Scrollbar for similar list */
+.similar-vertical-list::-webkit-scrollbar {
+    width: 5px;
+}
+
+.similar-vertical-list::-webkit-scrollbar-track {
+    background: #1a1a1a;
+    border-radius: 10px;
+}
+
+.similar-vertical-list::-webkit-scrollbar-thumb {
+    background: #00d4ff;
+    border-radius: 10px;
+}
+
+/* ============================================ */
+/* INFO GRID (Poster + Details) - FULL WIDTH */
 /* ============================================ */
 
 .movie-info-grid { 
     display: grid; 
-    grid-template-columns: 280px minmax(300px, 750px);
-    gap: 60px; 
+    grid-template-columns: 280px 1fr;
+    gap: 40px; 
     align-items: start;
-    max-width: 1300px;
-    margin: 0 auto;
-    justify-content: center;
+    max-width: 100%;
+    margin: 0;
+    padding: 20px 10px;
 }
 
 .poster-side {
@@ -268,10 +380,11 @@ body {
     color: #ccc; 
     font-size: 1.1rem;
     word-wrap: break-word;
+    width: 100%;
 }
 
 /* ============================================ */
-/* CAST SECTION */
+/* CAST SECTION - FULL WIDTH */
 /* ============================================ */
 
 .cast-section {
@@ -384,42 +497,29 @@ body {
 }
 
 /* ============================================ */
-/* SIMILAR MOVIES SECTION */
+/* AD CONTAINER - Recommended for you */
 /* ============================================ */
 
-.similar-section {
-    margin-top: 60px;
-    width: 100%;
+.ad-movie-container {
+    margin: 40px auto !important;
+    max-width: 728px !important;
+    text-align: center !important;
 }
 
-.similar-grid {
-    display: flex;
-    gap: 15px;
-    overflow-x: auto;
-    padding-bottom: 20px;
-    scrollbar-width: thin;
+.ad-movie-container p {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
 }
 
-.similar-card {
-    min-width: 160px;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
-.similar-card:hover {
-    transform: scale(1.05);
-}
-
-.similar-card img {
-    width: 100%;
-    border-radius: 10px;
-    transition: 0.3s;
-}
-
-.similar-card p {
-    margin-top: 8px;
-    font-weight: bold;
-    font-size: 0.85rem;
+/* Mobile */
+@media (max-width: 768px) {
+    .ad-movie-container {
+        margin: 30px auto !important;
+        padding: 0 10px !important;
+    }
 }
 
 /* ============================================ */
@@ -435,17 +535,15 @@ body {
 }
 
 /* ============================================ */
-/* MOBILE VIEW - FIXED (PORTRAIT + VIDEO) */
+/* MOBILE VIEW - FULL WIDTH NO MARGINS */
 /* ============================================ */
 
 @media (max-width: 768px) {
     
-    /* Container */
     .movie-page-container {
         padding: 20px 0 !important;
     }
     
-    /* Hero */
     #movie-hero {
         height: 45vh !important;
         margin-top: 70px !important;
@@ -491,9 +589,7 @@ body {
         min-width: 130px !important;
     }
     
-    /* ============================================ */
-    /* VIDEO PLAYER - FIX ZOOM ISSUE */
-    /* ============================================ */
+    /* Video Player - Mobile */
     .player-wrapper {
         width: 100% !important;
         height: auto !important;
@@ -513,16 +609,51 @@ body {
         min-height: auto !important;
     }
     
-    /* ============================================ */
-    /* HIDE POSTER ON MOBILE */
-    /* ============================================ */
+    /* Two-column layout becomes stacked on mobile */
+    .player-similar-container {
+        flex-direction: column !important;
+        gap: 20px !important;
+        padding: 0 10px !important;
+    }
+    
+    .similar-column {
+        width: 100% !important;
+    }
+    
+    /* Similar movies become horizontal scroll on mobile */
+    .similar-vertical-list {
+        display: flex !important;
+        flex-direction: row !important;
+        overflow-x: auto !important;
+        max-height: none !important;
+        gap: 12px !important;
+        padding-bottom: 10px !important;
+    }
+    
+    .similar-vertical-list .similar-card {
+        flex-direction: column !important;
+        text-align: center !important;
+        min-width: 100px !important;
+        width: 100px !important;
+        padding: 8px !important;
+    }
+    
+    .similar-vertical-list .similar-card img {
+        width: 100% !important;
+        height: auto !important;
+    }
+    
+    .similar-vertical-list .similar-card p {
+        font-size: 0.7rem !important;
+        margin-top: 5px !important;
+    }
+    
+    /* Hide poster on mobile */
     .poster-side {
         display: none !important;
     }
     
-    /* ============================================ */
-    /* INFO GRID - STORY FULL WIDTH */
-    /* ============================================ */
+    /* Info grid - story full width */
     .movie-info-grid {
         display: flex !important;
         flex-direction: column !important;
@@ -546,9 +677,7 @@ body {
         line-height: 1.4 !important;
     }
     
-    /* ============================================ */
-    /* CAST SECTION - HORIZONTAL SCROLL */
-    /* ============================================ */
+    /* Cast section - horizontal scroll */
     .cast-section {
         margin-top: 20px !important;
         padding: 0 10px !important;
@@ -589,25 +718,7 @@ body {
         font-size: 0.5rem !important;
     }
     
-    /* ============================================ */
-    /* SIMILAR MOVIES */
-    /* ============================================ */
-    .similar-section {
-        margin-top: 20px !important;
-        padding: 0 10px !important;
-    }
-    
-    .similar-card {
-        min-width: 100px !important;
-    }
-    
-    .similar-card p {
-        font-size: 0.65rem !important;
-    }
-    
-    /* ============================================ */
-    /* CONTROLS BAR */
-    /* ============================================ */
+    /* Controls bar */
     .controls-bar {
         flex-direction: column !important;
         align-items: center !important;
@@ -698,12 +809,9 @@ body {
         font-size: 0.45rem !important;
     }
     
-    .similar-card {
+    .similar-vertical-list .similar-card {
         min-width: 85px !important;
-    }
-    
-    .similar-card p {
-        font-size: 0.6rem !important;
+        width: 85px !important;
     }
     
     .details-side h2 {
@@ -713,24 +821,4 @@ body {
     #movie-overview {
         font-size: 0.7rem !important;
     }
-}
-
-/* Glassmorphism Style (Alternative) */
-.server-box {
-    background: rgba(10, 10, 10, 0.6);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 212, 255, 0.3);
-    border-radius: 16px;
-}
-
-#season-select, #episode-select, #server-select {
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(0, 212, 255, 0.4);
-    border-radius: 10px;
-}
-
-#season-select:hover, #episode-select:hover, #server-select:hover {
-    background: rgba(0, 212, 255, 0.1);
-    border-color: #00d4ff;
 }

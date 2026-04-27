@@ -1,5 +1,6 @@
 /**
-mangopya kag code noh hahhahaa
+ * CINElzFlix - Movie Page Engine
+ * Version: 5.8 (Two-Column Layout)
  */
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -24,7 +25,6 @@ async function initMoviePage() {
     try {
         showLoadingState();
         
-        
         const movieUrl = `${BASE_URL}?endpoint=/${mediaType}/${movieId}`;
         console.log("📡 Fetching movie:", movieUrl);
         const movieRes = await fetch(movieUrl);
@@ -32,24 +32,20 @@ async function initMoviePage() {
         
         if (!movieData || movieData.success === false) throw new Error("Invalid Movie Data");
         
-        
         const creditsUrl = `${BASE_URL}?endpoint=/${mediaType}/${movieId}/credits`;
         console.log("📡 Fetching credits:", creditsUrl);
         const creditsRes = await fetch(creditsUrl);
         const creditsData = await creditsRes.json();
-        
         
         const similarUrl = `${BASE_URL}?endpoint=/${mediaType}/${movieId}/similar`;
         console.log("📡 Fetching similar:", similarUrl);
         const similarRes = await fetch(similarUrl);
         const similarData = await similarRes.json();
         
-       
         const videosUrl = `${BASE_URL}?endpoint=/${mediaType}/${movieId}/videos`;
         console.log("📡 Fetching videos:", videosUrl);
         const videosRes = await fetch(videosUrl);
         const videosData = await videosRes.json();
-        
         
         const data = {
             ...movieData,
@@ -72,12 +68,10 @@ async function initMoviePage() {
         renderCast(data);
         renderSimilar(data.similar);
 
-       
         if (mediaType === 'tv') {
             await loadTVShowEpisodes();
         }
 
-        
         updateVideoPlayer('embed2');
         
         console.log("✅ Movie Page Ready!");
@@ -91,10 +85,8 @@ async function initMoviePage() {
     }
 }
 
-
 async function loadTVShowEpisodes() {
     try {
-        
         const tvUrl = `${BASE_URL}?endpoint=/tv/${movieId}`;
         const tvRes = await fetch(tvUrl);
         const tvData = await tvRes.json();
@@ -106,7 +98,6 @@ async function loadTVShowEpisodes() {
         const episodeLabel = document.getElementById('episode-label');
         
         if (seasonSelect && seasons.length > 0) {
-            
             seasonSelect.style.display = 'inline-block';
             if (seasonLabel) seasonLabel.style.display = 'inline-block';
             seasonSelect.innerHTML = '';
@@ -120,18 +111,15 @@ async function loadTVShowEpisodes() {
                 }
             });
             
-           
             if (seasonSelect.options.length > 0) {
                 await loadEpisodes(parseInt(seasonSelect.value));
             }
-            
             
             seasonSelect.onchange = async () => {
                 await loadEpisodes(parseInt(seasonSelect.value));
                 updateVideoPlayer(document.getElementById('server-select').value);
             };
         }
-        
         
         if (episodeSelect) {
             episodeSelect.onchange = () => {
@@ -143,7 +131,6 @@ async function loadTVShowEpisodes() {
         console.error("Error loading TV show episodes:", err);
     }
 }
-
 
 async function loadEpisodes(seasonNumber) {
     try {
@@ -174,7 +161,6 @@ async function loadEpisodes(seasonNumber) {
         console.error("Error loading episodes:", err);
     }
 }
-
 
 async function playTrailer() {
     if (!window.currentMovieData) {
@@ -212,7 +198,6 @@ async function playTrailer() {
         hideModalLoading();
     }
 }
-
 
 function showTrailerModal(trailerKey) {
     let modal = document.getElementById('trailer-modal');
@@ -455,30 +440,30 @@ function renderCast(data) {
     console.log(`✅ Cast rendered: ${topCast.length} actors`);
 }
 
+/**
+ * ✅ FIXED: Render Similar Movies for Two-Column Layout
+ */
 function renderSimilar(similar) {
     const container = document.getElementById('similar-movies-container');
     
     if (!container) return;
     
     if (!similar?.results || similar.results.length === 0) {
-        container.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">No similar movies found.</p>';
+        container.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">No similar movies found.</p>';
         return;
     }
     
-    container.innerHTML = `
-        <h2 style="margin: 30px 0 15px;">You Might Also Like</h2>
-        <div class="similar-grid" style="display: flex; gap: 15px; overflow-x: auto; padding-bottom: 20px;">
-            ${similar.results.slice(0, 12).map(m => `
-                <div class="similar-card" style="min-width: 160px; cursor: pointer;" onclick="window.location.href='?id=${m.id}&type=${mediaType}'">
-                    <img src="https://image.tmdb.org/t/p/w300${m.poster_path}" style="width: 100%; border-radius: 10px;" loading="lazy" onerror="this.src='https://via.placeholder.com/300x450?text=No+Poster'">
-                    <p style="font-size: 0.85rem; margin-top: 8px; font-weight: bold;">${m.title || m.name}</p>
-                    <span style="font-size: 0.7rem; color: #00d4ff;">⭐ ${m.vote_average ? m.vote_average.toFixed(1) : 'N/A'}</span>
-                </div>
-            `).join('')}
+    // ✅ Vertical list for desktop, horizontal for mobile (via CSS)
+    container.innerHTML = similar.results.slice(0, 12).map(m => `
+        <div class="similar-card" onclick="window.location.href='?id=${m.id}&type=${mediaType}'">
+            <img src="https://image.tmdb.org/t/p/w92${m.poster_path}" loading="lazy" onerror="this.src='https://via.placeholder.com/92x138?text=No+Poster'">
+            <div>
+                <p>${m.title || m.name}</p>
+                <span>⭐ ${m.vote_average ? m.vote_average.toFixed(1) : 'N/A'}</span>
+            </div>
         </div>
-    `;
+    `).join('');
 }
-
 
 function updateVideoPlayer(server) {
     const iframe = document.getElementById('movie-iframe');
@@ -486,7 +471,6 @@ function updateVideoPlayer(server) {
     if (!iframe) return;
     if (loadingIndicator) loadingIndicator.style.display = 'flex';
     
-    // Get selected season and episode for TV shows
     let season = 1;
     let episode = 1;
     
@@ -497,9 +481,7 @@ function updateVideoPlayer(server) {
         episode = episodeSelect ? parseInt(episodeSelect.value) : 1;
     }
     
-    // Priority: Fewer ads first, then backup servers
     const servers = {
-        // Best experience - fewer ads
         'embed2': mediaType === 'movie' 
             ? `https://www.2embed.cc/embed/${movieId}` 
             : `https://www.2embed.cc/embedtv/${movieId}&s=${season}&e=${episode}`,
@@ -508,7 +490,6 @@ function updateVideoPlayer(server) {
             ? `https://autoembed.to/movie/tmdb/${movieId}` 
             : `https://autoembed.to/tv/tmdb/${movieId}/${season}/${episode}`,
         'moviesapi': `https://moviesapi.club/movie/${movieId}`,
-        // Backup - reliable but more ads
         'vidsrc': mediaType === 'movie' 
             ? `https://vidsrc.me/embed/movie?tmdb=${movieId}` 
             : `https://vidsrc.me/embed/tv?tmdb=${movieId}&sea=${season}&epi=${episode}`,
