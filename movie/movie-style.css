@@ -329,18 +329,17 @@ body {
 }
 
 /* ============================================ */
-/* INFO GRID (Poster + Details) - Full Width */
+/* INFO GRID (Poster + Details) - FULL WIDTH */
 /* ============================================ */
 
 .movie-info-grid { 
     display: grid; 
-    grid-template-columns: 280px minmax(300px, 750px);
-    gap: 60px; 
+    grid-template-columns: 280px 1fr;
+    gap: 40px; 
     align-items: start;
     max-width: 100%;
     margin: 0;
     padding: 20px 10px;
-    justify-content: start;
 }
 
 .poster-side {
@@ -381,10 +380,11 @@ body {
     color: #ccc; 
     font-size: 1.1rem;
     word-wrap: break-word;
+    width: 100%;
 }
 
 /* ============================================ */
-/* CAST SECTION */
+/* CAST SECTION - FULL WIDTH */
 /* ============================================ */
 
 .cast-section {
