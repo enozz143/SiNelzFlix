@@ -64,14 +64,27 @@
             </div>
         </div>
 
-        <div class="player-wrapper">
-            <iframe id="movie-iframe" src="" allowfullscreen></iframe>
-            <div id="player-loading" style="display: none;">
-                <div style="width: 40px; height: 40px; border: 3px solid #333; border-top-color: #00d4ff; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto;"></div>
-                <p style="color: #00d4ff; margin-top: 10px;">Loading player...</p>
+        <!-- TWO-COLUMN LAYOUT: Player + Similar Movies -->
+        <div class="player-similar-container">
+            <!-- LEFT COLUMN: Player -->
+            <div class="player-column">
+                <div class="player-wrapper">
+                    <iframe id="movie-iframe" src="" allowfullscreen></iframe>
+                    <div id="player-loading" style="display: none;">
+                        <div style="width: 40px; height: 40px; border: 3px solid #333; border-top-color: #00d4ff; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto;"></div>
+                        <p style="color: #00d4ff; margin-top: 10px;">Loading player...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: Similar Movies -->
+            <div class="similar-column">
+                <h3>You Might Also Like</h3>
+                <div id="similar-movies-container" class="similar-vertical-list"></div>
             </div>
         </div>
 
+        <!-- BOTTOM SECTION: Poster, Description & Cast -->
         <div class="movie-info-grid">
             <div class="poster-side">
                 <img id="movie-poster" src="" alt="Poster">
@@ -87,17 +100,12 @@
                 </div>
             </div>
         </div>
-
-        <section class="similar-section">
-            <div id="similar-movies-container"></div>
-        </section>
-   
     </main>
 
     <footer id="site-footer">
         <div class="footer-container">
             <div class="footer-links">
-               <a href="/">Home</a>
+                <a href="/">Home</a>
                 <a href="/about.html">About</a>
                 <a href="/contact.html">Contact</a>
                 <a href="/terms.html">Terms of Service</a>
@@ -123,7 +131,6 @@
         window.handleSearch = handleSearch;
         window.BASE_URL = BASE_URL;
         
-       
         window.scrollToTop = function() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
@@ -178,7 +185,6 @@
             if (menu) menu.style.display = 'none';
         };
         
-      
         document.addEventListener('click', function(e) {
             const menu = document.getElementById('mobile-genre-menu');
             const menuToggle = document.getElementById('menu-toggle');
@@ -188,8 +194,6 @@
                 menu.style.display = 'none';
             }
         });
-        
-
         
         let searchDebounceTimer;
         
@@ -265,7 +269,6 @@
                 .replace(/'/g, '&#39;');
         }
         
-    
         document.addEventListener('click', function(e) {
             const searchBox = document.querySelector('.search-box');
             const dropdown = document.getElementById('search-dropdown');
@@ -274,7 +277,6 @@
             }
         });
         
-
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 const dropdown = document.getElementById('search-dropdown');
@@ -282,7 +284,6 @@
             }
         });
         
-     
         const searchInput = document.getElementById('search-input');
         if (searchInput) {
             searchInput.addEventListener('keypress', function(e) {
@@ -296,7 +297,6 @@
         }
     </script>
     
-  
     <div id="mobile-bottom-nav" class="mobile-nav">
         <div class="nav-item" onclick="scrollToTop()">
             <span class="nav-icon">🏠</span>
@@ -311,7 +311,6 @@
             <span class="nav-label">Menu</span>
         </div>
     </div>
-
 
     <div id="mobile-genre-menu" class="mobile-genre-menu" style="display: none;">
         <div class="mobile-genre-header">
