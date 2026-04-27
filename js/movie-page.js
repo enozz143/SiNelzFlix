@@ -1,6 +1,6 @@
 /**
  * CINElzFlix - Movie Page Engine
- * Version: 5.7 (No Random Ads)
+ * Version: 5.8 (Two-Column Layout)
  */
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -440,28 +440,29 @@ function renderCast(data) {
     console.log(`✅ Cast rendered: ${topCast.length} actors`);
 }
 
+/**
+ * ✅ FIXED: Render Similar Movies for Two-Column Layout
+ */
 function renderSimilar(similar) {
     const container = document.getElementById('similar-movies-container');
     
     if (!container) return;
     
     if (!similar?.results || similar.results.length === 0) {
-        container.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">No similar movies found.</p>';
+        container.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">No similar movies found.</p>';
         return;
     }
     
-    container.innerHTML = `
-        <h2 style="margin: 30px 0 15px;">You Might Also Like</h2>
-        <div class="similar-grid" style="display: flex; gap: 15px; overflow-x: auto; padding-bottom: 20px;">
-            ${similar.results.slice(0, 12).map(m => `
-                <div class="similar-card" style="min-width: 160px; cursor: pointer;" onclick="window.location.href='?id=${m.id}&type=${mediaType}'">
-                    <img src="https://image.tmdb.org/t/p/w300${m.poster_path}" style="width: 100%; border-radius: 10px;" loading="lazy" onerror="this.src='https://via.placeholder.com/300x450?text=No+Poster'">
-                    <p style="font-size: 0.85rem; margin-top: 8px; font-weight: bold;">${m.title || m.name}</p>
-                    <span style="font-size: 0.7rem; color: #00d4ff;">⭐ ${m.vote_average ? m.vote_average.toFixed(1) : 'N/A'}</span>
-                </div>
-            `).join('')}
+    // ✅ Vertical list for desktop, horizontal for mobile (via CSS)
+    container.innerHTML = similar.results.slice(0, 12).map(m => `
+        <div class="similar-card" onclick="window.location.href='?id=${m.id}&type=${mediaType}'">
+            <img src="https://image.tmdb.org/t/p/w92${m.poster_path}" loading="lazy" onerror="this.src='https://via.placeholder.com/92x138?text=No+Poster'">
+            <div>
+                <p>${m.title || m.name}</p>
+                <span>⭐ ${m.vote_average ? m.vote_average.toFixed(1) : 'N/A'}</span>
+            </div>
         </div>
-    `;
+    `).join('');
 }
 
 function updateVideoPlayer(server) {
