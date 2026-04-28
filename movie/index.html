@@ -3,11 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    
+    <!-- ✅ DYNAMIC TITLE (pupunan ng JavaScript) -->
     <title id="page-title">Loading - CINElzFlix</title>
+    
+    <!-- ✅ BASIC SEO META TAGS -->
+    <meta name="description" id="meta-description" content="Watch latest movies and TV series online for free in HD. CINElzFlix - Your ultimate streaming destination.">
+    <meta name="keywords" content="watch movies online, free movies, streaming, HD movies, TV series, anime, CINElzFlix">
+    <meta name="author" content="Nelz">
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    <meta name="revisit-after" content="1 day">
+    
+    <!-- ✅ OPEN GRAPH (Facebook, WhatsApp, Telegram) -->
+    <meta property="og:title" id="og-title" content="CINElzFlix - Watch Movies Online Free">
+    <meta property="og:description" id="og-description" content="Stream the latest movies and TV series in HD quality. No sign-up required.">
+    <meta property="og:image" id="og-image" content="https://cinelzflix.com/logo.png">
+    <meta property="og:url" id="og-url" content="https://cinelzflix.com">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="CINElzFlix">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    
+    <!-- ✅ TWITTER CARD -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" id="twitter-title" content="CINElzFlix - Watch Movies Online Free">
+    <meta name="twitter:description" id="twitter-description" content="Stream the latest movies and TV series in HD quality.">
+    <meta name="twitter:image" id="twitter-image" content="https://cinelzflix.com/logo.png">
+    
+    <!-- ✅ ADDITIONAL META TAGS -->
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="../style.css?v=1.6">
     <link rel="stylesheet" href="../css/hero.css"> 
     <link rel="stylesheet" href="movie-style.css"> 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- ✅ FAVICON (optional) -->
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico">
 </head>
 <body>
     
@@ -304,6 +341,56 @@
                 }
             });
         }
+        
+        // ============================================================
+        // ✅ FUNCTION TO UPDATE META TAGS DYNAMICALLY (para sa movie-page.js)
+        // ============================================================
+        window.updateMetaTags = function(movieData, type) {
+            const title = movieData.title || movieData.name || 'CINElzFlix';
+            const year = (movieData.release_date || movieData.first_air_date || '').split('-')[0];
+            const fullTitle = year ? `${title} (${year}) - Watch ${type === 'movie' ? 'Movie' : 'TV Series'} Online | CINElzFlix` : `${title} - Watch ${type === 'movie' ? 'Movie' : 'TV Series'} Online | CINElzFlix`;
+            const description = movieData.overview 
+                ? `${movieData.overview.substring(0, 160)}... Watch ${title} in HD quality on CINElzFlix.` 
+                : `Watch ${title} online for free in HD. Stream the best movies and TV series at CINElzFlix.`;
+            
+            const posterUrl = movieData.poster_path 
+                ? `https://image.tmdb.org/t/p/original${movieData.poster_path}`
+                : 'https://cinelzflix.com/logo.png';
+            
+            const pageUrl = `${window.location.origin}/movie/?id=${movieData.id}&type=${type}`;
+            
+            // Update title
+            document.title = fullTitle;
+            
+            // Update meta description
+            const metaDesc = document.querySelector('meta[name="description"]');
+            if (metaDesc) metaDesc.setAttribute('content', description);
+            
+            // Update Open Graph tags
+            const ogTitle = document.querySelector('meta[property="og:title"]');
+            if (ogTitle) ogTitle.setAttribute('content', fullTitle);
+            
+            const ogDesc = document.querySelector('meta[property="og:description"]');
+            if (ogDesc) ogDesc.setAttribute('content', description);
+            
+            const ogImage = document.querySelector('meta[property="og:image"]');
+            if (ogImage) ogImage.setAttribute('content', posterUrl);
+            
+            const ogUrl = document.querySelector('meta[property="og:url"]');
+            if (ogUrl) ogUrl.setAttribute('content', pageUrl);
+            
+            // Update Twitter Card tags
+            const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+            if (twitterTitle) twitterTitle.setAttribute('content', fullTitle);
+            
+            const twitterDesc = document.querySelector('meta[name="twitter:description"]');
+            if (twitterDesc) twitterDesc.setAttribute('content', description);
+            
+            const twitterImage = document.querySelector('meta[name="twitter:image"]');
+            if (twitterImage) twitterImage.setAttribute('content', posterUrl);
+            
+            console.log('✅ Meta tags updated for:', title);
+        };
     </script>
     
     <div id="mobile-bottom-nav" class="mobile-nav">
