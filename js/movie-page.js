@@ -1,6 +1,6 @@
 /**
  * CINElzFlix - Movie Page Engine
- * Version: 5.8 (Two-Column Layout)
+ * Version: 6.0 (SEO Optimized with Meta Tags)
  */
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -13,6 +13,155 @@ const TMDB_POSTER = 'https://image.tmdb.org/t/p/w500';
 
 window.currentMovieData = null;
 window.movieTitle = "";
+
+// ============================================
+// ✅ SEO META TAGS UPDATE FUNCTION
+// ============================================
+function updateMetaTags(movieData, type) {
+    const title = movieData.title || movieData.name || 'CINElzFlix';
+    const year = (movieData.release_date || movieData.first_air_date || '').split('-')[0];
+    const fullTitle = year 
+        ? `${title} (${year}) - Watch ${type === 'movie' ? 'Movie' : 'TV Series'} Online | CINElzFlix` 
+        : `${title} - Watch ${type === 'movie' ? 'Movie' : 'TV Series'} Online | CINElzFlix`;
+    
+    const description = movieData.overview 
+        ? `${movieData.overview.substring(0, 160)}... Watch ${title} in HD quality on CINElzFlix.` 
+        : `Watch ${title} online for free in HD. Stream the best movies and TV series at CINElzFlix.`;
+    
+    const posterUrl = movieData.poster_path 
+        ? `https://image.tmdb.org/t/p/original${movieData.poster_path}`
+        : 'https://cinelzflix.com/logo.png';
+    
+    const pageUrl = `${window.location.origin}/movie/?id=${movieData.id}&type=${type}`;
+    
+    // Update document title
+    document.title = fullTitle;
+    
+    // Update meta description
+    let metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+        metaDesc.setAttribute('content', description);
+    } else {
+        metaDesc = document.createElement('meta');
+        metaDesc.name = 'description';
+        metaDesc.content = description;
+        document.head.appendChild(metaDesc);
+    }
+    
+    // Update Open Graph tags
+    let ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) {
+        ogTitle.setAttribute('content', fullTitle);
+    } else {
+        ogTitle = document.createElement('meta');
+        ogTitle.setAttribute('property', 'og:title');
+        ogTitle.content = fullTitle;
+        document.head.appendChild(ogTitle);
+    }
+    
+    let ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) {
+        ogDesc.setAttribute('content', description);
+    } else {
+        ogDesc = document.createElement('meta');
+        ogDesc.setAttribute('property', 'og:description');
+        ogDesc.content = description;
+        document.head.appendChild(ogDesc);
+    }
+    
+    let ogImage = document.querySelector('meta[property="og:image"]');
+    if (ogImage) {
+        ogImage.setAttribute('content', posterUrl);
+    } else {
+        ogImage = document.createElement('meta');
+        ogImage.setAttribute('property', 'og:image');
+        ogImage.content = posterUrl;
+        document.head.appendChild(ogImage);
+    }
+    
+    let ogUrl = document.querySelector('meta[property="og:url"]');
+    if (ogUrl) {
+        ogUrl.setAttribute('content', pageUrl);
+    } else {
+        ogUrl = document.createElement('meta');
+        ogUrl.setAttribute('property', 'og:url');
+        ogUrl.content = pageUrl;
+        document.head.appendChild(ogUrl);
+    }
+    
+    // Update Twitter Card tags
+    let twitterTitle = document.querySelector('meta[name="twitter:title"]');
+    if (twitterTitle) {
+        twitterTitle.setAttribute('content', fullTitle);
+    } else {
+        twitterTitle = document.createElement('meta');
+        twitterTitle.name = 'twitter:title';
+        twitterTitle.content = fullTitle;
+        document.head.appendChild(twitterTitle);
+    }
+    
+    let twitterDesc = document.querySelector('meta[name="twitter:description"]');
+    if (twitterDesc) {
+        twitterDesc.setAttribute('content', description);
+    } else {
+        twitterDesc = document.createElement('meta');
+        twitterDesc.name = 'twitter:description';
+        twitterDesc.content = description;
+        document.head.appendChild(twitterDesc);
+    }
+    
+    let twitterImage = document.querySelector('meta[name="twitter:image"]');
+    if (twitterImage) {
+        twitterImage.setAttribute('content', posterUrl);
+    } else {
+        twitterImage = document.createElement('meta');
+        twitterImage.name = 'twitter:image';
+        twitterImage.content = posterUrl;
+        document.head.appendChild(twitterImage);
+    }
+    
+    // ✅ Add JSON-LD Structured Data (mas maganda sa Google search results)
+    addJsonLd(movieData, type, fullTitle, description, posterUrl, pageUrl);
+    
+    console.log('✅ Meta tags updated for:', title);
+}
+
+// ============================================
+// ✅ JSON-LD STRUCTURED DATA
+// ============================================
+function addJsonLd(movieData, type, fullTitle, description, posterUrl, pageUrl) {
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": type === 'movie' ? "Movie" : "TVSeries",
+        "name": movieData.title || movieData.name,
+        "description": description,
+        "image": posterUrl,
+        "url": pageUrl,
+        "datePublished": movieData.release_date || movieData.first_air_date,
+        "contentRating": movieData.adult ? "R" : "PG",
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": movieData.vote_average || 0,
+            "ratingCount": movieData.vote_count || 0
+        }
+    };
+    
+    if (type === 'movie' && movieData.runtime) {
+        jsonLd.duration = `PT${movieData.runtime}M`;
+    }
+    
+    if (movieData.genres && movieData.genres.length > 0) {
+        jsonLd.genre = movieData.genres.map(g => g.name);
+    }
+    
+    const existingScript = document.querySelector('script[type="application/ld+json"]');
+    if (existingScript) existingScript.remove();
+    
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.textContent = JSON.stringify(jsonLd);
+    document.head.appendChild(script);
+}
 
 async function initMoviePage() {
     console.log("🎬 Movie Page Engine Starting...");
@@ -61,7 +210,8 @@ async function initMoviePage() {
         window.currentMovieData = data;
         window.movieTitle = data.title || data.name || "Unknown Title";
         
-        document.title = `${window.movieTitle} - CINElzFlix Movies`;
+        // ✅ UPDATE META TAGS DYNAMICALLY
+        updateMetaTags(data, mediaType);
         
         renderHero(data);
         renderDetails(data);
@@ -440,9 +590,6 @@ function renderCast(data) {
     console.log(`✅ Cast rendered: ${topCast.length} actors`);
 }
 
-/**
- * ✅ FIXED: Render Similar Movies for Two-Column Layout
- */
 function renderSimilar(similar) {
     const container = document.getElementById('similar-movies-container');
     
@@ -453,7 +600,6 @@ function renderSimilar(similar) {
         return;
     }
     
-    // ✅ Vertical list for desktop, horizontal for mobile (via CSS)
     container.innerHTML = similar.results.slice(0, 12).map(m => `
         <div class="similar-card" onclick="window.location.href='?id=${m.id}&type=${mediaType}'">
             <img src="https://image.tmdb.org/t/p/w92${m.poster_path}" loading="lazy" onerror="this.src='https://via.placeholder.com/92x138?text=No+Poster'">
@@ -583,7 +729,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (watchBtn) {
         watchBtn.addEventListener('click', () => {
             updateVideoPlayer('embed2');
-            document.getElementById('player-section')?.scrollIntoView({ behavior: 'smooth' });
+            const playerSection = document.getElementById('player-section');
+            if (playerSection) {
+                playerSection.scrollIntoView({ behavior: 'smooth' });
+            }
         });
     }
     
@@ -609,6 +758,7 @@ document.addEventListener('DOMContentLoaded', () => {
 window.playTrailer = playTrailer;
 window.updateVideoPlayer = updateVideoPlayer;
 window.showNotification = showNotification;
+window.updateMetaTags = updateMetaTags;
 
 // INITIALIZE
 initMoviePage();

@@ -1,33 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head> 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-5YXHENQC97"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-5YXHENQC97');
-</script>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5YXHENQC97"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-5YXHENQC97');
+    </script>
+    
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    
+    <!-- ✅ SEO Meta Tags -->
     <meta name="google-site-verification" content="qwSQmjhkugm8eUJeMZeGK5seJ4ZXi38a_uG97iOwAdQ" />
-    <title>CINElzFlix | Watch Free Movies, TV Shows & Anime</title>
-    <meta name="description" content="Stream the latest movies, TV shows, and anime for free on CINElzFlix. Your unlimited cinematic experience.">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+    <meta name="author" content="CINElzFlix">
+    <meta name="keywords" content="watch free movies, free streaming, watch movies online, free tv shows, anime streaming, CINElzFlix, HD movies, trending movies, upcoming blockbusters">
+    <meta name="revisit-after" content="1 day">
+    
+    <title>CINElzFlix | Watch Free Movies, TV Shows & Anime Online in HD</title>
+    <meta name="description" content="Stream the latest movies, TV shows, and anime for free on CINElzFlix. Watch HD quality without sign-up. Your ultimate cinematic experience starts here!">
 
-    <meta property="og:title" content="CINElzFlix | Watch Free Movies, TV Shows & Anime">
-    <meta property="og:description" content="Watch the latest trending movies and anime for free.">
-    <meta property="og:image" content="logo.png"> 
-    <meta property="og:url" content="https://cinelzflix.com">
+    <!-- ✅ Canonical Tag - iwas duplicate content -->
+    <link rel="canonical" href="https://cinelzflix.com/">
+
+    <!-- ✅ Open Graph (Facebook, WhatsApp, Telegram) -->
+    <meta property="og:title" content="CINElzFlix | Watch Free Movies, TV Shows & Anime Online">
+    <meta property="og:description" content="Stream the latest trending movies, TV series, and anime for free in HD quality. No sign-up required!">
+    <meta property="og:image" content="https://cinelzflix.com/logo.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://cinelzflix.com/">
     <meta property="og:type" content="website">
+    <meta property="og:site_name" content="CINElzFlix">
+    <meta property="og:locale" content="en_US">
 
+    <!-- ✅ Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="CINElzFlix | Watch Free Movies, TV Shows & Anime">
+    <meta name="twitter:description" content="Stream the latest movies and TV series for free. HD quality, no sign-up required!">
+    <meta name="twitter:image" content="https://cinelzflix.com/logo.png">
+    <meta name="twitter:site" content="@cinelzflix">
+
+    <!-- ✅ Icons & PWA -->
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="apple-touch-icon" href="icon-512.png">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#00d4ff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="style.css?v=1.6">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- ✅ JSON-LD Structured Data for Website -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "CINElzFlix",
+        "url": "https://cinelzflix.com/",
+        "description": "Watch free movies, TV shows, and anime online in HD quality. No sign-up required.",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://cinelzflix.com/?search={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
 </head>
 <body>
     
@@ -36,14 +82,14 @@
             <a href="/" style="text-decoration: none;">
                 <img src="logo.png" alt="CINElzFlix Logo" id="site-logo">
             </a>
-             <a href="https://github.com/enozZZZ/enozZ/releases/download/v1.0/cinelzflix.apk" class="download-nav-btn" download>
-        📱 Download App
-    </a>
+            <a href="https://github.com/enozZZZ/enozZ/releases/download/v1.0/cinelzflix.apk" class="download-nav-btn" download>
+                📱 Download App
+            </a>
         </div>
-       <div class="search-box" style="position: relative; z-index: 9999;">
-    <input type="text" id="search-input" placeholder="Search movies, anime..." oninput="handleSearchWithDropdown(this.value)">
-    <div id="search-dropdown" class="search-dropdown" style="display: none;"></div>
-</div>
+        <div class="search-box" style="position: relative; z-index: 9999;">
+            <input type="text" id="search-input" placeholder="Search movies, anime..." oninput="handleSearchWithDropdown(this.value)">
+            <div id="search-dropdown" class="search-dropdown" style="display: none;"></div>
+        </div>
     </nav>
     
     <main>
@@ -73,27 +119,27 @@
                 </div>
             </section>
 
-        <div class="genre-container">
-    <button class="genre-btn active" onclick="filterGenre('all')">All</button>
-    <button class="genre-btn" onclick="filterGenre('28')">Action</button>
-    <button class="genre-btn" onclick="filterGenre('12')">Adventure</button>
-    <button class="genre-btn" onclick="filterGenre('35')">Comedy</button>
-    <button class="genre-btn" onclick="filterGenre('27')">Horror</button>
-    <button class="genre-btn" onclick="filterGenre('10749')">Romance</button>
-    <button class="genre-btn" onclick="filterGenre('878')">Sci-Fi</button>
-    <button class="genre-btn" onclick="filterGenre('14')">Fantasy</button>
-    <button class="genre-btn" onclick="filterGenre('9648')">Mystery</button>
-    <button class="genre-btn" onclick="filterGenre('53')">Thriller</button>
-    <button class="genre-btn" onclick="filterGenre('16')">Animation</button>
-    <button class="genre-btn" onclick="filterGenre('18')">Drama</button>
-    <button class="genre-btn" onclick="filterGenre('36')">History</button>
-    <button class="genre-btn" onclick="filterGenre('10402')">Music</button>
-    <button class="genre-btn" onclick="filterGenre('10751')">Family</button>
-    <button class="genre-btn" onclick="filterGenre('10752')">War</button>
-    <button class="genre-btn" onclick="filterGenre('37')">Western</button>
-    <button class="genre-btn" onclick="filterGenre('99')">Documentary</button>
-   <button class="genre-btn" onclick="openVivaMaxAd()">🔥VivaMax(Coming Soon)</button>
-</div>
+            <div class="genre-container">
+                <button class="genre-btn active" onclick="filterGenre('all')">All</button>
+                <button class="genre-btn" onclick="filterGenre('28')">Action</button>
+                <button class="genre-btn" onclick="filterGenre('12')">Adventure</button>
+                <button class="genre-btn" onclick="filterGenre('35')">Comedy</button>
+                <button class="genre-btn" onclick="filterGenre('27')">Horror</button>
+                <button class="genre-btn" onclick="filterGenre('10749')">Romance</button>
+                <button class="genre-btn" onclick="filterGenre('878')">Sci-Fi</button>
+                <button class="genre-btn" onclick="filterGenre('14')">Fantasy</button>
+                <button class="genre-btn" onclick="filterGenre('9648')">Mystery</button>
+                <button class="genre-btn" onclick="filterGenre('53')">Thriller</button>
+                <button class="genre-btn" onclick="filterGenre('16')">Animation</button>
+                <button class="genre-btn" onclick="filterGenre('18')">Drama</button>
+                <button class="genre-btn" onclick="filterGenre('36')">History</button>
+                <button class="genre-btn" onclick="filterGenre('10402')">Music</button>
+                <button class="genre-btn" onclick="filterGenre('10751')">Family</button>
+                <button class="genre-btn" onclick="filterGenre('10752')">War</button>
+                <button class="genre-btn" onclick="filterGenre('37')">Western</button>
+                <button class="genre-btn" onclick="filterGenre('99')">Documentary</button>
+                <button class="genre-btn" onclick="openVivaMaxAd()">🔥VivaMax(Coming Soon)</button>
+            </div>
 
             <section class="category-section">
                 <h2>📺 Trending Movies</h2>
@@ -164,88 +210,89 @@
                 <div class="modal-banner-ad" style="margin-top: 30px; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
                     <p style="color: rgba(255,255,255,0.3); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">Recommended for you</p>
                     <div id="adsterra-modal-banner-slot" style="min-height: 250px; display: flex; justify-content: center; align-items: center;">
-    <script>
-  atOptions = {
-    'key' : '4677c11ed240a7ea84888be8a557f607',
-    'format' : 'iframe',
-    'height' : 250,
-    'width' : 300,
-    'params' : {}
-  };
-</script>
-<script src="https://www.highperformanceformat.com/4677c11ed240a7ea84888be8a557f607/invoke.js"></script>
+                        <script>
+                            atOptions = {
+                                'key' : '4677c11ed240a7ea84888be8a557f607',
+                                'format' : 'iframe',
+                                'height' : 250,
+                                'width' : 300,
+                                'params' : {}
+                            };
+                        </script>
+                        <script src="https://www.highperformanceformat.com/4677c11ed240a7ea84888be8a557f607/invoke.js"></script>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
- <footer id="site-footer">
-    <div class="footer-container">
-        <div class="footer-links">
-          <a href="/">Home</a>
+    <footer id="site-footer">
+        <div class="footer-container">
+            <div class="footer-links">
+                <a href="/">Home</a>
                 <a href="/about.html">About</a>
                 <a href="/contact.html">Contact</a>
                 <a href="/terms.html">Terms of Service</a>
                 <a href="/privacy.html">Privacy Policy</a>
                 <a href="/dmca.html">DMCA</a>
+            </div>
+            <div class="footer-copyright">
+                <p>&copy; 2026 CINElzFlix.com. All rights reserved.</p>
+                <p class="credit">Crafted with <span style="color: #00d4ff;">❤</span> by <strong>Nelz</strong></p>
+            </div>
         </div>
-        <div class="footer-copyright">
-            <p>&copy; 2026 CINElzFlix.com. All rights reserved.</p>
-            <p class="credit">Crafted with <span style="color: #00d4ff;">❤</span> by <strong>Nelz</strong></p>
+    </footer>
+
+    <div id="mobile-bottom-nav" class="mobile-nav">
+        <div class="nav-item" onclick="scrollToTop()">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label">Home</span>
+        </div>
+        <div class="nav-item" onclick="focusSearch()">
+            <span class="nav-icon">🔍</span>
+            <span class="nav-label">Search</span>
+        </div>
+        <div class="nav-item" id="menu-toggle" onclick="toggleGenreMenu()">
+            <span class="nav-icon">☰</span>
+            <span class="nav-label">Menu</span>
         </div>
     </div>
-</footer>
-<div id="mobile-bottom-nav" class="mobile-nav">
-    <div class="nav-item" onclick="scrollToTop()">
-        <span class="nav-icon">🏠</span>
-        <span class="nav-label">Home</span>
-    </div>
-    <div class="nav-item" onclick="focusSearch()">
-        <span class="nav-icon">🔍</span>
-        <span class="nav-label">Search</span>
-    </div>
-    <div class="nav-item" id="menu-toggle" onclick="toggleGenreMenu()">
-        <span class="nav-icon">☰</span>
-        <span class="nav-label">Menu</span>
-    </div>
-</div>
 
-
-<div id="mobile-genre-menu" class="mobile-genre-menu" style="display: none;">
-    <div class="mobile-genre-header">
-        <span>🎬 Genres</span>
-        <button onclick="closeGenreMenu()">✕</button>
+    <div id="mobile-genre-menu" class="mobile-genre-menu" style="display: none;">
+        <div class="mobile-genre-header">
+            <span>🎬 Genres</span>
+            <button onclick="closeGenreMenu()">✕</button>
+        </div>
+        <div id="mobile-genre-list" class="mobile-genre-list"></div>
     </div>
-    <div id="mobile-genre-list" class="mobile-genre-list"></div>
-</div>
+
     <script type="module" src="script.js"></script>
     
     <script>
-      
+        // Disable right click
         document.addEventListener('contextmenu', e => e.preventDefault());
+        
+        // Disable F12 and dev tools shortcuts
         document.onkeydown = function(e) {
             if(e.keyCode == 123) return false;
             if(e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 67 || e.keyCode == 74)) return false;
             if(e.ctrlKey && e.keyCode == 85) return false;
         };
-        document.onselectstart = () => false;
-    </script>
-    <script>
-  
-    function comingSoon() {
-        alert("🔥 VivaMax section is coming soon! Make sure you're 18 years or older. Stay tuned for exclusive content! 🎬");
-    }
-</script>
-    <script>
-    function openVivaMaxAd() {
-        let userConfirmed = confirm("🔞 VivaMax section is coming soon! (18+ only)\n\nClick OK to see exclusive offers while we build the section. 🎬");
         
-        if (userConfirmed) {
-            window.open('https://www.profitablecpmratenetwork.com/s4304airr?key=6b4f3e1e971c417fa77414903411d40c', '_blank');
+        document.onselectstart = () => false;
+        
+        function comingSoon() {
+            alert("🔥 VivaMax section is coming soon! Make sure you're 18 years or older. Stay tuned for exclusive content! 🎬");
         }
-    }
-</script>
-   <script src="https://pl28947937.profitablecpmratenetwork.com/a5/c3/8e/a5c38ef495583bd163602819c5112f48.js"></script>
+        
+        function openVivaMaxAd() {
+            let userConfirmed = confirm("🔞 VivaMax section is coming soon! (18+ only)\n\nClick OK to see exclusive offers while we build the section. 🎬");
+            if (userConfirmed) {
+                window.open('https://www.profitablecpmratenetwork.com/s4304airr?key=6b4f3e1e971c417fa77414903411d40c', '_blank');
+            }
+        }
+    </script>
+    
+    <script src="https://pl28947937.profitablecpmratenetwork.com/a5/c3/8e/a5c38ef495583bd163602819c5112f48.js"></script>
 </body>
 </html>
