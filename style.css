@@ -102,7 +102,107 @@
 }
 
 /* ============================================ */
-/* MOBILE SEARCH BOX - ICON MODE (EXPAND ON FOCUS) */
+/* NETFLIX-STYLE MOBILE TOP NAVIGATION */
+/* ============================================ */
+
+.mobile-top-nav {
+    display: none;
+    justify-content: flex-start;
+    gap: 20px;
+    padding: 12px 15px;
+    background: #0a0a0a;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 99;
+}
+
+.top-nav-btn {
+    background: transparent;
+    border: none;
+    color: #aaa;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 8px 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.top-nav-btn.active {
+    color: #fff;
+}
+
+.top-nav-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: #00d4ff;
+    border-radius: 3px;
+}
+
+.categories-dropdown {
+    position: relative;
+    margin-left: auto;
+}
+
+.dropdown-toggle {
+    margin-left: auto;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 45px;
+    right: 0;
+    background: #0a192f;
+    border: 1px solid #00d4ff;
+    border-radius: 12px;
+    min-width: 180px;
+    max-height: 400px;
+    overflow-y: auto;
+    display: none;
+    z-index: 1000;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.dropdown-menu.show {
+    display: block;
+    animation: fadeIn 0.2s ease;
+}
+
+.dropdown-menu button {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    text-align: left;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.dropdown-menu button:hover {
+    background: rgba(0,212,255,0.2);
+    color: #00d4ff;
+}
+
+/* Desktop-only genre container */
+.desktop-only {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================ */
+/* MOBILE SEARCH BOX - ICON MODE */
 /* ============================================ */
 
 @media (max-width: 768px) {
@@ -217,10 +317,23 @@
     .search-dropdown-meta {
         font-size: 0.65rem !important;
     }
+    
+    /* Show mobile top nav, hide desktop genre */
+    .mobile-top-nav {
+        display: flex !important;
+    }
+    
+    .desktop-only {
+        display: none !important;
+    }
+    
+    .genre-container {
+        display: none !important;
+    }
 }
 
 /* ============================================ */
-/* MOBILE BOTTOM NAVIGATION BAR - BRANDING COLORS ALWAYS VISIBLE */
+/* MOBILE BOTTOM NAVIGATION BAR */
 /* ============================================ */
 
 .mobile-nav {
@@ -250,13 +363,11 @@
     border-radius: 30px;
 }
 
-/* Icons - neon blue glow (always visible) */
 .nav-icon {
     font-size: 1.3rem;
     filter: drop-shadow(0 0 3px rgba(0, 212, 255, 0.5));
 }
 
-/* Labels - neon blue (always visible, not gray) */
 .nav-label {
     font-size: 0.6rem;
     color: #00d4ff; 
@@ -264,7 +375,6 @@
     transition: all 0.2s ease;
 }
 
-/* Active/tap effect */
 .nav-item:active {
     transform: scale(0.95);
     background: rgba(0, 212, 255, 0.2);
@@ -280,7 +390,6 @@
         display: flex;
     }
     
-    /* FIX: FOOTER NOT HIDDEN BY BOTTOM NAV */
     main {
         padding-bottom: 80px !important;
     }
@@ -290,7 +399,6 @@
         padding-bottom: 20px !important;
     }
     
-    /* Ensure copyright text is visible */
     .footer-copyright p,
     .copyright,
     .credit {
@@ -395,10 +503,10 @@
 }
 
 /* ============================================ */
-/* ✅ ADDITIONAL MOBILE OPTIMIZATIONS - CINElzFlix */
+/* ADDITIONAL MOBILE OPTIMIZATIONS */
 /* ============================================ */
 
-/* Medium devices (tablets, 768px - 1024px) */
+/* Medium devices (tablets) */
 @media (min-width: 768px) and (max-width: 1024px) {
     .genre-container {
         gap: 8px !important;
@@ -419,15 +527,13 @@
     }
 }
 
-/* Mobile devices (up to 767px) - MAIN OPTIMIZATIONS */
+/* Mobile devices (up to 767px) */
 @media (max-width: 767px) {
-    /* Prevent horizontal scroll */
     body, html {
         overflow-x: hidden !important;
         width: 100% !important;
     }
     
-    /* Hero slider adjustments */
     .hero-slide {
         height: 280px !important;
     }
@@ -461,25 +567,6 @@
         height: 6px !important;
     }
     
-    /* Genre buttons - horizontal scroll */
-    .genre-container {
-        display: flex !important;
-        overflow-x: auto !important;
-        flex-wrap: nowrap !important;
-        gap: 8px !important;
-        padding: 10px 15px !important;
-        margin: 0 0 20px 0 !important;
-        -webkit-overflow-scrolling: touch !important;
-        scrollbar-width: thin !important;
-    }
-    
-    .genre-btn {
-        flex-shrink: 0 !important;
-        font-size: 0.7rem !important;
-        padding: 5px 12px !important;
-    }
-    
-    /* Category sections */
     .category-section {
         margin: 25px 0 !important;
         padding: 0 15px !important;
@@ -490,7 +577,6 @@
         margin-bottom: 12px !important;
     }
     
-    /* Movie rows - horizontal scroll */
     .movie-row {
         gap: 10px !important;
         padding-bottom: 8px !important;
@@ -514,7 +600,6 @@
         font-size: 0.65rem !important;
     }
     
-    /* Modal (popup) mobile fix */
     .modal {
         padding: 10px !important;
     }
@@ -560,7 +645,6 @@
         margin-top: 10px !important;
     }
     
-    /* Similar movies sa modal */
     #similar-movies-container {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
@@ -579,11 +663,6 @@
         border-radius: 8px !important;
     }
     
-    .similar-item span {
-        font-size: 0.7rem !important;
-    }
-    
-    /* Footer */
     footer {
         margin-bottom: 70px !important;
         padding: 20px 15px 30px !important;
@@ -603,7 +682,6 @@
         font-size: 0.6rem !important;
     }
     
-    /* Load more button */
     .load-more-container {
         padding: 0 15px 20px !important;
     }
@@ -614,18 +692,15 @@
         font-size: 0.85rem !important;
     }
     
-    /* Ad containers */
     .native-ad-container {
         padding: 0 15px !important;
     }
     
-    /* Modal banner ad */
     .modal-banner-ad iframe {
         max-width: 100% !important;
         height: 200px !important;
     }
     
-    /* Countdown banner sa mobile */
     .countdown-card {
         margin: 0 15px !important;
         padding: 15px !important;
@@ -665,11 +740,6 @@
     
     .movie-card h3 {
         font-size: 0.7rem !important;
-    }
-    
-    .genre-btn {
-        font-size: 0.65rem !important;
-        padding: 4px 10px !important;
     }
     
     .category-section h2 {
@@ -713,7 +783,7 @@
     }
 }
 
-/* Landscape mode sa mobile */
+/* Landscape mode */
 @media (max-width: 767px) and (orientation: landscape) {
     .hero-slide {
         height: 180px !important;
