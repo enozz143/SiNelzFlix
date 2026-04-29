@@ -437,26 +437,27 @@
 }
 
 /* ============================================ */
-/* ✅ MOBILE OPTIMIZATIONS - Dikit na spacing at hide scrollbar */
+/* ✅ MOBILE OPTIMIZATIONS - SOBRANG DIKIT NA SPACING */
 /* ============================================ */
 
 @media (max-width: 768px) {
     
-    /* ===== DIKIT NA SPACING SA PAGITAN NG MGA ROWS ===== */
+    /* ===== SOBRANG DIKIT NA SPACING ===== */
     
-    /* Para mas dikit ang mga sections (Trending, Upcoming, TV Shows, Anime) */
+    /* Sobrang dikit ng mga sections */
     .category-section {
-        margin: 6px 0 !important;
+        margin: 4px 0 !important;
         padding: 0 10px !important;
     }
     
-    /* Para mas dikit ang title sa posters */
+    /* Sobrang dikit ang title sa posters */
     .category-section h2 {
         font-size: 0.85rem !important;
-        margin-bottom: 4px !important;
+        margin-bottom: 2px !important;
+        line-height: 1.2 !important;
     }
     
-    /* Para mas dikit ang poster rows */
+    /* Sobrang dikit ang poster rows */
     .movie-row {
         gap: 5px !important;
         margin-bottom: 0 !important;
@@ -478,14 +479,14 @@
     .movie-card h3 {
         font-size: 0.65rem !important;
         margin-top: 3px !important;
-        margin-bottom: 2px !important;
+        margin-bottom: 1px !important;
     }
     
     .movie-card p {
         font-size: 0.55rem !important;
     }
     
-    /* ===== HIDE SCROLLBAR SA MOBILE (pero pwedeng mag-swipe) ===== */
+    /* ===== HIDE SCROLLBAR SA MOBILE ===== */
     .movie-row::-webkit-scrollbar {
         display: none !important;
     }
@@ -508,22 +509,22 @@
     }
     
     .load-more-container {
-        padding: 0 10px 12px !important;
+        padding: 0 10px 10px !important;
     }
     
     #load-more-btn {
-        padding: 6px !important;
+        padding: 5px !important;
         font-size: 0.7rem !important;
     }
     
-    /* Bawasan ang ad container spacing para dikit din */
+    /* Sobrang dikit din ang ad container */
     .native-ad-container {
-        margin: 6px auto !important;
+        margin: 4px auto !important;
         padding: 0 10px !important;
     }
     
     .native-ad-container p {
         font-size: 0.55rem !important;
-        margin-bottom: 3px !important;
+        margin-bottom: 2px !important;
     }
 }
