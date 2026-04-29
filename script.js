@@ -9,13 +9,11 @@ import { initCountdown } from './js/countdown.js';
 // ✅ AUTO-DETECT ENVIRONMENT (DEV vs PRODUCTION)
 // ============================================
 
-// Detect if we're on development or production
 const isDev = window.location.hostname === 'localhost' || 
               window.location.hostname.includes('127.0.0.1') ||
               window.location.hostname.includes('github.io') ||
               !window.location.hostname.includes('cinelzflix.com');
 
-// Use different BASE_URL based on environment
 const BASE_URL = isDev 
     ? 'https://cinelzflix-worker.baquial-enozz.workers.dev/'
     : '/api';
@@ -23,34 +21,33 @@ const BASE_URL = isDev
 console.log(`🔧 Running in ${isDev ? 'DEVELOPMENT' : 'PRODUCTION'} mode`);
 console.log(`📡 Using API URL: ${BASE_URL}`);
 
-// Make BASE_URL available globally
 window.BASE_URL = BASE_URL;
 
 // ============================================
-// ✅ GENRE ID MAPPING FOR ADDITIONAL SECTIONS
+// ✅ GENRE MAPPING WITH DIFFERENT STRATEGIES (RADIKAL FIX)
 // ============================================
 
 const genreMapping = [
-    { name: 'action', id: 28, title: '🔥 Action Movies' },
-    { name: 'adventure', id: 12, title: '🗺️ Adventure Movies' },
-    { name: 'comedy', id: 35, title: '😂 Comedy Movies' },
-    { name: 'drama', id: 18, title: '🎭 Drama Movies' },
-    { name: 'horror', id: 27, title: '😱 Horror Movies' },
-    { name: 'thriller', id: 53, title: '🔪 Thriller Movies' },
-    { name: 'romance', id: 10749, title: '💖 Romance Movies' },
-    { name: 'scifi', id: 878, title: '🚀 Sci-Fi Movies' },
-    { name: 'fantasy', id: 14, title: '🧙 Fantasy Movies' },
-    { name: 'mystery', id: 9648, title: '🕵️ Mystery Movies' },
-    { name: 'crime', id: 80, title: '🕵️ Crime Movies' },
-    { name: 'animation', id: 16, title: '🎨 Animation' },
-    { name: 'documentary', id: 99, title: '📽️ Documentary' },
-    { name: 'family', id: 10751, title: '👨‍👩‍👧 Family Movies' },
-    { name: 'war', id: 10752, title: '⚔️ War Movies' },
-    { name: 'western', id: 37, title: '🤠 Western Movies' },
-    { name: 'musical', id: 10402, title: '🎵 Musical Movies' },
-    { name: 'biography', id: 36, title: '📖 Biography Movies' },
-    { name: 'history', id: 36, title: '📜 History Movies' },
-    { name: 'sports', id: 10762, title: '🏅 Sports Movies' }
+    { name: 'action', id: 28, strategy: 'popular', sort: 'popularity.desc', page: 1 },
+    { name: 'adventure', id: 12, strategy: 'rating', sort: 'vote_average.desc', page: 1 },
+    { name: 'comedy', id: 35, strategy: 'popular', sort: 'popularity.desc', page: 2 },
+    { name: 'drama', id: 18, strategy: 'votes', sort: 'vote_count.desc', page: 1 },
+    { name: 'horror', id: 27, strategy: 'popular', sort: 'popularity.desc', page: 1 },
+    { name: 'thriller', id: 53, strategy: 'rating', sort: 'vote_average.desc', page: 2 },
+    { name: 'romance', id: 10749, strategy: 'popular', sort: 'popularity.desc', page: 1 },
+    { name: 'scifi', id: 878, strategy: 'votes', sort: 'vote_count.desc', page: 1 },
+    { name: 'fantasy', id: 14, strategy: 'popular', sort: 'popularity.desc', page: 2 },
+    { name: 'mystery', id: 9648, strategy: 'rating', sort: 'vote_average.desc', page: 1 },
+    { name: 'crime', id: 80, strategy: 'popular', sort: 'popularity.desc', page: 1 },
+    { name: 'animation', id: 16, strategy: 'votes', sort: 'vote_count.desc', page: 1 },
+    { name: 'documentary', id: 99, strategy: 'rating', sort: 'vote_average.desc', page: 1 },
+    { name: 'family', id: 10751, strategy: 'popular', sort: 'popularity.desc', page: 1 },
+    { name: 'war', id: 10752, strategy: 'votes', sort: 'vote_count.desc', page: 1 },
+    { name: 'western', id: 37, strategy: 'popular', sort: 'popularity.desc', page: 1 },
+    { name: 'musical', id: 10402, strategy: 'rating', sort: 'vote_average.desc', page: 1 },
+    { name: 'biography', id: 36, strategy: 'votes', sort: 'vote_count.desc', page: 1, filter: 'biography' },
+    { name: 'history', id: 36, strategy: 'rating', sort: 'vote_average.desc', page: 2, filter: 'history' },
+    { name: 'sports', id: 10762, strategy: 'popular', sort: 'popularity.desc', page: 1 }
 ];
 
 // --- HELPER: SKELETON LOADER ---
@@ -65,21 +62,64 @@ function showSkeletons(containerId, count = 10) {
     container.innerHTML = skeletonHTML;
 }
 
-// --- LOAD GENRE MOVIES (for additional sections) ---
-async function loadGenreMovies(genreName, genreId) {
-    const container = document.getElementById(`genre-${genreName}-list`);
+// --- LOAD GENRE MOVIES WITH RADIKAL STRATEGY ---
+async function loadGenreMovies(genre) {
+    const container = document.getElementById(`genre-${genre.name}-list`);
     if (!container) return;
     
     try {
-        const url = `${BASE_URL}?endpoint=/discover/movie&with_genres=${genreId}&sort_by=popularity.desc&vote_count.gte=100&page=1`;
+        // Use different strategies para hindi pare-parehas
+        let url;
+        const randomPage = Math.floor(Math.random() * 3) + 1;
         
-        console.log(`🎬 Fetching ${genreName} movies...`);
+        switch(genre.strategy) {
+            case 'popular':
+                url = `${BASE_URL}?endpoint=/discover/movie&with_genres=${genre.id}&sort_by=popularity.desc&vote_count.gte=100&page=${genre.page || randomPage}`;
+                break;
+            case 'rating':
+                url = `${BASE_URL}?endpoint=/discover/movie&with_genres=${genre.id}&sort_by=vote_average.desc&vote_count.gte=300&page=${genre.page || randomPage}`;
+                break;
+            case 'votes':
+                url = `${BASE_URL}?endpoint=/discover/movie&with_genres=${genre.id}&sort_by=vote_count.desc&page=${genre.page || randomPage}`;
+                break;
+            default:
+                url = `${BASE_URL}?endpoint=/discover/movie&with_genres=${genre.id}&sort_by=popularity.desc&page=1`;
+        }
+        
+        console.log(`🎬 Fetching ${genre.name} using ${genre.strategy} strategy...`);
         
         const response = await fetch(url);
         const data = await response.json();
-        const movies = data.results || [];
+        let movies = data.results || [];
         
-        console.log(`✅ ${genreName}: ${movies.length} movies loaded`);
+        // Special filter para sa biography at history (magkaiba kahit same genre ID)
+        if (genre.filter === 'biography') {
+            movies = movies.filter(m => 
+                m.title && (
+                    m.title.toLowerCase().includes('biography') ||
+                    m.title.toLowerCase().includes('story of') ||
+                    m.overview?.toLowerCase().includes('biography')
+                )
+            );
+            if (movies.length < 6) {
+                movies = data.results?.slice(0, 12) || [];
+            }
+        }
+        
+        if (genre.filter === 'history') {
+            movies = movies.filter(m => 
+                m.title && (
+                    m.title.toLowerCase().includes('history') ||
+                    m.title.toLowerCase().includes('war') ||
+                    m.title.toLowerCase().includes('ancient')
+                )
+            );
+            if (movies.length < 6) {
+                movies = data.results?.slice(0, 12) || [];
+            }
+        }
+        
+        console.log(`✅ ${genre.name}: ${movies.length} movies loaded`);
         
         if (movies.length === 0) {
             container.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">No movies found.</p>';
@@ -104,14 +144,14 @@ async function loadGenreMovies(genreName, genreId) {
         }).join('');
         
     } catch (error) {
-        console.error(`Error loading ${genreName} movies:`, error);
+        console.error(`Error loading ${genre.name} movies:`, error);
         container.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">Failed to load movies. Please try again later.</p>';
     }
 }
 
 // Load all genre movies
 async function loadAllGenreMovies() {
-    console.log('🎬 Loading additional genre sections...');
+    console.log('🎬 Loading additional genre sections with RADIKAL strategy...');
     
     // Load skeletons first
     for (const genre of genreMapping) {
@@ -122,7 +162,7 @@ async function loadAllGenreMovies() {
     }
     
     // Load actual movies (use Promise.all for faster loading)
-    const promises = genreMapping.map(genre => loadGenreMovies(genre.name, genre.id));
+    const promises = genreMapping.map(genre => loadGenreMovies(genre));
     await Promise.all(promises);
     
     console.log('✅ All genre sections loaded successfully!');
@@ -145,9 +185,6 @@ window.loadMore = loadMore;
 
 let searchDebounceTimer;
 
-/**
- * Live search with dropdown suggestions
- */
 window.handleSearchWithDropdown = async function(query) {
     const dropdown = document.getElementById('search-dropdown');
     
@@ -158,11 +195,9 @@ window.handleSearchWithDropdown = async function(query) {
         return;
     }
     
-    // Show loading state
     dropdown.innerHTML = '<div class="search-dropdown-loading">🔍 Searching...</div>';
     dropdown.style.display = 'block';
     
-    // Debounce para hindi masyadong madaming request
     clearTimeout(searchDebounceTimer);
     searchDebounceTimer = setTimeout(async () => {
         try {
@@ -175,7 +210,6 @@ window.handleSearchWithDropdown = async function(query) {
                 return;
             }
             
-            // Show top 8 results
             dropdown.innerHTML = results.slice(0, 8).map(item => {
                 const title = item.title || item.name || 'Unknown';
                 const year = (item.release_date || item.first_air_date || '').split('-')[0];
@@ -185,7 +219,6 @@ window.handleSearchWithDropdown = async function(query) {
                     ? `https://image.tmdb.org/t/p/w92${item.poster_path}` 
                     : '';
                 
-                // Skip if no title or invalid type
                 if (type === 'Person') return '';
                 
                 return `
@@ -203,7 +236,6 @@ window.handleSearchWithDropdown = async function(query) {
                 `;
             }).filter(item => item !== '').join('');
             
-            // If all items were filtered out
             if (dropdown.innerHTML === '') {
                 dropdown.innerHTML = '<div class="search-dropdown-empty">😢 No valid results found</div>';
             }
@@ -215,9 +247,6 @@ window.handleSearchWithDropdown = async function(query) {
     }, 300);
 };
 
-/**
- * Escape HTML to prevent XSS
- */
 function escapeHtml(str) {
     if (!str) return '';
     return str
@@ -228,9 +257,6 @@ function escapeHtml(str) {
         .replace(/'/g, '&#39;');
 }
 
-/**
- * Close dropdown when clicking outside
- */
 document.addEventListener('click', function(e) {
     const searchBox = document.querySelector('.search-box');
     const dropdown = document.getElementById('search-dropdown');
@@ -239,7 +265,6 @@ document.addEventListener('click', function(e) {
     }
 });
 
-// Also close on Escape key
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         const dropdown = document.getElementById('search-dropdown');
@@ -247,37 +272,30 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-/**
- * --- INITIALIZATION ENGINE ---
- */
+// --- INITIALIZATION ---
 async function init() {
     console.log("🚀 CINElzFlix Engine is now LIVE, bro!"); 
     try {
-        // 0. Initialize Countdown Timer
         initCountdown();
 
-        // ✅ FORCE CLEAR CONTAINERS BEFORE ADDING SKELETONS
         const containers = ["movies-list", "upcoming-list", "tvshows-list", "anime-list", "top-rated-list"];
         containers.forEach(id => {
             const container = document.getElementById(id);
             if (container) container.innerHTML = "";
         });
 
-        // --- START LOADING SKELETONS ---
         showSkeletons("movies-list", 8);
         showSkeletons("upcoming-list", 6);
         showSkeletons("tvshows-list", 6);
         showSkeletons("anime-list", 6);
         showSkeletons("top-rated-list", 6);
 
-        // 1. Load Trending & Setup Hero
         const movies = await fetchMovies("movie", 1);
         if (movies && movies.length > 0) {
             setupHeroSlider(movies);
             displayList(movies, "movies-list");
         }
         
-        // 2. Load Other Categories
         const categories = [
             { endpoint: '/movie/upcoming', container: 'upcoming-list' },
             { endpoint: '/trending/tv/week', container: 'tvshows-list' },
@@ -285,22 +303,18 @@ async function init() {
             { endpoint: '/movie/top_rated', container: 'top-rated-list' }
         ];
 
-        // Sabay-sabay nating i-fetch pero naka-skeleton bawat isa
         for (const cat of categories) {
             try {
                 const res = await fetch(`${BASE_URL}?endpoint=${cat.endpoint}`);
                 const data = await res.json();
-                // Pag dating ng data, mapapalitan na yung skeletons
                 displayList(data.results, cat.container);
             } catch (catErr) {
-                console.error(`Error loading category ${cat.container}:`, catErr);
+                console.error(`Error loading ${cat.container}:`, catErr);
             }
         }
         
-        // 3. Load Additional Genre Sections
         await loadAllGenreMovies();
 
-        // 4. Deep Linking Support
         const params = new URLSearchParams(window.location.search);
         const movieId = params.get('movie');
         const tvId = params.get('tv');
@@ -317,31 +331,7 @@ async function init() {
     }
 }
 
-// --- GLOBAL EVENT LISTENERS ---
-
-document.addEventListener('keydown', (e) => {
-    if (e.key === "Escape") {
-        const modal = document.getElementById("modal");
-        const searchResults = document.getElementById("search-results-section");
-        
-        if (modal && modal.style.display === "flex") {
-            closeModal();
-            return;
-        }
-        
-        if (searchResults && searchResults.style.display === "block") {
-            const searchInput = document.getElementById("search-input");
-            if (searchInput) searchInput.value = "";
-            searchResults.style.display = "none";
-            document.getElementById("trending-section").style.display = "block";
-        }
-    }
-});
-
-// ============================================
-// MOBILE BOTTOM NAVIGATION FUNCTIONS
-// ============================================
-
+// --- MOBILE NAVIGATION ---
 function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -354,13 +344,10 @@ function focusSearch() {
     }
 }
 
-// Create mobile genre menu with buttons
 function initMobileGenreMenu() {
     const genreList = document.getElementById('mobile-genre-list');
-    
     if (!genreList) return;
     
-    // Copy genre buttons from desktop
     const desktopButtons = document.querySelectorAll('.genre-container .genre-btn');
     genreList.innerHTML = '';
     
@@ -396,7 +383,6 @@ function closeGenreMenu() {
     if (menu) menu.style.display = 'none';
 }
 
-// Close menu when clicking outside
 document.addEventListener('click', function(e) {
     const menu = document.getElementById('mobile-genre-menu');
     const menuToggle = document.getElementById('menu-toggle');
@@ -407,15 +393,9 @@ document.addEventListener('click', function(e) {
     }
 });
 
-// Export for use in movie page
-export { scrollToTop, focusSearch, toggleGenreMenu, closeGenreMenu, initMobileGenreMenu };
-
-// Make available globally
 window.scrollToTop = scrollToTop;
 window.focusSearch = focusSearch;
 window.toggleGenreMenu = toggleGenreMenu;
 window.closeGenreMenu = closeGenreMenu;
-window.initMobileGenreMenu = initMobileGenreMenu;
 
-// Start the app
 init();
