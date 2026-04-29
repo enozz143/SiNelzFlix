@@ -24,30 +24,30 @@ console.log(`📡 Using API URL: ${BASE_URL}`);
 window.BASE_URL = BASE_URL;
 
 // ============================================
-// ✅ GENRE MAPPING WITH DIFFERENT STRATEGIES (RADIKAL FIX)
+// ✅ ULTIMATE GENRE MAPPING - IBA'T IBANG ENDPOINT
 // ============================================
 
 const genreMapping = [
-    { name: 'action', id: 28, strategy: 'popular', sort: 'popularity.desc', page: 1 },
-    { name: 'adventure', id: 12, strategy: 'rating', sort: 'vote_average.desc', page: 1 },
-    { name: 'comedy', id: 35, strategy: 'popular', sort: 'popularity.desc', page: 2 },
-    { name: 'drama', id: 18, strategy: 'votes', sort: 'vote_count.desc', page: 1 },
-    { name: 'horror', id: 27, strategy: 'popular', sort: 'popularity.desc', page: 1 },
-    { name: 'thriller', id: 53, strategy: 'rating', sort: 'vote_average.desc', page: 2 },
-    { name: 'romance', id: 10749, strategy: 'popular', sort: 'popularity.desc', page: 1 },
-    { name: 'scifi', id: 878, strategy: 'votes', sort: 'vote_count.desc', page: 1 },
-    { name: 'fantasy', id: 14, strategy: 'popular', sort: 'popularity.desc', page: 2 },
-    { name: 'mystery', id: 9648, strategy: 'rating', sort: 'vote_average.desc', page: 1 },
-    { name: 'crime', id: 80, strategy: 'popular', sort: 'popularity.desc', page: 1 },
-    { name: 'animation', id: 16, strategy: 'votes', sort: 'vote_count.desc', page: 1 },
-    { name: 'documentary', id: 99, strategy: 'rating', sort: 'vote_average.desc', page: 1 },
-    { name: 'family', id: 10751, strategy: 'popular', sort: 'popularity.desc', page: 1 },
-    { name: 'war', id: 10752, strategy: 'votes', sort: 'vote_count.desc', page: 1 },
-    { name: 'western', id: 37, strategy: 'popular', sort: 'popularity.desc', page: 1 },
-    { name: 'musical', id: 10402, strategy: 'rating', sort: 'vote_average.desc', page: 1 },
-    { name: 'biography', id: 36, strategy: 'votes', sort: 'vote_count.desc', page: 1, filter: 'biography' },
-    { name: 'history', id: 36, strategy: 'rating', sort: 'vote_average.desc', page: 2, filter: 'history' },
-    { name: 'sports', id: 10762, strategy: 'popular', sort: 'popularity.desc', page: 1 }
+    { name: 'action', id: 28, endpoint: '/movie/popular', page: 1 },
+    { name: 'adventure', id: 12, endpoint: '/movie/top_rated', page: 1 },
+    { name: 'comedy', id: 35, endpoint: '/movie/now_playing', page: 1 },
+    { name: 'drama', id: 18, endpoint: '/movie/top_rated', page: 2 },
+    { name: 'horror', id: 27, endpoint: '/movie/upcoming', page: 1 },
+    { name: 'thriller', id: 53, endpoint: '/movie/popular', page: 2 },
+    { name: 'romance', id: 10749, endpoint: '/movie/top_rated', page: 3 },
+    { name: 'scifi', id: 878, endpoint: '/movie/now_playing', page: 2 },
+    { name: 'fantasy', id: 14, endpoint: '/movie/popular', page: 3 },
+    { name: 'mystery', id: 9648, endpoint: '/movie/top_rated', page: 4 },
+    { name: 'crime', id: 80, endpoint: '/movie/upcoming', page: 2 },
+    { name: 'animation', id: 16, endpoint: '/movie/top_rated', page: 1 },
+    { name: 'documentary', id: 99, endpoint: '/movie/popular', page: 4 },
+    { name: 'family', id: 10751, endpoint: '/movie/now_playing', page: 1 },
+    { name: 'war', id: 10752, endpoint: '/movie/top_rated', page: 5 },
+    { name: 'western', id: 37, endpoint: '/movie/popular', page: 5 },
+    { name: 'musical', id: 10402, endpoint: '/movie/top_rated', page: 2 },
+    { name: 'biography', id: 36, endpoint: '/search/movie', keyword: 'biography', page: 1 },
+    { name: 'history', id: 36, endpoint: '/search/movie', keyword: 'history', page: 1 },
+    { name: 'sports', id: 10762, endpoint: '/movie/upcoming', page: 1 }
 ];
 
 // --- HELPER: SKELETON LOADER ---
@@ -62,60 +62,46 @@ function showSkeletons(containerId, count = 10) {
     container.innerHTML = skeletonHTML;
 }
 
-// --- LOAD GENRE MOVIES WITH RADIKAL STRATEGY ---
+// --- LOAD GENRE MOVIES WITH ULTIMATE FIX ---
 async function loadGenreMovies(genre) {
     const container = document.getElementById(`genre-${genre.name}-list`);
     if (!container) return;
     
     try {
-        // Use different strategies para hindi pare-parehas
         let url;
-        const randomPage = Math.floor(Math.random() * 3) + 1;
+        let movies = [];
         
-        switch(genre.strategy) {
-            case 'popular':
-                url = `${BASE_URL}?endpoint=/discover/movie&with_genres=${genre.id}&sort_by=popularity.desc&vote_count.gte=100&page=${genre.page || randomPage}`;
-                break;
-            case 'rating':
-                url = `${BASE_URL}?endpoint=/discover/movie&with_genres=${genre.id}&sort_by=vote_average.desc&vote_count.gte=300&page=${genre.page || randomPage}`;
-                break;
-            case 'votes':
-                url = `${BASE_URL}?endpoint=/discover/movie&with_genres=${genre.id}&sort_by=vote_count.desc&page=${genre.page || randomPage}`;
-                break;
-            default:
-                url = `${BASE_URL}?endpoint=/discover/movie&with_genres=${genre.id}&sort_by=popularity.desc&page=1`;
+        // Use different strategies para hindi pare-parehas
+        if (genre.keyword) {
+            // For biography and history - use search endpoint
+            url = `${BASE_URL}?endpoint=${genre.endpoint}&query=${genre.keyword}&page=${genre.page}`;
+            console.log(`🎬 Fetching ${genre.name} using search keyword: ${genre.keyword}`);
+        } else {
+            // For regular genres - use discover with genre filter
+            url = `${BASE_URL}?endpoint=/discover/movie&with_genres=${genre.id}&sort_by=popularity.desc&page=${genre.page}`;
+            console.log(`🎬 Fetching ${genre.name} from discover with page ${genre.page}`);
         }
-        
-        console.log(`🎬 Fetching ${genre.name} using ${genre.strategy} strategy...`);
         
         const response = await fetch(url);
         const data = await response.json();
-        let movies = data.results || [];
+        movies = data.results || [];
         
-        // Special filter para sa biography at history (magkaiba kahit same genre ID)
-        if (genre.filter === 'biography') {
-            movies = movies.filter(m => 
-                m.title && (
-                    m.title.toLowerCase().includes('biography') ||
-                    m.title.toLowerCase().includes('story of') ||
-                    m.overview?.toLowerCase().includes('biography')
-                )
-            );
-            if (movies.length < 6) {
-                movies = data.results?.slice(0, 12) || [];
-            }
+        // Fallback: if discover returns too few, try popular endpoint
+        if (movies.length < 6 && !genre.keyword) {
+            const fallbackUrl = `${BASE_URL}?endpoint=${genre.endpoint}&page=${genre.page}`;
+            const fallbackRes = await fetch(fallbackUrl);
+            const fallbackData = await fallbackRes.json();
+            let fallbackMovies = fallbackData.results || [];
+            // Filter by genre id
+            movies = fallbackMovies.filter(m => m.genre_ids && m.genre_ids.includes(genre.id));
+            console.log(`🔄 ${genre.name} fallback: ${movies.length} movies from ${genre.endpoint}`);
         }
         
-        if (genre.filter === 'history') {
-            movies = movies.filter(m => 
-                m.title && (
-                    m.title.toLowerCase().includes('history') ||
-                    m.title.toLowerCase().includes('war') ||
-                    m.title.toLowerCase().includes('ancient')
-                )
-            );
-            if (movies.length < 6) {
-                movies = data.results?.slice(0, 12) || [];
+        // Random shuffle para hindi pare-parehas ang order
+        if (movies.length > 12) {
+            for (let i = movies.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [movies[i], movies[j]] = [movies[j], movies[i]];
             }
         }
         
@@ -151,7 +137,7 @@ async function loadGenreMovies(genre) {
 
 // Load all genre movies
 async function loadAllGenreMovies() {
-    console.log('🎬 Loading additional genre sections with RADIKAL strategy...');
+    console.log('🎬 Loading additional genre sections with ULTIMATE strategy...');
     
     // Load skeletons first
     for (const genre of genreMapping) {
