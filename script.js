@@ -44,52 +44,83 @@ const genreNames = {
     '99': '📽️ Documentary Movies'
 };
 
-// Store original content
-let originalMoviesHTML = '';
-let originalTitleText = '📺 Trending Movies';
+// ============================================
+// STORE ORIGINAL CONTENT FOR ALL SECTIONS
+// ============================================
 
-// Save original content
+let originalContents = {
+    movies: '',
+    upcoming: '',
+    tvshows: '',
+    anime: '',
+    toprated: ''
+};
+let originalTitle = '📺 Trending Movies';
+
+// Save original content for ALL sections
 function saveOriginalContent() {
     const moviesContainer = document.getElementById('movies-list');
+    const upcomingContainer = document.getElementById('upcoming-list');
+    const tvshowsContainer = document.getElementById('tvshows-list');
+    const animeContainer = document.getElementById('anime-list');
+    const topratedContainer = document.getElementById('top-rated-list');
     const sectionTitle = document.querySelector('#movies-section h2, .category-section h2');
     
-    if (moviesContainer && !originalMoviesHTML) {
-        originalMoviesHTML = moviesContainer.innerHTML;
+    if (moviesContainer && !originalContents.movies) {
+        originalContents.movies = moviesContainer.innerHTML;
+        originalContents.upcoming = upcomingContainer ? upcomingContainer.innerHTML : '';
+        originalContents.tvshows = tvshowsContainer ? tvshowsContainer.innerHTML : '';
+        originalContents.anime = animeContainer ? animeContainer.innerHTML : '';
+        originalContents.toprated = topratedContainer ? topratedContainer.innerHTML : '';
     }
-    if (sectionTitle && originalTitleText === '📺 Trending Movies') {
-        originalTitleText = sectionTitle.innerHTML;
+    if (sectionTitle && originalTitle === '📺 Trending Movies') {
+        originalTitle = sectionTitle.innerHTML;
     }
+    console.log('✅ Original content saved');
 }
 
-// Restore original content
+// Restore original content for ALL sections
 function restoreOriginalContent() {
     const moviesContainer = document.getElementById('movies-list');
+    const upcomingContainer = document.getElementById('upcoming-list');
+    const tvshowsContainer = document.getElementById('tvshows-list');
+    const animeContainer = document.getElementById('anime-list');
+    const topratedContainer = document.getElementById('top-rated-list');
     const sectionTitle = document.querySelector('#movies-section h2, .category-section h2');
     
-    if (moviesContainer && originalMoviesHTML) {
-        moviesContainer.innerHTML = originalMoviesHTML;
+    if (moviesContainer && originalContents.movies) {
+        moviesContainer.innerHTML = originalContents.movies;
+        if (upcomingContainer) upcomingContainer.innerHTML = originalContents.upcoming;
+        if (tvshowsContainer) tvshowsContainer.innerHTML = originalContents.tvshows;
+        if (animeContainer) animeContainer.innerHTML = originalContents.anime;
+        if (topratedContainer) topratedContainer.innerHTML = originalContents.toprated;
     }
     if (sectionTitle) {
-        sectionTitle.innerHTML = originalTitleText;
+        sectionTitle.innerHTML = originalTitle;
     }
+    console.log('✅ Original content restored');
 }
 
 // ============================================
-// ✅ SIMPLIFIED GENRE FILTER - GUARANTEED TO WORK
+// ✅ GENRE FILTER - PALITAN LAHAT NG SECTIONS
 // ============================================
 
 window.filterGenre = async function(genreId) {
-    console.log('Genre clicked:', genreId);
+    console.log('🎬 Genre clicked:', genreId);
     
     const moviesContainer = document.getElementById('movies-list');
+    const upcomingContainer = document.getElementById('upcoming-list');
+    const tvshowsContainer = document.getElementById('tvshows-list');
+    const animeContainer = document.getElementById('anime-list');
+    const topratedContainer = document.getElementById('top-rated-list');
     const sectionTitle = document.querySelector('#movies-section h2, .category-section h2');
     
     // Save original on first filter
-    if (!originalMoviesHTML) {
+    if (!originalContents.movies) {
         saveOriginalContent();
     }
     
-    // If All is clicked, restore original
+    // If All is clicked, restore all sections
     if (genreId === 'all') {
         restoreOriginalContent();
         return;
@@ -100,27 +131,34 @@ window.filterGenre = async function(genreId) {
         sectionTitle.innerHTML = genreNames[genreId];
     }
     
-    // Show skeletons
-    if (moviesContainer) {
-        let skeletons = '';
-        for (let i = 0; i < 12; i++) {
-            skeletons += `<div class="skeleton skeleton-card"></div>`;
+    // Show skeletons on ALL containers
+    const allContainers = [moviesContainer, upcomingContainer, tvshowsContainer, animeContainer, topratedContainer];
+    allContainers.forEach(container => {
+        if (container) {
+            let skeletons = '';
+            for (let i = 0; i < 8; i++) {
+                skeletons += `<div class="skeleton skeleton-card"></div>`;
+            }
+            container.innerHTML = skeletons;
         }
-        moviesContainer.innerHTML = skeletons;
-    }
+    });
     
     try {
+        // Fetch movies by genre
         const url = `${BASE_URL}?endpoint=/discover/movie&with_genres=${genreId}&sort_by=popularity.desc&vote_count.gte=100&page=1`;
         const response = await fetch(url);
         const data = await response.json();
         const movies = data.results || [];
         
         if (!movies.length) {
-            moviesContainer.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">No movies found.</p>';
+            allContainers.forEach(container => {
+                if (container) container.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">No movies found.</p>';
+            });
             return;
         }
         
-        moviesContainer.innerHTML = movies.slice(0, 12).map(movie => {
+        // Create movie cards HTML
+        const movieCards = movies.slice(0, 12).map(movie => {
             const posterUrl = movie.poster_path 
                 ? `https://image.tmdb.org/t/p/w200${movie.poster_path}`
                 : '';
@@ -137,9 +175,20 @@ window.filterGenre = async function(genreId) {
             `;
         }).join('');
         
+        // Apply to ALL containers
+        if (moviesContainer) moviesContainer.innerHTML = movieCards;
+        if (upcomingContainer) upcomingContainer.innerHTML = movieCards;
+        if (tvshowsContainer) tvshowsContainer.innerHTML = movieCards;
+        if (animeContainer) animeContainer.innerHTML = movieCards;
+        if (topratedContainer) topratedContainer.innerHTML = movieCards;
+        
+        console.log(`✅ Displayed ${movies.length} ${genreNames[genreId]} movies`);
+        
     } catch (error) {
-        console.error('Error:', error);
-        moviesContainer.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">Failed to load.</p>';
+        console.error('Error loading genre movies:', error);
+        allContainers.forEach(container => {
+            if (container) container.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">Failed to load. Please try again.</p>';
+        });
     }
 };
 
