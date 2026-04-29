@@ -291,6 +291,43 @@
                 window.open('https://www.profitablecpmratenetwork.com/s4304airr?key=6b4f3e1e971c417fa77414903411d40c', '_blank');
             }
         }
+        
+        // ============================================
+        // ✅ HEATING FIX - PARA HINDI MAINIT ANG PHONE
+        // ============================================
+        
+        // Lazy loading sa lahat ng images
+        function initLazyLoading() {
+            const images = document.querySelectorAll('img');
+            images.forEach(img => {
+                if (!img.hasAttribute('loading')) {
+                    img.setAttribute('loading', 'lazy');
+                }
+            });
+            console.log('✅ Heating fix applied - lazy loading enabled');
+        }
+        
+        // Debounce scroll events para hindi nagla-lag
+        let scrollTimeout;
+        window.addEventListener('scroll', function() {
+            if (scrollTimeout) clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(function() {}, 100);
+        });
+        
+        // Run on load
+        document.addEventListener('DOMContentLoaded', initLazyLoading);
+        
+        // Detect battery saving mode
+        if ('getBattery' in navigator) {
+            navigator.getBattery().then(function(battery) {
+                if (!battery.charging && battery.level < 0.2) {
+                    document.body.classList.add('battery-saver');
+                    var style = document.createElement('style');
+                    style.textContent = '.battery-saver * { animation: none !important; transition: none !important; }';
+                    document.head.appendChild(style);
+                }
+            });
+        }
     </script>
     
     <script src="https://pl28947937.profitablecpmratenetwork.com/a5/c3/8e/a5c38ef495583bd163602819c5112f48.js"></script>
