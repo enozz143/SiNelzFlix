@@ -24,30 +24,30 @@ console.log(`📡 Using API URL: ${BASE_URL}`);
 window.BASE_URL = BASE_URL;
 
 // ============================================
-// ✅ ULTIMATE GENRE MAPPING - IBA'T IBANG ENDPOINT
+// ✅ GENRE MAPPING - IBA'T IBANG TAON PARA MAGKAIBA
 // ============================================
 
 const genreMapping = [
-    { name: 'action', id: 28, endpoint: '/movie/popular', page: 1 },
-    { name: 'adventure', id: 12, endpoint: '/movie/top_rated', page: 1 },
-    { name: 'comedy', id: 35, endpoint: '/movie/now_playing', page: 1 },
-    { name: 'drama', id: 18, endpoint: '/movie/top_rated', page: 2 },
-    { name: 'horror', id: 27, endpoint: '/movie/upcoming', page: 1 },
-    { name: 'thriller', id: 53, endpoint: '/movie/popular', page: 2 },
-    { name: 'romance', id: 10749, endpoint: '/movie/top_rated', page: 3 },
-    { name: 'scifi', id: 878, endpoint: '/movie/now_playing', page: 2 },
-    { name: 'fantasy', id: 14, endpoint: '/movie/popular', page: 3 },
-    { name: 'mystery', id: 9648, endpoint: '/movie/top_rated', page: 4 },
-    { name: 'crime', id: 80, endpoint: '/movie/upcoming', page: 2 },
-    { name: 'animation', id: 16, endpoint: '/movie/top_rated', page: 1 },
-    { name: 'documentary', id: 99, endpoint: '/movie/popular', page: 4 },
-    { name: 'family', id: 10751, endpoint: '/movie/now_playing', page: 1 },
-    { name: 'war', id: 10752, endpoint: '/movie/top_rated', page: 5 },
-    { name: 'western', id: 37, endpoint: '/movie/popular', page: 5 },
-    { name: 'musical', id: 10402, endpoint: '/movie/top_rated', page: 2 },
-    { name: 'biography', id: 36, endpoint: '/search/movie', keyword: 'biography', page: 1 },
-    { name: 'history', id: 36, endpoint: '/search/movie', keyword: 'history', page: 1 },
-    { name: 'sports', id: 10762, endpoint: '/movie/upcoming', page: 1 }
+    { name: 'action', id: 28, year: '2024', sort: 'popularity.desc' },
+    { name: 'adventure', id: 12, year: '2023', sort: 'vote_average.desc' },
+    { name: 'comedy', id: 35, year: '2022', sort: 'popularity.desc' },
+    { name: 'drama', id: 18, year: '2024', sort: 'vote_count.desc' },
+    { name: 'horror', id: 27, year: '2023', sort: 'popularity.desc' },
+    { name: 'thriller', id: 53, year: '2022', sort: 'vote_average.desc' },
+    { name: 'romance', id: 10749, year: '2024', sort: 'popularity.desc' },
+    { name: 'scifi', id: 878, year: '2023', sort: 'vote_count.desc' },
+    { name: 'fantasy', id: 14, year: '2022', sort: 'popularity.desc' },
+    { name: 'mystery', id: 9648, year: '2024', sort: 'vote_average.desc' },
+    { name: 'crime', id: 80, year: '2023', sort: 'popularity.desc' },
+    { name: 'animation', id: 16, year: '2024', sort: 'vote_count.desc' },
+    { name: 'documentary', id: 99, year: '2023', sort: 'vote_average.desc' },
+    { name: 'family', id: 10751, year: '2024', sort: 'popularity.desc' },
+    { name: 'war', id: 10752, year: '2022', sort: 'vote_count.desc' },
+    { name: 'western', id: 37, year: '2021', sort: 'popularity.desc' },
+    { name: 'musical', id: 10402, year: '2023', sort: 'vote_average.desc' },
+    { name: 'biography', id: 36, year: '2024', sort: 'popularity.desc', keyword: 'biography' },
+    { name: 'history', id: 36, year: '2022', sort: 'vote_average.desc', keyword: 'history' },
+    { name: 'sports', id: 10762, year: '2024', sort: 'popularity.desc' }
 ];
 
 // --- HELPER: SKELETON LOADER ---
@@ -62,7 +62,7 @@ function showSkeletons(containerId, count = 10) {
     container.innerHTML = skeletonHTML;
 }
 
-// --- LOAD GENRE MOVIES WITH ULTIMATE FIX ---
+// --- LOAD GENRE MOVIES WITH YEAR FILTER ---
 async function loadGenreMovies(genre) {
     const container = document.getElementById(`genre-${genre.name}-list`);
     if (!container) return;
@@ -71,44 +71,45 @@ async function loadGenreMovies(genre) {
         let url;
         let movies = [];
         
-        // Use different strategies para hindi pare-parehas
         if (genre.keyword) {
-            // For biography and history - use search endpoint
-            url = `${BASE_URL}?endpoint=${genre.endpoint}&query=${genre.keyword}&page=${genre.page}`;
-            console.log(`🎬 Fetching ${genre.name} using search keyword: ${genre.keyword}`);
+            // For biography and history - use search endpoint with year
+            url = `${BASE_URL}?endpoint=/search/movie&query=${genre.keyword}&primary_release_year=${genre.year}&page=1`;
+            console.log(`🎬 Fetching ${genre.name} with keyword: ${genre.keyword}, year: ${genre.year}`);
         } else {
-            // For regular genres - use discover with genre filter
-            url = `${BASE_URL}?endpoint=/discover/movie&with_genres=${genre.id}&sort_by=popularity.desc&page=${genre.page}`;
-            console.log(`🎬 Fetching ${genre.name} from discover with page ${genre.page}`);
+            // For regular genres - use year filter para iba-iba ang movies
+            url = `${BASE_URL}?endpoint=/discover/movie&with_genres=${genre.id}&primary_release_year=${genre.year}&sort_by=${genre.sort}&vote_count.gte=50&page=1`;
+            console.log(`🎬 Fetching ${genre.name} from year ${genre.year} with ${genre.sort} sorting`);
         }
         
         const response = await fetch(url);
         const data = await response.json();
         movies = data.results || [];
         
-        // Fallback: if discover returns too few, try popular endpoint
+        // If not enough movies, try previous year
         if (movies.length < 6 && !genre.keyword) {
-            const fallbackUrl = `${BASE_URL}?endpoint=${genre.endpoint}&page=${genre.page}`;
+            const prevYear = parseInt(genre.year) - 1;
+            const fallbackUrl = `${BASE_URL}?endpoint=/discover/movie&with_genres=${genre.id}&primary_release_year=${prevYear}&sort_by=${genre.sort}&vote_count.gte=50&page=1`;
             const fallbackRes = await fetch(fallbackUrl);
             const fallbackData = await fallbackRes.json();
-            let fallbackMovies = fallbackData.results || [];
-            // Filter by genre id
-            movies = fallbackMovies.filter(m => m.genre_ids && m.genre_ids.includes(genre.id));
-            console.log(`🔄 ${genre.name} fallback: ${movies.length} movies from ${genre.endpoint}`);
+            movies = fallbackData.results || [];
+            console.log(`🔄 ${genre.name} fallback to year ${prevYear}: ${movies.length} movies`);
         }
         
-        // Random shuffle para hindi pare-parehas ang order
-        if (movies.length > 12) {
-            for (let i = movies.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [movies[i], movies[j]] = [movies[j], movies[i]];
+        // Remove duplicates by ID
+        const uniqueMovies = [];
+        const seenIds = new Set();
+        for (const movie of movies) {
+            if (!seenIds.has(movie.id)) {
+                seenIds.add(movie.id);
+                uniqueMovies.push(movie);
             }
         }
+        movies = uniqueMovies;
         
-        console.log(`✅ ${genre.name}: ${movies.length} movies loaded`);
+        console.log(`✅ ${genre.name}: ${movies.length} unique movies loaded`);
         
         if (movies.length === 0) {
-            container.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">No movies found.</p>';
+            container.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">No movies found for this genre.</p>';
             return;
         }
         
@@ -120,24 +121,26 @@ async function loadGenreMovies(genre) {
                 ? `<img src="${posterPath}" alt="${movie.title.replace(/"/g, '&quot;')}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300?text=No+Poster'">`
                 : '<div style="width:200px; height:300px; background:#1a1a1a; display:flex; align-items:center; justify-content:center; border-radius:10px;">No Poster</div>';
             
+            const movieYear = movie.release_date ? movie.release_date.split('-')[0] : genre.year;
+            
             return `
                 <div class="movie-card" onclick="window.location.href='/movie/?id=${movie.id}&type=movie'">
                     ${posterHtml}
                     <h3>${movie.title.length > 25 ? movie.title.substring(0, 22) + '...' : movie.title}</h3>
-                    <p>⭐ ${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}</p>
+                    <p>⭐ ${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'} | ${movieYear}</p>
                 </div>
             `;
         }).join('');
         
     } catch (error) {
         console.error(`Error loading ${genre.name} movies:`, error);
-        container.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">Failed to load movies. Please try again later.</p>';
+        container.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">Failed to load movies. Please refresh the page.</p>';
     }
 }
 
 // Load all genre movies
 async function loadAllGenreMovies() {
-    console.log('🎬 Loading additional genre sections with ULTIMATE strategy...');
+    console.log('🎬 Loading additional genre sections with YEAR filter...');
     
     // Load skeletons first
     for (const genre of genreMapping) {
@@ -147,9 +150,12 @@ async function loadAllGenreMovies() {
         }
     }
     
-    // Load actual movies (use Promise.all for faster loading)
-    const promises = genreMapping.map(genre => loadGenreMovies(genre));
-    await Promise.all(promises);
+    // Load actual movies one by one (para hindi ma-block)
+    for (const genre of genreMapping) {
+        await loadGenreMovies(genre);
+        // Small delay para hindi ma-rate limit
+        await new Promise(resolve => setTimeout(resolve, 100));
+    }
     
     console.log('✅ All genre sections loaded successfully!');
 }
