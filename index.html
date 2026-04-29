@@ -306,7 +306,7 @@
             console.log('✅ Heating fix applied - lazy loading enabled');
         }
         
-        // Debounce scroll events para hindi nagla-lag
+        // Debounce scroll events
         let scrollTimeout;
         window.addEventListener('scroll', function() {
             if (scrollTimeout) clearTimeout(scrollTimeout);
@@ -327,6 +327,212 @@
                 }
             });
         }
+        
+        // ============================================
+        // ✅ FIX: LOAD MORE BUTTON AT GENRE FILTER WITH AUTO-SCROLL
+        // ============================================
+        
+        let loadMorePage = 1;
+        let isLoading = false;
+        let currentGenre = 'all';
+        let currentType = 'movie';
+        
+        // Save original movies HTML for "All" reset
+        let originalMoviesHTML = '';
+        let originalTitleText = '📺 Trending Movies';
+        
+        const genreNames = {
+            '28': '🔥 Action Movies',
+            '12': '🗺️ Adventure Movies',
+            '35': '😂 Comedy Movies',
+            '27': '😱 Horror Movies',
+            '10749': '💖 Romance Movies',
+            '878': '🚀 Sci-Fi Movies',
+            '14': '🧙 Fantasy Movies',
+            '9648': '🕵️ Mystery Movies',
+            '53': '🔪 Thriller Movies',
+            '16': '🎨 Animation Movies',
+            '18': '🎭 Drama Movies',
+            '36': '📜 History Movies',
+            '10402': '🎵 Musical Movies',
+            '10751': '👨‍👩‍👧 Family Movies',
+            '10752': '⚔️ War Movies',
+            '37': '🤠 Western Movies',
+            '99': '📽️ Documentary Movies'
+        };
+        
+        function saveOriginalContent() {
+            const moviesContainer = document.getElementById('movies-list');
+            const sectionTitle = document.querySelector('#movies-section h2, .category-section h2');
+            
+            if (moviesContainer && !originalMoviesHTML) {
+                originalMoviesHTML = moviesContainer.innerHTML;
+            }
+            if (sectionTitle && originalTitleText === '📺 Trending Movies') {
+                originalTitleText = sectionTitle.innerHTML;
+            }
+        }
+        
+        function restoreOriginalContent() {
+            const moviesContainer = document.getElementById('movies-list');
+            const sectionTitle = document.querySelector('#movies-section h2, .category-section h2');
+            
+            if (moviesContainer && originalMoviesHTML) {
+                moviesContainer.innerHTML = originalMoviesHTML;
+            }
+            if (sectionTitle) {
+                sectionTitle.innerHTML = originalTitleText;
+            }
+        }
+        
+        function scrollToMovies() {
+            setTimeout(() => {
+                const moviesSection = document.getElementById('movies-section');
+                if (moviesSection) {
+                    moviesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 200);
+        }
+        
+        // Override filterGenre
+        window.filterGenre = async function(genreId) {
+            console.log('Genre clicked:', genreId);
+            
+            const moviesContainer = document.getElementById('movies-list');
+            const sectionTitle = document.querySelector('#movies-section h2, .category-section h2');
+            
+            if (!originalMoviesHTML) {
+                saveOriginalContent();
+            }
+            
+            currentGenre = genreId;
+            loadMorePage = 1;
+            
+            if (genreId === 'all') {
+                restoreOriginalContent();
+                scrollToMovies();
+                return;
+            }
+            
+            if (sectionTitle && genreNames[genreId]) {
+                sectionTitle.innerHTML = genreNames[genreId];
+            }
+            
+            if (moviesContainer) {
+                let skeletons = '';
+                for (let i = 0; i < 12; i++) {
+                    skeletons += `<div class="skeleton skeleton-card"></div>`;
+                }
+                moviesContainer.innerHTML = skeletons;
+            }
+            
+            try {
+                const url = `${window.BASE_URL || '/api'}?endpoint=/discover/movie&with_genres=${genreId}&sort_by=popularity.desc&vote_count.gte=100&page=1`;
+                const response = await fetch(url);
+                const data = await response.json();
+                const movies = data.results || [];
+                
+                if (!movies.length) {
+                    moviesContainer.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">No movies found.</p>';
+                    scrollToMovies();
+                    return;
+                }
+                
+                moviesContainer.innerHTML = movies.slice(0, 12).map(movie => {
+                    const posterUrl = movie.poster_path 
+                        ? `https://image.tmdb.org/t/p/w200${movie.poster_path}`
+                        : '';
+                    const posterHtml = posterUrl 
+                        ? `<img src="${posterUrl}" alt="${movie.title.replace(/"/g, '&quot;')}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300?text=No+Poster'">`
+                        : '<div style="width:200px; height:300px; background:#1a1a1a; display:flex; align-items:center; justify-content:center; border-radius:10px;">No Poster</div>';
+                    
+                    return `
+                        <div class="movie-card" onclick="window.location.href='/movie/?id=${movie.id}&type=movie'">
+                            ${posterHtml}
+                            <h3>${movie.title.length > 25 ? movie.title.substring(0, 22) + '...' : movie.title}</h3>
+                            <p>⭐ ${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}</p>
+                        </div>
+                    `;
+                }).join('');
+                
+                scrollToMovies();
+                
+            } catch (error) {
+                console.error('Error:', error);
+                moviesContainer.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">Failed to load.</p>';
+            }
+        };
+        
+        // Override loadMore function
+        window.loadMore = async function() {
+            if (isLoading) return;
+            isLoading = true;
+            
+            const loadMoreBtn = document.getElementById('load-more-btn');
+            const originalText = loadMoreBtn?.innerHTML || 'Explore More Movies';
+            
+            if (loadMoreBtn) loadMoreBtn.innerHTML = 'Loading...';
+            
+            try {
+                loadMorePage++;
+                
+                let url;
+                if (currentGenre === 'all') {
+                    url = `${window.BASE_URL || '/api'}?endpoint=/trending/${currentType}/week&page=${loadMorePage}`;
+                } else {
+                    url = `${window.BASE_URL || '/api'}?endpoint=/discover/movie&with_genres=${currentGenre}&sort_by=popularity.desc&vote_count.gte=100&page=${loadMorePage}`;
+                }
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                const movies = data.results || [];
+                
+                const moviesContainer = document.getElementById('movies-list');
+                
+                if (movies.length > 0) {
+                    const newMoviesHTML = movies.map(movie => {
+                        const posterUrl = movie.poster_path 
+                            ? `https://image.tmdb.org/t/p/w200${movie.poster_path}`
+                            : '';
+                        const posterHtml = posterUrl 
+                            ? `<img src="${posterUrl}" alt="${movie.title.replace(/"/g, '&quot;')}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300?text=No+Poster'">`
+                            : '<div style="width:200px; height:300px; background:#1a1a1a; display:flex; align-items:center; justify-content:center; border-radius:10px;">No Poster</div>';
+                        
+                        return `
+                            <div class="movie-card" onclick="window.location.href='/movie/?id=${movie.id}&type=movie'">
+                                ${posterHtml}
+                                <h3>${movie.title.length > 25 ? movie.title.substring(0, 22) + '...' : movie.title}</h3>
+                                <p>⭐ ${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}</p>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    if (moviesContainer) {
+                        moviesContainer.insertAdjacentHTML('beforeend', newMoviesHTML);
+                    }
+                } else {
+                    if (loadMoreBtn) loadMoreBtn.innerHTML = 'No More Movies';
+                    setTimeout(() => {
+                        if (loadMoreBtn) loadMoreBtn.innerHTML = originalText;
+                    }, 2000);
+                    isLoading = false;
+                    return;
+                }
+                
+                if (loadMoreBtn) loadMoreBtn.innerHTML = originalText;
+                
+            } catch (error) {
+                console.error('Load more error:', error);
+                if (loadMoreBtn) loadMoreBtn.innerHTML = 'Try Again';
+                setTimeout(() => {
+                    if (loadMoreBtn) loadMoreBtn.innerHTML = originalText;
+                }, 2000);
+            }
+            
+            isLoading = false;
+        };
+        
+        console.log('✅ Load more and genre filter with auto-scroll enabled!');
     </script>
     
     <script src="https://pl28947937.profitablecpmratenetwork.com/a5/c3/8e/a5c38ef495583bd163602819c5112f48.js"></script>
