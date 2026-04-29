@@ -1,10 +1,30 @@
 // script.js (Root Directory)
-import { BASE_URL, fetchMovies } from './js/api.js';
+import { fetchMovies } from './js/api.js';
 import { setupHeroSlider, nextSlide, goToSlide } from './js/slider.js';
 import { displayList, handleSearch, filterGenre, loadMore } from './js/ui.js';
-// Dinagdag ang playTrailer dito sa import 👇
 import { showDetails, closeModal, changeServer, playTrailer } from './js/modal.js';
 import { initCountdown } from './js/countdown.js';
+
+// ============================================
+// ✅ AUTO-DETECT ENVIRONMENT (DEV vs PRODUCTION)
+// ============================================
+
+// Detect if we're on development or production
+const isDev = window.location.hostname === 'localhost' || 
+              window.location.hostname.includes('127.0.0.1') ||
+              window.location.hostname.includes('github.io') ||
+              !window.location.hostname.includes('cinelzflix.com');
+
+// Use different BASE_URL based on environment
+const BASE_URL = isDev 
+    ? 'https://cinelzflix-worker.baquial-enozz.workers.dev/'
+    : '/api';
+
+console.log(`🔧 Running in ${isDev ? 'DEVELOPMENT' : 'PRODUCTION'} mode`);
+console.log(`📡 Using API URL: ${BASE_URL}`);
+
+// Make BASE_URL available globally
+window.BASE_URL = BASE_URL;
 
 // ============================================
 // ✅ GENRE ID MAPPING FOR ADDITIONAL SECTIONS
@@ -52,29 +72,40 @@ async function loadGenreMovies(genreName, genreId) {
     
     try {
         const url = `${BASE_URL}?endpoint=/discover/movie&with_genres=${genreId}&sort_by=popularity.desc&vote_count.gte=100&page=1`;
+        
+        console.log(`🎬 Fetching ${genreName} movies...`);
+        
         const response = await fetch(url);
         const data = await response.json();
         const movies = data.results || [];
+        
+        console.log(`✅ ${genreName}: ${movies.length} movies loaded`);
         
         if (movies.length === 0) {
             container.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">No movies found.</p>';
             return;
         }
         
-        container.innerHTML = movies.slice(0, 12).map(movie => `
-            <div class="movie-card" onclick="window.location.href='/movie/?id=${movie.id}&type=movie'">
-                <img src="https://image.tmdb.org/t/p/w200${movie.poster_path}" 
-                     alt="${movie.title.replace(/"/g, '&quot;')}"
-                     loading="lazy"
-                     onerror="this.src='https://via.placeholder.com/200x300?text=No+Poster'">
-                <h3>${movie.title}</h3>
-                <p>⭐ ${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}</p>
-            </div>
-        `).join('');
+        container.innerHTML = movies.slice(0, 12).map(movie => {
+            const posterPath = movie.poster_path 
+                ? `https://image.tmdb.org/t/p/w200${movie.poster_path}`
+                : '';
+            const posterHtml = posterPath 
+                ? `<img src="${posterPath}" alt="${movie.title.replace(/"/g, '&quot;')}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300?text=No+Poster'">`
+                : '<div style="width:200px; height:300px; background:#1a1a1a; display:flex; align-items:center; justify-content:center; border-radius:10px;">No Poster</div>';
+            
+            return `
+                <div class="movie-card" onclick="window.location.href='/movie/?id=${movie.id}&type=movie'">
+                    ${posterHtml}
+                    <h3>${movie.title.length > 25 ? movie.title.substring(0, 22) + '...' : movie.title}</h3>
+                    <p>⭐ ${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}</p>
+                </div>
+            `;
+        }).join('');
         
     } catch (error) {
         console.error(`Error loading ${genreName} movies:`, error);
-        container.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">Failed to load movies.</p>';
+        container.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">Failed to load movies. Please try again later.</p>';
     }
 }
 
@@ -90,28 +121,26 @@ async function loadAllGenreMovies() {
         }
     }
     
-    // Load actual movies
-    for (const genre of genreMapping) {
-        await loadGenreMovies(genre.name, genre.id);
-    }
+    // Load actual movies (use Promise.all for faster loading)
+    const promises = genreMapping.map(genre => loadGenreMovies(genre.name, genre.id));
+    await Promise.all(promises);
     
-    console.log('✅ All genre sections loaded!');
+    console.log('✅ All genre sections loaded successfully!');
 }
 
 // --- BRIDGE TO HTML ---
 window.showDetails = showDetails;
 window.closeModal = closeModal;
 window.changeServer = changeServer;
-window.playTrailer = playTraiter; // Dinagdag ito para ma-access ng buttons sa HTML 👈
+window.playTrailer = playTrailer;
 window.nextSlide = nextSlide;
 window.goToSlide = goToSlide;
 window.handleSearch = handleSearch;
 window.filterGenre = filterGenre; 
 window.loadMore = loadMore;        
-window.BASE_URL = BASE_URL; 
 
 // ============================================
-// LIVE SEARCH DROPDOWN - NEW FEATURE!
+// LIVE SEARCH DROPDOWN
 // ============================================
 
 let searchDebounceTimer;
@@ -388,4 +417,5 @@ window.toggleGenreMenu = toggleGenreMenu;
 window.closeGenreMenu = closeGenreMenu;
 window.initMobileGenreMenu = initMobileGenreMenu;
 
+// Start the app
 init();
