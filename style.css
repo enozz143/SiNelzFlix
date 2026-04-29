@@ -195,7 +195,7 @@
 }
 
 /* ============================================ */
-/* HERO SLIDER - FIXED (WALANG BLACK SA MOBILE) */
+/* HERO SLIDER - FIXED LAHAT */
 /* ============================================ */
 
 #hero-slider-container {
@@ -239,7 +239,7 @@
     z-index: 1;
 }
 
-/* Content positioning */
+/* Content positioning - FIXED PARA HINDI GUMAGALAW */
 .hero-slide-content {
     position: absolute;
     bottom: 30px;
@@ -264,7 +264,34 @@
     overflow: hidden;
 }
 
-/* Slider dots */
+/* Hero actions buttons - FIXED POSITION */
+.hero-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.watch-now, .btn-secondary {
+    padding: 10px 25px;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.watch-now {
+    background: #00d4ff;
+    color: #000;
+}
+
+.btn-secondary {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    backdrop-filter: blur(5px);
+}
+
+/* Slider dots - CENTERED */
 .slider-dots {
     position: absolute;
     bottom: 15px;
@@ -272,6 +299,7 @@
     right: 0;
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 8px;
     z-index: 10;
 }
@@ -292,7 +320,7 @@
 }
 
 /* ============================================ */
-/* MOBILE OPTIMIZATIONS - WALANG BLACK SA SLIDER */
+/* MOBILE OPTIMIZATIONS */
 /* ============================================ */
 
 @media (max-width: 768px) {
@@ -367,11 +395,7 @@
         display: none !important;
     }
     
-    /* ===== HERO SLIDER MOBILE FIX - WALANG BLACK ===== */
-    #hero-slider {
-        min-height: auto !important;
-    }
-    
+    /* ===== HERO SLIDER MOBILE - FIXED ===== */
     .hero-slide {
         height: 280px !important;
         background-position: center 30% !important;
@@ -394,8 +418,25 @@
         -webkit-line-clamp: 2 !important;
     }
     
+    /* Hero actions buttons - FIXED POSITION SA MOBILE */
+    .hero-actions {
+        gap: 10px !important;
+        margin-top: 10px !important;
+        flex-wrap: wrap !important;
+    }
+    
+    .watch-now, .btn-secondary {
+        padding: 6px 15px !important;
+        font-size: 0.7rem !important;
+    }
+    
+    /* Slider dots - CENTERED SA MOBILE */
     .slider-dots {
         bottom: 10px !important;
+        justify-content: center !important;
+        left: 0 !important;
+        right: 0 !important;
+        transform: none !important;
     }
     
     .dot {
@@ -467,7 +508,7 @@
         font-size: 0.65rem !important;
     }
     
-    /* Limit visible movies to save battery */
+    /* Limit visible movies */
     .movie-card:nth-child(n+15) {
         display: none !important;
     }
@@ -589,6 +630,15 @@
         font-size: 0.95rem !important;
     }
     
+    .hero-slide-content p {
+        display: none !important;
+    }
+    
+    .watch-now, .btn-secondary {
+        padding: 5px 12px !important;
+        font-size: 0.65rem !important;
+    }
+    
     .movie-card {
         min-width: 100px !important;
     }
@@ -628,6 +678,10 @@
     
     .hero-slide-content h2 {
         font-size: 1.5rem !important;
+    }
+    
+    .slider-dots {
+        justify-content: center !important;
     }
     
     .genre-container {
@@ -815,6 +869,15 @@
     
     .hero-slide-content p {
         display: none !important;
+    }
+    
+    .hero-actions {
+        margin-top: 5px !important;
+    }
+    
+    .watch-now, .btn-secondary {
+        padding: 4px 10px !important;
+        font-size: 0.6rem !important;
     }
     
     .player-container {
