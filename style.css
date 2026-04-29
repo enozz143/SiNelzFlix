@@ -413,3 +413,25 @@
         display: inline-flex !important;
     }
 }
+
+/* ============================================ */
+/* ✅ HIDE GENRE BUTTONS ON MOBILE & TABLET */
+/* ============================================ */
+
+/* Hide genre container on mobile and tablet (max-width: 1023px) */
+@media (max-width: 1023px) {
+    .genre-container {
+        display: none !important;
+    }
+}
+
+/* Show genre container only on desktop (min-width: 1024px) */
+@media (min-width: 1024px) {
+    .genre-container {
+        display: flex !important;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 15px 20px;
+        justify-content: center;
+    }
+}
