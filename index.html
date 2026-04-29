@@ -13,20 +13,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     
-    <!-- ✅ SEO Meta Tags -->
+    <!-- ✅ SEO Meta Tags - Safe Version (Minimal "free") -->
     <meta name="google-site-verification" content="qwSQmjhkugm8eUJeMZeGK5seJ4ZXi38a_uG97iOwAdQ" />
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
     <meta name="author" content="CINElzFlix">
-    <meta name="keywords" content="watch movies online, streaming, watch movies, tv shows, anime streaming, CINElzFlix, HD movies">
+    <meta name="keywords" content="watch movies online, streaming, watch movies, tv shows, anime streaming, CINElzFlix, HD movies, trending movies, upcoming blockbusters">
     <meta name="revisit-after" content="1 day">
     
     <title>CINElzFlix | Watch Movies, TV Shows & Anime Online in HD</title>
-    <meta name="description" content="Stream the latest movies, TV shows, and anime in HD quality on CINElzFlix.">
+    <meta name="description" content="Stream the latest movies, TV shows, and anime in HD quality on CINElzFlix. No sign-up required. Your ultimate cinematic experience starts here!">
 
+    <!-- ✅ Canonical Tag -->
     <link rel="canonical" href="https://cinelzflix.com/">
 
+    <!-- ✅ Open Graph (Facebook, WhatsApp, Telegram) - Safe Version -->
     <meta property="og:title" content="CINElzFlix | Watch Movies, TV Shows & Anime Online">
-    <meta property="og:description" content="Stream the latest trending movies, TV series, and anime in HD quality.">
+    <meta property="og:description" content="Stream the latest trending movies, TV series, and anime in HD quality. No sign-up required!">
     <meta property="og:image" content="https://cinelzflix.com/logo.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -35,12 +37,14 @@
     <meta property="og:site_name" content="CINElzFlix">
     <meta property="og:locale" content="en_US">
 
+    <!-- ✅ Twitter Card - Safe Version -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="CINElzFlix | Watch Movies, TV Shows & Anime">
-    <meta name="twitter:description" content="Stream the latest movies and TV series in HD quality.">
+    <meta name="twitter:description" content="Stream the latest movies and TV series in HD quality. No sign-up required!">
     <meta name="twitter:image" content="https://cinelzflix.com/logo.png">
     <meta name="twitter:site" content="@cinelzflix">
 
+    <!-- ✅ Icons & PWA -->
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="apple-touch-icon" href="icon-512.png">
     <link rel="manifest" href="manifest.json">
@@ -48,16 +52,18 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    <link rel="stylesheet" href="style.css?v=1.7">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="style.css?v=1.6">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
     
+    <!-- ✅ JSON-LD Structured Data - Safe Version -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "WebSite",
         "name": "CINElzFlix",
         "url": "https://cinelzflix.com/",
-        "description": "Watch movies, TV shows, and anime online in HD quality.",
+        "description": "Watch movies, TV shows, and anime online in HD quality. No sign-up required.",
         "potentialAction": {
             "@type": "SearchAction",
             "target": {
@@ -113,7 +119,6 @@
                 </div>
             </section>
 
-            <!-- Genre buttons - visible sa desktop, nakatago sa mobile -->
             <div class="genre-container">
                 <button class="genre-btn active" onclick="filterGenre('all')">All</button>
                 <button class="genre-btn" onclick="filterGenre('28')">Action</button>
@@ -140,6 +145,14 @@
                 <h2>📺 Trending Movies</h2>
                 <div id="movies-list" class="movie-row horizontal-scroll"></div>
             </section>
+            
+            <div class="native-ad-container" style="margin: 30px auto; max-width: 1200px; padding: 0 15px; text-align: center;">
+                <p style="color: rgba(255,255,255,0.3); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">Recommended for you</p>
+                <div id="adsterra-native-slot" style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 15px; min-height: 100px;">
+                    <script async="async" data-cfasync="false" src="https://pl28947985.profitablecpmratenetwork.com/fc6a7236b66d527871d5f41236ef0ec5/invoke.js"></script>
+                    <div id="container-fc6a7236b66d527871d5f41236ef0ec5"></div>
+                </div>
+            </div>
 
             <section class="category-section">
                 <h2>🔥 Upcoming Blockbusters</h2>
@@ -166,15 +179,6 @@
             </div>
         </div>
     </main>
-
-    <!-- ✅ AD CONTAINER - NILIPAT SA PINAKABABA (after load more button) -->
-    <div class="native-ad-container" style="margin: 30px auto; max-width: 1200px; padding: 0 15px; text-align: center;">
-        <p style="color: rgba(255,255,255,0.3); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">Recommended for you</p>
-        <div id="adsterra-native-slot" style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 15px; min-height: 100px;">
-            <script async="async" data-cfasync="false" src="https://pl28947985.profitablecpmratenetwork.com/fc6a7236b66d527871d5f41236ef0ec5/invoke.js"></script>
-            <div id="container-fc6a7236b66d527871d5f41236ef0ec5"></div>
-        </div>
-    </div>
 
     <div id="modal" class="modal">
         <div class="modal-header-branding">
@@ -248,10 +252,9 @@
             <span class="nav-icon">🔍</span>
             <span class="nav-label">Search</span>
         </div>
-        <!-- ✅ Pinalitan ang "Menu" ng "Categories" -->
         <div class="nav-item" id="menu-toggle" onclick="toggleGenreMenu()">
-            <span class="nav-icon">🎬</span>
-            <span class="nav-label">Categories</span>
+            <span class="nav-icon">☰</span>
+            <span class="nav-label">Menu</span>
         </div>
     </div>
 
@@ -288,63 +291,6 @@
                 window.open('https://www.profitablecpmratenetwork.com/s4304airr?key=6b4f3e1e971c417fa77414903411d40c', '_blank');
             }
         }
-        
-        // ============================================
-        // ✅ HEATING FIX - PARA HINDI MAINIT ANG PHONE
-        // ============================================
-        
-        // Lazy loading sa lahat ng images
-        function initLazyLoading() {
-            const images = document.querySelectorAll('img');
-            images.forEach(img => {
-                if (!img.hasAttribute('loading')) {
-                    img.setAttribute('loading', 'lazy');
-                }
-            });
-            console.log('✅ Lazy loading enabled');
-        }
-        
-        // Debounce scroll events para hindi nagla-lag
-        let scrollTimeout;
-        window.addEventListener('scroll', function() {
-            if (scrollTimeout) clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(function() {}, 100);
-        });
-        
-        // Run on load
-        document.addEventListener('DOMContentLoaded', initLazyLoading);
-        
-        // Detect battery saving mode
-        if ('getBattery' in navigator) {
-            navigator.getBattery().then(function(battery) {
-                if (!battery.charging && battery.level < 0.2) {
-                    document.body.classList.add('battery-saver');
-                    var style = document.createElement('style');
-                    style.textContent = '.battery-saver * { animation: none !important; transition: none !important; }';
-                    document.head.appendChild(style);
-                }
-            });
-        }
-        
-        // ============================================
-        // ✅ AUTO-SCROLL PAGKATAPOS MAG-CLICK NG GENRE
-        // ============================================
-        
-        // I-override ang filterGenre para may auto-scroll
-        const originalFilterGenre = window.filterGenre;
-        if (originalFilterGenre) {
-            window.filterGenre = async function(genreId) {
-                await originalFilterGenre(genreId);
-                setTimeout(() => {
-                    const moviesSection = document.getElementById('movies-section');
-                    if (moviesSection) {
-                        moviesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                }, 300);
-            };
-        }
-        
-        console.log('✅ All fixes applied - Heating fix, auto-scroll, mobile optimizations');
     </script>
     
     <script src="https://pl28947937.profitablecpmratenetwork.com/a5/c3/8e/a5c38ef495583bd163602819c5112f48.js"></script>
