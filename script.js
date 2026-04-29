@@ -1,54 +1,10 @@
 // script.js (Root Directory)
-import { fetchMovies } from './js/api.js';
+import { BASE_URL, fetchMovies } from './js/api.js';
 import { setupHeroSlider, nextSlide, goToSlide } from './js/slider.js';
 import { displayList, handleSearch, filterGenre, loadMore } from './js/ui.js';
+// Dinagdag ang playTrailer dito sa import 👇
 import { showDetails, closeModal, changeServer, playTrailer } from './js/modal.js';
 import { initCountdown } from './js/countdown.js';
-
-// ============================================
-// ✅ AUTO-DETECT ENVIRONMENT (DEV vs PRODUCTION)
-// ============================================
-
-const isDev = window.location.hostname === 'localhost' || 
-              window.location.hostname.includes('127.0.0.1') ||
-              window.location.hostname.includes('github.io') ||
-              !window.location.hostname.includes('cinelzflix.com');
-
-const BASE_URL = isDev 
-    ? 'https://cinelzflix-worker.baquial-enozz.workers.dev/'
-    : '/api';
-
-console.log(`🔧 Running in ${isDev ? 'DEVELOPMENT' : 'PRODUCTION'} mode`);
-console.log(`📡 Using API URL: ${BASE_URL}`);
-
-window.BASE_URL = BASE_URL;
-
-// ============================================
-// ✅ GENRE MAPPING - IBA'T IBANG TAON PARA MAGKAIBA
-// ============================================
-
-const genreMapping = [
-    { name: 'action', id: 28, year: '2024', sort: 'popularity.desc' },
-    { name: 'adventure', id: 12, year: '2023', sort: 'vote_average.desc' },
-    { name: 'comedy', id: 35, year: '2022', sort: 'popularity.desc' },
-    { name: 'drama', id: 18, year: '2024', sort: 'vote_count.desc' },
-    { name: 'horror', id: 27, year: '2023', sort: 'popularity.desc' },
-    { name: 'thriller', id: 53, year: '2022', sort: 'vote_average.desc' },
-    { name: 'romance', id: 10749, year: '2024', sort: 'popularity.desc' },
-    { name: 'scifi', id: 878, year: '2023', sort: 'vote_count.desc' },
-    { name: 'fantasy', id: 14, year: '2022', sort: 'popularity.desc' },
-    { name: 'mystery', id: 9648, year: '2024', sort: 'vote_average.desc' },
-    { name: 'crime', id: 80, year: '2023', sort: 'popularity.desc' },
-    { name: 'animation', id: 16, year: '2024', sort: 'vote_count.desc' },
-    { name: 'documentary', id: 99, year: '2023', sort: 'vote_average.desc' },
-    { name: 'family', id: 10751, year: '2024', sort: 'popularity.desc' },
-    { name: 'war', id: 10752, year: '2022', sort: 'vote_count.desc' },
-    { name: 'western', id: 37, year: '2021', sort: 'popularity.desc' },
-    { name: 'musical', id: 10402, year: '2023', sort: 'vote_average.desc' },
-    { name: 'biography', id: 36, year: '2024', sort: 'popularity.desc', keyword: 'biography' },
-    { name: 'history', id: 36, year: '2022', sort: 'vote_average.desc', keyword: 'history' },
-    { name: 'sports', id: 10762, year: '2024', sort: 'popularity.desc' }
-];
 
 // --- HELPER: SKELETON LOADER ---
 function showSkeletons(containerId, count = 10) {
@@ -62,121 +18,27 @@ function showSkeletons(containerId, count = 10) {
     container.innerHTML = skeletonHTML;
 }
 
-// --- LOAD GENRE MOVIES WITH YEAR FILTER ---
-async function loadGenreMovies(genre) {
-    const container = document.getElementById(`genre-${genre.name}-list`);
-    if (!container) return;
-    
-    try {
-        let url;
-        let movies = [];
-        
-        if (genre.keyword) {
-            // For biography and history - use search endpoint with year
-            url = `${BASE_URL}?endpoint=/search/movie&query=${genre.keyword}&primary_release_year=${genre.year}&page=1`;
-            console.log(`🎬 Fetching ${genre.name} with keyword: ${genre.keyword}, year: ${genre.year}`);
-        } else {
-            // For regular genres - use year filter para iba-iba ang movies
-            url = `${BASE_URL}?endpoint=/discover/movie&with_genres=${genre.id}&primary_release_year=${genre.year}&sort_by=${genre.sort}&vote_count.gte=50&page=1`;
-            console.log(`🎬 Fetching ${genre.name} from year ${genre.year} with ${genre.sort} sorting`);
-        }
-        
-        const response = await fetch(url);
-        const data = await response.json();
-        movies = data.results || [];
-        
-        // If not enough movies, try previous year
-        if (movies.length < 6 && !genre.keyword) {
-            const prevYear = parseInt(genre.year) - 1;
-            const fallbackUrl = `${BASE_URL}?endpoint=/discover/movie&with_genres=${genre.id}&primary_release_year=${prevYear}&sort_by=${genre.sort}&vote_count.gte=50&page=1`;
-            const fallbackRes = await fetch(fallbackUrl);
-            const fallbackData = await fallbackRes.json();
-            movies = fallbackData.results || [];
-            console.log(`🔄 ${genre.name} fallback to year ${prevYear}: ${movies.length} movies`);
-        }
-        
-        // Remove duplicates by ID
-        const uniqueMovies = [];
-        const seenIds = new Set();
-        for (const movie of movies) {
-            if (!seenIds.has(movie.id)) {
-                seenIds.add(movie.id);
-                uniqueMovies.push(movie);
-            }
-        }
-        movies = uniqueMovies;
-        
-        console.log(`✅ ${genre.name}: ${movies.length} unique movies loaded`);
-        
-        if (movies.length === 0) {
-            container.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">No movies found for this genre.</p>';
-            return;
-        }
-        
-        container.innerHTML = movies.slice(0, 12).map(movie => {
-            const posterPath = movie.poster_path 
-                ? `https://image.tmdb.org/t/p/w200${movie.poster_path}`
-                : '';
-            const posterHtml = posterPath 
-                ? `<img src="${posterPath}" alt="${movie.title.replace(/"/g, '&quot;')}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300?text=No+Poster'">`
-                : '<div style="width:200px; height:300px; background:#1a1a1a; display:flex; align-items:center; justify-content:center; border-radius:10px;">No Poster</div>';
-            
-            const movieYear = movie.release_date ? movie.release_date.split('-')[0] : genre.year;
-            
-            return `
-                <div class="movie-card" onclick="window.location.href='/movie/?id=${movie.id}&type=movie'">
-                    ${posterHtml}
-                    <h3>${movie.title.length > 25 ? movie.title.substring(0, 22) + '...' : movie.title}</h3>
-                    <p>⭐ ${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'} | ${movieYear}</p>
-                </div>
-            `;
-        }).join('');
-        
-    } catch (error) {
-        console.error(`Error loading ${genre.name} movies:`, error);
-        container.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">Failed to load movies. Please refresh the page.</p>';
-    }
-}
-
-// Load all genre movies
-async function loadAllGenreMovies() {
-    console.log('🎬 Loading additional genre sections with YEAR filter...');
-    
-    // Load skeletons first
-    for (const genre of genreMapping) {
-        const container = document.getElementById(`genre-${genre.name}-list`);
-        if (container) {
-            showSkeletons(`genre-${genre.name}-list`, 8);
-        }
-    }
-    
-    // Load actual movies one by one (para hindi ma-block)
-    for (const genre of genreMapping) {
-        await loadGenreMovies(genre);
-        // Small delay para hindi ma-rate limit
-        await new Promise(resolve => setTimeout(resolve, 100));
-    }
-    
-    console.log('✅ All genre sections loaded successfully!');
-}
-
 // --- BRIDGE TO HTML ---
 window.showDetails = showDetails;
 window.closeModal = closeModal;
 window.changeServer = changeServer;
-window.playTrailer = playTrailer;
+window.playTrailer = playTrailer; // Dinagdag ito para ma-access ng buttons sa HTML 👈
 window.nextSlide = nextSlide;
 window.goToSlide = goToSlide;
 window.handleSearch = handleSearch;
 window.filterGenre = filterGenre; 
 window.loadMore = loadMore;        
+window.BASE_URL = BASE_URL; 
 
 // ============================================
-// LIVE SEARCH DROPDOWN
+// LIVE SEARCH DROPDOWN - NEW FEATURE!
 // ============================================
 
 let searchDebounceTimer;
 
+/**
+ * Live search with dropdown suggestions
+ */
 window.handleSearchWithDropdown = async function(query) {
     const dropdown = document.getElementById('search-dropdown');
     
@@ -187,9 +49,11 @@ window.handleSearchWithDropdown = async function(query) {
         return;
     }
     
+    // Show loading state
     dropdown.innerHTML = '<div class="search-dropdown-loading">🔍 Searching...</div>';
     dropdown.style.display = 'block';
     
+    // Debounce para hindi masyadong madaming request
     clearTimeout(searchDebounceTimer);
     searchDebounceTimer = setTimeout(async () => {
         try {
@@ -202,6 +66,7 @@ window.handleSearchWithDropdown = async function(query) {
                 return;
             }
             
+            // Show top 8 results
             dropdown.innerHTML = results.slice(0, 8).map(item => {
                 const title = item.title || item.name || 'Unknown';
                 const year = (item.release_date || item.first_air_date || '').split('-')[0];
@@ -211,6 +76,7 @@ window.handleSearchWithDropdown = async function(query) {
                     ? `https://image.tmdb.org/t/p/w92${item.poster_path}` 
                     : '';
                 
+                // Skip if no title or invalid type
                 if (type === 'Person') return '';
                 
                 return `
@@ -228,6 +94,7 @@ window.handleSearchWithDropdown = async function(query) {
                 `;
             }).filter(item => item !== '').join('');
             
+            // If all items were filtered out
             if (dropdown.innerHTML === '') {
                 dropdown.innerHTML = '<div class="search-dropdown-empty">😢 No valid results found</div>';
             }
@@ -239,6 +106,9 @@ window.handleSearchWithDropdown = async function(query) {
     }, 300);
 };
 
+/**
+ * Escape HTML to prevent XSS
+ */
 function escapeHtml(str) {
     if (!str) return '';
     return str
@@ -249,6 +119,9 @@ function escapeHtml(str) {
         .replace(/'/g, '&#39;');
 }
 
+/**
+ * Close dropdown when clicking outside
+ */
 document.addEventListener('click', function(e) {
     const searchBox = document.querySelector('.search-box');
     const dropdown = document.getElementById('search-dropdown');
@@ -257,6 +130,7 @@ document.addEventListener('click', function(e) {
     }
 });
 
+// Also close on Escape key
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         const dropdown = document.getElementById('search-dropdown');
@@ -264,30 +138,37 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// --- INITIALIZATION ---
+/**
+ * --- INITIALIZATION ENGINE ---
+ */
 async function init() {
     console.log("🚀 CINElzFlix Engine is now LIVE, bro!"); 
     try {
+        // 0. Initialize Countdown Timer
         initCountdown();
 
+        // ✅ FORCE CLEAR CONTAINERS BEFORE ADDING SKELETONS
         const containers = ["movies-list", "upcoming-list", "tvshows-list", "anime-list", "top-rated-list"];
         containers.forEach(id => {
             const container = document.getElementById(id);
             if (container) container.innerHTML = "";
         });
 
+        // --- START LOADING SKELETONS ---
         showSkeletons("movies-list", 8);
         showSkeletons("upcoming-list", 6);
         showSkeletons("tvshows-list", 6);
         showSkeletons("anime-list", 6);
         showSkeletons("top-rated-list", 6);
 
+        // 1. Load Trending & Setup Hero
         const movies = await fetchMovies("movie", 1);
         if (movies && movies.length > 0) {
             setupHeroSlider(movies);
             displayList(movies, "movies-list");
         }
         
+        // 2. Load Other Categories
         const categories = [
             { endpoint: '/movie/upcoming', container: 'upcoming-list' },
             { endpoint: '/trending/tv/week', container: 'tvshows-list' },
@@ -295,18 +176,19 @@ async function init() {
             { endpoint: '/movie/top_rated', container: 'top-rated-list' }
         ];
 
+        // Sabay-sabay nating i-fetch pero naka-skeleton bawat isa
         for (const cat of categories) {
             try {
                 const res = await fetch(`${BASE_URL}?endpoint=${cat.endpoint}`);
                 const data = await res.json();
+                // Pag dating ng data, mapapalitan na yung skeletons
                 displayList(data.results, cat.container);
             } catch (catErr) {
-                console.error(`Error loading ${cat.container}:`, catErr);
+                console.error(`Error loading category ${cat.container}:`, catErr);
             }
         }
-        
-        await loadAllGenreMovies();
 
+        // 3. Deep Linking Support
         const params = new URLSearchParams(window.location.search);
         const movieId = params.get('movie');
         const tvId = params.get('tv');
@@ -323,7 +205,31 @@ async function init() {
     }
 }
 
-// --- MOBILE NAVIGATION ---
+// --- GLOBAL EVENT LISTENERS ---
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === "Escape") {
+        const modal = document.getElementById("modal");
+        const searchResults = document.getElementById("search-results-section");
+        
+        if (modal && modal.style.display === "flex") {
+            closeModal();
+            return;
+        }
+        
+        if (searchResults && searchResults.style.display === "block") {
+            const searchInput = document.getElementById("search-input");
+            if (searchInput) searchInput.value = "";
+            searchResults.style.display = "none";
+            document.getElementById("trending-section").style.display = "block";
+        }
+    }
+});
+
+// ============================================
+// MOBILE BOTTOM NAVIGATION FUNCTIONS
+// ============================================
+
 function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -336,10 +242,13 @@ function focusSearch() {
     }
 }
 
+// Create mobile genre menu with buttons
 function initMobileGenreMenu() {
     const genreList = document.getElementById('mobile-genre-list');
+    
     if (!genreList) return;
     
+    // Copy genre buttons from desktop
     const desktopButtons = document.querySelectorAll('.genre-container .genre-btn');
     genreList.innerHTML = '';
     
@@ -375,6 +284,7 @@ function closeGenreMenu() {
     if (menu) menu.style.display = 'none';
 }
 
+// Close menu when clicking outside
 document.addEventListener('click', function(e) {
     const menu = document.getElementById('mobile-genre-menu');
     const menuToggle = document.getElementById('menu-toggle');
@@ -385,9 +295,14 @@ document.addEventListener('click', function(e) {
     }
 });
 
+// Export for use in movie page
+export { scrollToTop, focusSearch, toggleGenreMenu, closeGenreMenu, initMobileGenreMenu };
+
+// Make available globally
 window.scrollToTop = scrollToTop;
 window.focusSearch = focusSearch;
 window.toggleGenreMenu = toggleGenreMenu;
 window.closeGenreMenu = closeGenreMenu;
+window.initMobileGenreMenu = initMobileGenreMenu;
 
 init();
