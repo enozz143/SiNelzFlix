@@ -106,18 +106,57 @@
 /* ============================================ */
 
 @media (max-width: 768px) {
+    /* Fix navbar - search box stays on same row */
+    #navbar {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 10px 15px !important;
+        gap: 8px !important;
+    }
+    
+    .logo {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 8px !important;
+        width: auto !important;
+        flex-shrink: 0 !important;
+    }
+    
+    .logo a img {
+        height: 32px !important;
+    }
+    
+    .download-nav-btn {
+        padding: 5px 10px !important;
+        font-size: 0.65rem !important;
+        margin: 0 !important;
+        white-space: nowrap !important;
+    }
+    
     /* Search box container - icon mode by default */
     .search-box {
         position: relative !important;
-        width: 40px !important;
+        width: 36px !important;
         transition: width 0.3s ease !important;
         overflow: hidden !important;
         z-index: 9999 !important;
+        flex-shrink: 0 !important;
+        margin-left: auto !important;
     }
     
     /* Expand when focused (clicked) */
     .search-box:focus-within {
-        width: 200px !important;
+        width: calc(100% - 100px) !important;
+        position: absolute !important;
+        right: 15px !important;
+        left: auto !important;
+        top: 10px !important;
+        background: #0a192f !important;
+        z-index: 10001 !important;
     }
     
     /* Search input styling */
@@ -246,7 +285,6 @@
         padding-bottom: 80px !important;
     }
     
-    /* mangopya kag code noh hahhahaa */
     footer {
         margin-bottom: 60px !important;
         padding-bottom: 20px !important;
@@ -356,18 +394,8 @@
     color: #000;
 }
 
-/* Mobile adjustment */
-@media (max-width: 768px) {
-    .download-nav-btn {
-        padding: 6px 12px;
-        font-size: 0.7rem;
-        margin: 0 5px;
-    }
-}
-
 /* ============================================ */
 /* ✅ ADDITIONAL MOBILE OPTIMIZATIONS - CINElzFlix */
-/* Hindi nagagalaw ang existing imports at desktop view */
 /* ============================================ */
 
 /* Medium devices (tablets, 768px - 1024px) */
@@ -397,18 +425,6 @@
     body, html {
         overflow-x: hidden !important;
         width: 100% !important;
-    }
-    
-    /* Fix navbar - hindi naka-overlap */
-    #navbar {
-        flex-wrap: wrap !important;
-        padding: 10px 15px !important;
-        gap: 10px !important;
-    }
-    
-    .logo {
-        width: 100% !important;
-        justify-content: space-between !important;
     }
     
     /* Hero slider adjustments */
@@ -445,7 +461,7 @@
         height: 6px !important;
     }
     
-    /* Genre buttons - horizontal scroll (mas maganda sa mobile) */
+    /* Genre buttons - horizontal scroll */
     .genre-container {
         display: flex !important;
         overflow-x: auto !important;
@@ -603,34 +619,6 @@
         padding: 0 15px !important;
     }
     
-    /* Search dropdown position fix */
-    .search-dropdown {
-        position: fixed !important;
-        top: 70px !important;
-        left: 10px !important;
-        right: 10px !important;
-        width: auto !important;
-        max-height: 55vh !important;
-        z-index: 10001 !important;
-    }
-    
-    .search-dropdown-item {
-        padding: 10px 12px !important;
-    }
-    
-    .search-dropdown-img {
-        width: 35px !important;
-        height: 52px !important;
-    }
-    
-    .search-dropdown-title {
-        font-size: 0.8rem !important;
-    }
-    
-    .search-dropdown-meta {
-        font-size: 0.6rem !important;
-    }
-    
     /* Modal banner ad */
     .modal-banner-ad iframe {
         max-width: 100% !important;
@@ -706,7 +694,7 @@
     }
 }
 
-/* Fix for notched phones (iPhone 14, etc.) */
+/* Fix for notched phones */
 @supports (padding: max(0px)) {
     @media (max-width: 767px) {
         #navbar {
@@ -725,7 +713,7 @@
     }
 }
 
-/* Landscape mode sa mobile (horizontal orientation) */
+/* Landscape mode sa mobile */
 @media (max-width: 767px) and (orientation: landscape) {
     .hero-slide {
         height: 180px !important;
