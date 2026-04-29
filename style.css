@@ -444,30 +444,30 @@
     
     /* ===== BAWASAN ANG SPACING ===== */
     
-    /* Bawasan ang margin ng category sections */
     .category-section {
         margin: 15px 0 !important;
         padding: 0 10px !important;
     }
     
-    /* Bawasan ang laki ng section titles */
     .category-section h2 {
         font-size: 0.9rem !important;
         margin-bottom: 6px !important;
     }
     
-    /* Bawasan ang gap sa pagitan ng movie cards */
     .movie-row {
         gap: 6px !important;
     }
     
-    /* Gawing mas maliit ang movie cards */
     .movie-card {
         min-width: 95px !important;
     }
     
+    /* ✅ ORIGINAL SHAPE NG POSTERS - HINDI SQUARE */
     .movie-card img {
-        height: 130px !important;
+        width: 100% !important;
+        height: auto !important;
+        aspect-ratio: 2 / 3 !important;
+        object-fit: cover !important;
         border-radius: 6px !important;
     }
     
@@ -480,22 +480,17 @@
         font-size: 0.55rem !important;
     }
     
-    /* ===== HIDE SCROLLBAR SA MOBILE (PERO PURO PADIN MAG-SWIPE) ===== */
-    
-    /* Hide scrollbar for Chrome, Safari and Edge */
+    /* ===== HIDE SCROLLBAR SA MOBILE ===== */
     .movie-row::-webkit-scrollbar {
         display: none !important;
     }
     
-    /* Hide scrollbar for Firefox */
     .movie-row {
         scrollbar-width: none !important;
         -ms-overflow-style: none !important;
     }
     
     /* ===== BAWASAN DIN ANG IBA ===== */
-    
-    /* Bawasan ang spacing ng genre container */
     .genre-container {
         gap: 5px !important;
         padding: 6px 10px !important;
@@ -507,7 +502,6 @@
         font-size: 0.6rem !important;
     }
     
-    /* Bawasan ang load more button */
     .load-more-container {
         padding: 0 10px 15px !important;
     }
@@ -517,7 +511,6 @@
         font-size: 0.75rem !important;
     }
     
-    /* ===== BAWASAN ANG AD CONTAINER SPACING ===== */
     .native-ad-container {
         margin: 15px auto !important;
         padding: 0 10px !important;
