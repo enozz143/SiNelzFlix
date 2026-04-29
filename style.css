@@ -364,3 +364,52 @@
         margin: 0 5px;
     }
 }
+
+/* ============================================ */
+/* ✅ HEATING FIX - PARA HINDI MAINIT ANG PHONE */
+/* ============================================ */
+
+@media (max-width: 768px) {
+    /* Limit visible movies para hindi heavy mag-load */
+    .movie-card:nth-child(n+15) {
+        display: none !important;
+    }
+    
+    /* Remove heavy animations */
+    .movie-card, .genre-btn, .hero-slide {
+        transition: none !important;
+    }
+    
+    .movie-card:hover {
+        transform: none !important;
+    }
+    
+    /* Remove heavy shadows */
+    .movie-card, .genre-btn {
+        box-shadow: none !important;
+    }
+    
+    /* Remove backdrop-filter (malakas sa CPU) */
+    .mobile-nav {
+        backdrop-filter: none !important;
+        background: #0a0a0a !important;
+    }
+}
+
+/* ============================================ */
+/* ✅ HIDE DOWNLOAD BUTTON ON DESKTOP */
+/* ============================================ */
+
+/* Hide on desktop (1024px and above) */
+@media (min-width: 1024px) {
+    .download-nav-btn {
+        display: none !important;
+    }
+}
+
+/* Show on tablet (768px to 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .download-nav-btn {
+        display: inline-flex !important;
+    }
+}
