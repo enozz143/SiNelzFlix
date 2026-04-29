@@ -1,4 +1,4 @@
-/* mangopya kag code noh hahhahaa*/
+/* mangopya kag code noh hahhahaa */
 
 /* 1. Global Variables & Reset */
 @import url('./css/base.css');
@@ -362,5 +362,384 @@
         padding: 6px 12px;
         font-size: 0.7rem;
         margin: 0 5px;
+    }
+}
+
+/* ============================================ */
+/* ✅ ADDITIONAL MOBILE OPTIMIZATIONS - CINElzFlix */
+/* Hindi nagagalaw ang existing imports at desktop view */
+/* ============================================ */
+
+/* Medium devices (tablets, 768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .genre-container {
+        gap: 8px !important;
+        padding: 10px 15px !important;
+    }
+    
+    .genre-btn {
+        font-size: 0.75rem !important;
+        padding: 6px 12px !important;
+    }
+    
+    .movie-card {
+        min-width: 160px !important;
+    }
+    
+    .category-section h2 {
+        font-size: 1.3rem !important;
+    }
+}
+
+/* Mobile devices (up to 767px) - MAIN OPTIMIZATIONS */
+@media (max-width: 767px) {
+    /* Prevent horizontal scroll */
+    body, html {
+        overflow-x: hidden !important;
+        width: 100% !important;
+    }
+    
+    /* Fix navbar - hindi naka-overlap */
+    #navbar {
+        flex-wrap: wrap !important;
+        padding: 10px 15px !important;
+        gap: 10px !important;
+    }
+    
+    .logo {
+        width: 100% !important;
+        justify-content: space-between !important;
+    }
+    
+    /* Hero slider adjustments */
+    .hero-slide {
+        height: 280px !important;
+    }
+    
+    .hero-slide-content {
+        padding: 20px !important;
+        bottom: 15px !important;
+        left: 15px !important;
+        right: 15px !important;
+    }
+    
+    .hero-slide-content h2 {
+        font-size: 1.1rem !important;
+        margin-bottom: 5px !important;
+    }
+    
+    .hero-slide-content p {
+        font-size: 0.7rem !important;
+        -webkit-line-clamp: 2 !important;
+        display: -webkit-box !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+    }
+    
+    .slider-dots {
+        bottom: 5px !important;
+    }
+    
+    .slider-dots .dot {
+        width: 6px !important;
+        height: 6px !important;
+    }
+    
+    /* Genre buttons - horizontal scroll (mas maganda sa mobile) */
+    .genre-container {
+        display: flex !important;
+        overflow-x: auto !important;
+        flex-wrap: nowrap !important;
+        gap: 8px !important;
+        padding: 10px 15px !important;
+        margin: 0 0 20px 0 !important;
+        -webkit-overflow-scrolling: touch !important;
+        scrollbar-width: thin !important;
+    }
+    
+    .genre-btn {
+        flex-shrink: 0 !important;
+        font-size: 0.7rem !important;
+        padding: 5px 12px !important;
+    }
+    
+    /* Category sections */
+    .category-section {
+        margin: 25px 0 !important;
+        padding: 0 15px !important;
+    }
+    
+    .category-section h2 {
+        font-size: 1.1rem !important;
+        margin-bottom: 12px !important;
+    }
+    
+    /* Movie rows - horizontal scroll */
+    .movie-row {
+        gap: 10px !important;
+        padding-bottom: 8px !important;
+    }
+    
+    .movie-card {
+        min-width: 120px !important;
+    }
+    
+    .movie-card img {
+        height: 160px !important;
+        border-radius: 10px !important;
+    }
+    
+    .movie-card h3 {
+        font-size: 0.75rem !important;
+        margin-top: 6px !important;
+    }
+    
+    .movie-card p {
+        font-size: 0.65rem !important;
+    }
+    
+    /* Modal (popup) mobile fix */
+    .modal {
+        padding: 10px !important;
+    }
+    
+    .modal-content {
+        width: 95% !important;
+        margin: 60px auto !important;
+        border-radius: 15px !important;
+    }
+    
+    .modal-info {
+        flex-direction: column !important;
+        text-align: center !important;
+        padding: 15px !important;
+    }
+    
+    .modal-info img {
+        width: 130px !important;
+        margin: 0 auto 15px !important;
+        border-radius: 10px !important;
+    }
+    
+    .modal-info h2 {
+        font-size: 1.1rem !important;
+    }
+    
+    .modal-info p {
+        font-size: 0.75rem !important;
+        -webkit-line-clamp: 4 !important;
+        display: -webkit-box !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+    }
+    
+    .player-container {
+        height: 200px !important;
+    }
+    
+    #server {
+        width: 100% !important;
+        padding: 8px 12px !important;
+        font-size: 0.8rem !important;
+        margin-top: 10px !important;
+    }
+    
+    /* Similar movies sa modal */
+    #similar-movies-container {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+        padding: 10px !important;
+    }
+    
+    .similar-item {
+        text-align: center !important;
+    }
+    
+    .similar-item img {
+        width: 100% !important;
+        height: 120px !important;
+        object-fit: cover !important;
+        border-radius: 8px !important;
+    }
+    
+    .similar-item span {
+        font-size: 0.7rem !important;
+    }
+    
+    /* Footer */
+    footer {
+        margin-bottom: 70px !important;
+        padding: 20px 15px 30px !important;
+    }
+    
+    .footer-links {
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 12px !important;
+    }
+    
+    .footer-links a {
+        font-size: 0.7rem !important;
+    }
+    
+    .footer-copyright p {
+        font-size: 0.6rem !important;
+    }
+    
+    /* Load more button */
+    .load-more-container {
+        padding: 0 15px 20px !important;
+    }
+    
+    #load-more-btn {
+        width: 100% !important;
+        padding: 10px !important;
+        font-size: 0.85rem !important;
+    }
+    
+    /* Ad containers */
+    .native-ad-container {
+        padding: 0 15px !important;
+    }
+    
+    /* Search dropdown position fix */
+    .search-dropdown {
+        position: fixed !important;
+        top: 70px !important;
+        left: 10px !important;
+        right: 10px !important;
+        width: auto !important;
+        max-height: 55vh !important;
+        z-index: 10001 !important;
+    }
+    
+    .search-dropdown-item {
+        padding: 10px 12px !important;
+    }
+    
+    .search-dropdown-img {
+        width: 35px !important;
+        height: 52px !important;
+    }
+    
+    .search-dropdown-title {
+        font-size: 0.8rem !important;
+    }
+    
+    .search-dropdown-meta {
+        font-size: 0.6rem !important;
+    }
+    
+    /* Modal banner ad */
+    .modal-banner-ad iframe {
+        max-width: 100% !important;
+        height: 200px !important;
+    }
+    
+    /* Countdown banner sa mobile */
+    .countdown-card {
+        margin: 0 15px !important;
+        padding: 15px !important;
+    }
+    
+    .time-box {
+        min-width: 55px !important;
+        padding: 8px 5px !important;
+    }
+    
+    .time-box span {
+        font-size: 1.2rem !important;
+    }
+    
+    .time-box small {
+        font-size: 0.6rem !important;
+    }
+}
+
+/* Extra small devices (up to 480px) */
+@media (max-width: 480px) {
+    .hero-slide {
+        height: 220px !important;
+    }
+    
+    .hero-slide-content h2 {
+        font-size: 0.95rem !important;
+    }
+    
+    .movie-card {
+        min-width: 100px !important;
+    }
+    
+    .movie-card img {
+        height: 140px !important;
+    }
+    
+    .movie-card h3 {
+        font-size: 0.7rem !important;
+    }
+    
+    .genre-btn {
+        font-size: 0.65rem !important;
+        padding: 4px 10px !important;
+    }
+    
+    .category-section h2 {
+        font-size: 1rem !important;
+    }
+    
+    .modal-info img {
+        width: 100px !important;
+    }
+    
+    .modal-info h2 {
+        font-size: 0.95rem !important;
+    }
+    
+    #similar-movies-container {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+    }
+    
+    .similar-item img {
+        height: 100px !important;
+    }
+}
+
+/* Fix for notched phones (iPhone 14, etc.) */
+@supports (padding: max(0px)) {
+    @media (max-width: 767px) {
+        #navbar {
+            padding-top: max(10px, env(safe-area-inset-top)) !important;
+            padding-left: max(15px, env(safe-area-inset-left)) !important;
+            padding-right: max(15px, env(safe-area-inset-right)) !important;
+        }
+        
+        .mobile-nav {
+            padding-bottom: max(8px, env(safe-area-inset-bottom)) !important;
+        }
+        
+        .hero-slide-content {
+            padding-bottom: max(15px, env(safe-area-inset-bottom)) !important;
+        }
+    }
+}
+
+/* Landscape mode sa mobile (horizontal orientation) */
+@media (max-width: 767px) and (orientation: landscape) {
+    .hero-slide {
+        height: 180px !important;
+    }
+    
+    .player-container {
+        height: 180px !important;
+    }
+    
+    .modal-content {
+        margin: 40px auto !important;
+    }
+    
+    .mobile-genre-menu {
+        max-height: 85vh !important;
     }
 }
