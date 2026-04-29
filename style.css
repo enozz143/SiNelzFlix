@@ -496,16 +496,27 @@
         -ms-overflow-style: none !important;
     }
     
+    /* ===== GENRE BUTTONS - MAGKAIBA NG LAKI ===== */
+    
+    /* Desktop genre buttons (nakatago sa mobile) - maliit */
+    .genre-container .genre-btn {
+        padding: 3px 8px !important;
+        font-size: 0.6rem !important;
+    }
+    
+    /* Mobile genre menu buttons (Categories slide up) - normal laki */
+    .mobile-genre-list .genre-btn {
+        padding: 10px 16px !important;
+        font-size: 0.85rem !important;
+        margin: 5px !important;
+        border-radius: 30px !important;
+    }
+    
     /* ===== BAWASAN DIN ANG IBA ===== */
     .genre-container {
         gap: 5px !important;
         padding: 6px 10px !important;
         margin-bottom: 5px !important;
-    }
-    
-    .genre-btn {
-        padding: 3px 8px !important;
-        font-size: 0.6rem !important;
     }
     
     .load-more-container {
