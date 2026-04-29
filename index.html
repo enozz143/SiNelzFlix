@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head> 
-    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-5YXHENQC97"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -13,22 +12,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     
-    <!-- ✅ SEO Meta Tags -->
     <meta name="google-site-verification" content="qwSQmjhkugm8eUJeMZeGK5seJ4ZXi38a_uG97iOwAdQ" />
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
     <meta name="author" content="CINElzFlix">
-    <meta name="keywords" content="watch movies online, streaming, watch movies, tv shows, anime streaming, CINElzFlix, HD movies, trending movies, upcoming blockbusters">
+    <meta name="keywords" content="watch movies online, streaming, watch movies, tv shows, anime streaming, CINElzFlix, HD movies">
     <meta name="revisit-after" content="1 day">
     
     <title>CINElzFlix | Watch Movies, TV Shows & Anime Online in HD</title>
-    <meta name="description" content="Stream the latest movies, TV shows, and anime in HD quality on CINElzFlix. No sign-up required. Your ultimate cinematic experience starts here!">
+    <meta name="description" content="Stream the latest movies, TV shows, and anime in HD quality on CINElzFlix.">
 
-    <!-- ✅ Canonical Tag -->
     <link rel="canonical" href="https://cinelzflix.com/">
 
-    <!-- ✅ Open Graph -->
     <meta property="og:title" content="CINElzFlix | Watch Movies, TV Shows & Anime Online">
-    <meta property="og:description" content="Stream the latest trending movies, TV series, and anime in HD quality. No sign-up required!">
+    <meta property="og:description" content="Stream the latest trending movies, TV series, and anime in HD quality.">
     <meta property="og:image" content="https://cinelzflix.com/logo.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -37,14 +33,12 @@
     <meta property="og:site_name" content="CINElzFlix">
     <meta property="og:locale" content="en_US">
 
-    <!-- ✅ Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="CINElzFlix | Watch Movies, TV Shows & Anime">
-    <meta name="twitter:description" content="Stream the latest movies and TV series in HD quality. No sign-up required!">
+    <meta name="twitter:description" content="Stream the latest movies and TV series in HD quality.">
     <meta name="twitter:image" content="https://cinelzflix.com/logo.png">
     <meta name="twitter:site" content="@cinelzflix">
 
-    <!-- ✅ Icons & PWA -->
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="apple-touch-icon" href="icon-512.png">
     <link rel="manifest" href="manifest.json">
@@ -52,18 +46,16 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="style.css?v=1.6">
+    <link rel="stylesheet" href="style.css?v=1.7">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
     
-    <!-- ✅ JSON-LD Structured Data -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "WebSite",
         "name": "CINElzFlix",
         "url": "https://cinelzflix.com/",
-        "description": "Watch movies, TV shows, and anime online in HD quality. No sign-up required.",
+        "description": "Watch movies, TV shows, and anime online in HD quality.",
         "potentialAction": {
             "@type": "SearchAction",
             "target": {
@@ -142,27 +134,27 @@
             </div>
 
             <section class="category-section">
-                <h2>📺 Trending Movies</h2>
+                <h2>📺 Trending Movies <button class="show-more-btn" onclick="loadMoreCategory('movies-list', 'movie')">Show Even More</button></h2>
                 <div id="movies-list" class="movie-row horizontal-scroll"></div>
             </section>
             
             <section class="category-section">
-                <h2>🔥 Upcoming Blockbusters</h2>
+                <h2>🔥 Upcoming Blockbusters <button class="show-more-btn" onclick="loadMoreCategory('upcoming-list', 'movie', null, 'upcoming')">Show Even More</button></h2>
                 <div id="upcoming-list" class="movie-row horizontal-scroll"></div>
             </section>
 
             <section class="category-section">
-                <h2>🎬 TV Shows</h2>
+                <h2>🎬 TV Shows <button class="show-more-btn" onclick="loadMoreCategory('tvshows-list', 'tv')">Show Even More</button></h2>
                 <div id="tvshows-list" class="movie-row horizontal-scroll"></div>
             </section>
 
             <section class="category-section">
-                <h2>⭐ Anime World</h2>
+                <h2>⭐ Anime World <button class="show-more-btn" onclick="loadMoreCategory('anime-list', 'tv', 16)">Show Even More</button></h2>
                 <div id="anime-list" class="movie-row horizontal-scroll"></div>
             </section>
 
             <section class="category-section">
-                <h2>🏆 Top Rated Classics</h2>
+                <h2>🏆 Top Rated Classics <button class="show-more-btn" onclick="loadMoreCategory('top-rated-list', 'movie', null, 'top_rated')">Show Even More</button></h2>
                 <div id="top-rated-list" class="movie-row horizontal-scroll"></div>
             </section>
 
@@ -272,7 +264,6 @@
         // Disable right click
         document.addEventListener('contextmenu', e => e.preventDefault());
         
-        // Disable F12 and dev tools shortcuts
         document.onkeydown = function(e) {
             if(e.keyCode == 123) return false;
             if(e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 67 || e.keyCode == 74)) return false;
@@ -282,18 +273,18 @@
         document.onselectstart = () => false;
         
         function comingSoon() {
-            alert("🔥 VivaMax section is coming soon! Make sure you're 18 years or older. Stay tuned for exclusive content! 🎬");
+            alert("🔥 VivaMax section is coming soon! Make sure you're 18 or older.");
         }
         
         function openVivaMaxAd() {
-            let userConfirmed = confirm("🔞 VivaMax section is coming soon! (18+ only)\n\nClick OK to see exclusive offers while we build the section. 🎬");
+            let userConfirmed = confirm("🔞 VivaMax section is coming soon! (18+ only)");
             if (userConfirmed) {
                 window.open('https://www.profitablecpmratenetwork.com/s4304airr?key=6b4f3e1e971c417fa77414903411d40c', '_blank');
             }
         }
         
         // ============================================
-        // HEATING FIX - PARA HINDI MAINIT ANG PHONE
+        // HEATING FIX - LAZY LOADING
         // ============================================
         
         function initLazyLoading() {
@@ -303,7 +294,6 @@
                     img.setAttribute('loading', 'lazy');
                 }
             });
-            console.log('✅ Lazy loading enabled');
         }
         
         let scrollTimeout;
@@ -314,31 +304,20 @@
         
         document.addEventListener('DOMContentLoaded', initLazyLoading);
         
-        if ('getBattery' in navigator) {
-            navigator.getBattery().then(function(battery) {
-                if (!battery.charging && battery.level < 0.2) {
-                    document.body.classList.add('battery-saver');
-                    var style = document.createElement('style');
-                    style.textContent = '.battery-saver * { animation: none !important; transition: none !important; }';
-                    document.head.appendChild(style);
-                }
-            });
-        }
-        
         // ============================================
-        // MAIN FUNCTIONS - GENRE FILTER & LOAD MORE
+        // API CONFIGURATION
         // ============================================
         
-        let loadMorePage = 1;
-        let isLoading = false;
-        let currentGenre = 'all';
-        let currentType = 'movie';
-        
-        // Direct API URL - works on both mobile and desktop
         const API_URL = 'https://cinelzflix-worker.baquial-enozz.workers.dev/';
         
+        // ============================================
+        // GENRE FILTER FUNCTION
+        // ============================================
+        
+        let currentGenre = 'all';
+        let currentPage = 1;
+        let isLoadingGenre = false;
         let originalMoviesHTML = '';
-        let originalTitleText = '📺 Trending Movies';
         
         const genreNames = {
             '28': '🔥 Action Movies',
@@ -362,60 +341,45 @@
         
         function saveOriginalContent() {
             const moviesContainer = document.getElementById('movies-list');
-            const sectionTitle = document.querySelector('#movies-section h2, .category-section h2');
-            
+            const sectionTitle = document.querySelector('#movies-section h2');
             if (moviesContainer && !originalMoviesHTML) {
                 originalMoviesHTML = moviesContainer.innerHTML;
-            }
-            if (sectionTitle && originalTitleText === '📺 Trending Movies') {
-                originalTitleText = sectionTitle.innerHTML;
             }
         }
         
         function restoreOriginalContent() {
             const moviesContainer = document.getElementById('movies-list');
-            const sectionTitle = document.querySelector('#movies-section h2, .category-section h2');
-            
+            const sectionTitle = document.querySelector('#movies-section h2');
             if (moviesContainer && originalMoviesHTML) {
                 moviesContainer.innerHTML = originalMoviesHTML;
             }
             if (sectionTitle) {
-                sectionTitle.innerHTML = originalTitleText;
+                sectionTitle.innerHTML = '📺 Trending Movies <button class="show-more-btn" onclick="loadMoreCategory(\'movies-list\', \'movie\')">Show Even More</button>';
             }
         }
         
-        function scrollToMovies() {
-            setTimeout(() => {
-                const moviesSection = document.getElementById('movies-section');
-                if (moviesSection) {
-                    moviesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            }, 200);
-        }
-        
-        // Genre filter function
         window.filterGenre = async function(genreId) {
-            console.log('Genre clicked:', genreId);
+            if (isLoadingGenre) return;
+            isLoadingGenre = true;
             
             const moviesContainer = document.getElementById('movies-list');
-            const sectionTitle = document.querySelector('#movies-section h2, .category-section h2');
+            const sectionTitle = document.querySelector('#movies-section h2');
             
             if (!originalMoviesHTML) {
                 saveOriginalContent();
-                console.log('Original content saved');
             }
             
             currentGenre = genreId;
-            loadMorePage = 1;
+            currentPage = 1;
             
             if (genreId === 'all') {
                 restoreOriginalContent();
-                scrollToMovies();
+                isLoadingGenre = false;
                 return;
             }
             
             if (sectionTitle && genreNames[genreId]) {
-                sectionTitle.innerHTML = genreNames[genreId];
+                sectionTitle.innerHTML = genreNames[genreId] + ' <button class="show-more-btn" onclick="loadMoreCategory(\'movies-list\', \'movie\', ' + genreId + ')">Show Even More</button>';
             }
             
             if (moviesContainer) {
@@ -428,24 +392,19 @@
             
             try {
                 const url = `${API_URL}?endpoint=/discover/movie&with_genres=${genreId}&sort_by=popularity.desc&vote_count.gte=100&page=1`;
-                console.log('Fetching genre movies:', url);
                 const response = await fetch(url);
                 const data = await response.json();
                 const movies = data.results || [];
                 
                 if (!movies.length) {
                     moviesContainer.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">No movies found.</p>';
-                    scrollToMovies();
+                    isLoadingGenre = false;
                     return;
                 }
                 
                 moviesContainer.innerHTML = movies.slice(0, 12).map(movie => {
-                    const posterUrl = movie.poster_path 
-                        ? `https://image.tmdb.org/t/p/w200${movie.poster_path}`
-                        : '';
-                    const posterHtml = posterUrl 
-                        ? `<img src="${posterUrl}" alt="${movie.title.replace(/"/g, '&quot;')}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300?text=No+Poster'">`
-                        : '<div style="width:200px; height:300px; background:#1a1a1a; display:flex; align-items:center; justify-content:center; border-radius:10px;">No Poster</div>';
+                    const posterUrl = movie.poster_path ? `https://image.tmdb.org/t/p/w200${movie.poster_path}` : '';
+                    const posterHtml = posterUrl ? `<img src="${posterUrl}" alt="${movie.title.replace(/"/g, '&quot;')}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300?text=No+Poster'">` : '<div style="width:200px; height:300px; background:#1a1a1a; display:flex; align-items:center; justify-content:center; border-radius:10px;">No Poster</div>';
                     
                     return `
                         <div class="movie-card" onclick="window.location.href='/movie/?id=${movie.id}&type=movie'">
@@ -456,53 +415,128 @@
                     `;
                 }).join('');
                 
-                scrollToMovies();
+                setTimeout(() => {
+                    const moviesSection = document.getElementById('movies-section');
+                    if (moviesSection) moviesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 200);
                 
             } catch (error) {
-                console.error('Error loading genre:', error);
-                moviesContainer.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">Failed to load. Please try again.</p>';
+                console.error('Error:', error);
+                moviesContainer.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">Failed to load.</p>';
             }
+            
+            isLoadingGenre = false;
         };
         
-        // Load more function - works on mobile
-        window.loadMore = async function() {
-            if (isLoading) {
-                console.log('Already loading...');
-                return;
+        // ============================================
+        // LOAD MORE FOR CATEGORY (SHOW EVEN MORE)
+        // ============================================
+        
+        window.loadMoreCategory = async function(containerId, type, genreId = null, endpoint = null) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            let page = parseInt(container.getAttribute('data-page') || '1');
+            let loading = container.getAttribute('data-loading') === 'true';
+            
+            if (loading) return;
+            
+            container.setAttribute('data-loading', 'true');
+            page++;
+            container.setAttribute('data-page', page);
+            
+            const section = container.closest('.category-section');
+            const btn = section ? section.querySelector('.show-more-btn') : null;
+            const originalText = btn ? btn.innerHTML : 'Show Even More';
+            if (btn) btn.innerHTML = 'Loading...';
+            
+            try {
+                let url;
+                if (genreId) {
+                    url = `${API_URL}?endpoint=/discover/${type}&with_genres=${genreId}&sort_by=popularity.desc&vote_count.gte=100&page=${page}`;
+                } else if (endpoint === 'upcoming') {
+                    url = `${API_URL}?endpoint=/movie/upcoming&page=${page}`;
+                } else if (endpoint === 'top_rated') {
+                    url = `${API_URL}?endpoint=/movie/top_rated&page=${page}`;
+                } else if (type === 'tv') {
+                    url = `${API_URL}?endpoint=/trending/tv/week&page=${page}`;
+                } else {
+                    url = `${API_URL}?endpoint=/trending/movie/week&page=${page}`;
+                }
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                const items = data.results || [];
+                
+                if (items.length > 0) {
+                    const newHTML = items.map(item => {
+                        const title = item.title || item.name || 'Unknown';
+                        const posterUrl = item.poster_path ? `https://image.tmdb.org/t/p/w200${item.poster_path}` : '';
+                        const posterHtml = posterUrl ? `<img src="${posterUrl}" alt="${title.replace(/"/g, '&quot;')}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300?text=No+Poster'">` : '<div style="width:200px; height:300px; background:#1a1a1a; display:flex; align-items:center; justify-content:center; border-radius:10px;">No Poster</div>';
+                        const itemType = item.title ? 'movie' : 'tv';
+                        
+                        return `
+                            <div class="movie-card" onclick="window.location.href='/movie/?id=${item.id}&type=${itemType}'">
+                                ${posterHtml}
+                                <h3>${title.length > 25 ? title.substring(0, 22) + '...' : title}</h3>
+                                <p>⭐ ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</p>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    container.insertAdjacentHTML('beforeend', newHTML);
+                } else {
+                    if (btn) btn.innerHTML = 'No More';
+                    setTimeout(() => { if (btn) btn.innerHTML = originalText; }, 2000);
+                    container.setAttribute('data-loading', 'false');
+                    return;
+                }
+                
+                if (btn) btn.innerHTML = originalText;
+                
+            } catch (error) {
+                console.error('Error:', error);
+                if (btn) btn.innerHTML = 'Try Again';
+                setTimeout(() => { if (btn) btn.innerHTML = originalText; }, 2000);
             }
-            isLoading = true;
             
-            const loadMoreBtn = document.getElementById('load-more-btn');
-            const originalText = loadMoreBtn?.innerHTML || 'Explore More Movies';
+            container.setAttribute('data-loading', 'false');
+        };
+        
+        // ============================================
+        // EXPLORE MORE MOVIES (BOTTOM BUTTON)
+        // ============================================
+        
+        let loadMorePage = 1;
+        let isLoadingMore = false;
+        
+        window.loadMore = async function() {
+            if (isLoadingMore) return;
+            isLoadingMore = true;
             
-            if (loadMoreBtn) loadMoreBtn.innerHTML = 'Loading...';
+            const btn = document.getElementById('load-more-btn');
+            const originalText = btn?.innerHTML || 'Explore More Movies';
+            if (btn) btn.innerHTML = 'Loading...';
             
             try {
                 loadMorePage++;
                 
                 let url;
                 if (currentGenre === 'all') {
-                    url = `${API_URL}?endpoint=/trending/${currentType}/week&page=${loadMorePage}`;
+                    url = `${API_URL}?endpoint=/trending/movie/week&page=${loadMorePage}`;
                 } else {
                     url = `${API_URL}?endpoint=/discover/movie&with_genres=${currentGenre}&sort_by=popularity.desc&vote_count.gte=100&page=${loadMorePage}`;
                 }
                 
-                console.log('Load more URL:', url);
-                
                 const response = await fetch(url);
                 const data = await response.json();
                 const movies = data.results || [];
-                
-                const moviesContainer = document.getElementById('movies-list');
+                const container = document.getElementById('movies-list');
                 
                 if (movies.length > 0) {
-                    const newMoviesHTML = movies.map(movie => {
-                        const posterUrl = movie.poster_path 
-                            ? `https://image.tmdb.org/t/p/w200${movie.poster_path}`
-                            : '';
-                        const posterHtml = posterUrl 
-                            ? `<img src="${posterUrl}" alt="${movie.title.replace(/"/g, '&quot;')}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300?text=No+Poster'">`
-                            : '<div style="width:200px; height:300px; background:#1a1a1a; display:flex; align-items:center; justify-content:center; border-radius:10px;">No Poster</div>';
+                    const newHTML = movies.map(movie => {
+                        const posterUrl = movie.poster_path ? `https://image.tmdb.org/t/p/w200${movie.poster_path}` : '';
+                        const posterHtml = posterUrl ? `<img src="${posterUrl}" alt="${movie.title.replace(/"/g, '&quot;')}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300?text=No+Poster'">` : '<div style="width:200px; height:300px; background:#1a1a1a; display:flex; align-items:center; justify-content:center; border-radius:10px;">No Poster</div>';
                         
                         return `
                             <div class="movie-card" onclick="window.location.href='/movie/?id=${movie.id}&type=movie'">
@@ -513,34 +547,40 @@
                         `;
                     }).join('');
                     
-                    if (moviesContainer) {
-                        moviesContainer.insertAdjacentHTML('beforeend', newMoviesHTML);
-                        console.log(`✅ Added ${movies.length} more movies (total page ${loadMorePage})`);
-                    }
+                    if (container) container.insertAdjacentHTML('beforeend', newHTML);
                 } else {
-                    console.log('No more movies available');
-                    if (loadMoreBtn) loadMoreBtn.innerHTML = 'No More Movies';
-                    setTimeout(() => {
-                        if (loadMoreBtn) loadMoreBtn.innerHTML = originalText;
-                    }, 2000);
-                    isLoading = false;
+                    if (btn) btn.innerHTML = 'No More Movies';
+                    setTimeout(() => { if (btn) btn.innerHTML = originalText; }, 2000);
+                    isLoadingMore = false;
                     return;
                 }
                 
-                if (loadMoreBtn) loadMoreBtn.innerHTML = originalText;
+                if (btn) btn.innerHTML = originalText;
                 
             } catch (error) {
-                console.error('Load more error:', error);
-                if (loadMoreBtn) loadMoreBtn.innerHTML = 'Try Again';
-                setTimeout(() => {
-                    if (loadMoreBtn) loadMoreBtn.innerHTML = originalText;
-                }, 2000);
+                console.error('Error:', error);
+                if (btn) btn.innerHTML = 'Try Again';
+                setTimeout(() => { if (btn) btn.innerHTML = originalText; }, 2000);
             }
             
-            isLoading = false;
+            isLoadingMore = false;
         };
         
-        console.log('✅ All functions loaded! API URL:', API_URL);
+        // Mobile navigation functions
+        function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        function focusSearch() { document.getElementById('search-input')?.focus(); }
+        function toggleGenreMenu() {
+            const menu = document.getElementById('mobile-genre-menu');
+            if (menu) menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        }
+        function closeGenreMenu() { document.getElementById('mobile-genre-menu').style.display = 'none'; }
+        
+        window.scrollToTop = scrollToTop;
+        window.focusSearch = focusSearch;
+        window.toggleGenreMenu = toggleGenreMenu;
+        window.closeGenreMenu = closeGenreMenu;
+        
+        console.log('✅ Site loaded! API:', API_URL);
     </script>
     
     <script src="https://pl28947937.profitablecpmratenetwork.com/a5/c3/8e/a5c38ef495583bd163602819c5112f48.js"></script>
