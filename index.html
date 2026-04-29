@@ -13,7 +13,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     
-    <!-- ✅ SEO Meta Tags - Safe Version (Minimal "free") -->
+    <!-- SEO Meta Tags -->
     <meta name="google-site-verification" content="qwSQmjhkugm8eUJeMZeGK5seJ4ZXi38a_uG97iOwAdQ" />
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
     <meta name="author" content="CINElzFlix">
@@ -23,10 +23,10 @@
     <title>CINElzFlix | Watch Movies, TV Shows & Anime Online in HD</title>
     <meta name="description" content="Stream the latest movies, TV shows, and anime in HD quality on CINElzFlix. No sign-up required. Your ultimate cinematic experience starts here!">
 
-    <!-- ✅ Canonical Tag -->
+    <!-- Canonical Tag -->
     <link rel="canonical" href="https://cinelzflix.com/">
 
-    <!-- ✅ Open Graph (Facebook, WhatsApp, Telegram) - Safe Version -->
+    <!-- Open Graph -->
     <meta property="og:title" content="CINElzFlix | Watch Movies, TV Shows & Anime Online">
     <meta property="og:description" content="Stream the latest trending movies, TV series, and anime in HD quality. No sign-up required!">
     <meta property="og:image" content="https://cinelzflix.com/logo.png">
@@ -37,14 +37,14 @@
     <meta property="og:site_name" content="CINElzFlix">
     <meta property="og:locale" content="en_US">
 
-    <!-- ✅ Twitter Card - Safe Version -->
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="CINElzFlix | Watch Movies, TV Shows & Anime">
     <meta name="twitter:description" content="Stream the latest movies and TV series in HD quality. No sign-up required!">
     <meta name="twitter:image" content="https://cinelzflix.com/logo.png">
     <meta name="twitter:site" content="@cinelzflix">
 
-    <!-- ✅ Icons & PWA -->
+    <!-- Icons & PWA -->
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="apple-touch-icon" href="icon-512.png">
     <link rel="manifest" href="manifest.json">
@@ -53,10 +53,10 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="style.css?v=1.6">
+    <link rel="stylesheet" href="style.css?v=1.7">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
     
-    <!-- ✅ JSON-LD Structured Data - Safe Version -->
+    <!-- JSON-LD Structured Data -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -105,21 +105,38 @@
                 <div class="slider-dots" id="slider-dots"></div>
             </section>
 
-            <section id="countdown-banner" class="category-section" style="display: none;">
-                <div class="countdown-card">
-                    <span class="badge">🔥 COMING SOON</span>
-                    <h2 id="countdown-event-title">The Next Big Blockbuster</h2>
-                    <div id="timer">
-                        <div class="time-box"><span id="days">00</span><small>Days</small></div>
-                        <div class="time-box"><span id="hours">00</span><small>Hrs</small></div>
-                        <div class="time-box"><span id="minutes">00</span><small>Min</small></div>
-                        <div class="time-box"><span id="seconds">00</span><small>Sec</small></div>
+            <!-- ✅ NETFLIX-STYLE MOBILE TOP NAVIGATION -->
+            <div class="mobile-top-nav">
+                <button class="top-nav-btn active" id="movies-tab" onclick="switchTab('movies')">🎬 Movies</button>
+                <button class="top-nav-btn" id="tvshows-tab" onclick="switchTab('tvshows')">📺 TV Shows</button>
+                <div class="categories-dropdown">
+                    <button class="top-nav-btn dropdown-toggle" onclick="toggleCategories()">
+                        Categories ▼
+                    </button>
+                    <div class="dropdown-menu" id="categories-menu">
+                        <button onclick="filterGenre('all')">All</button>
+                        <button onclick="filterGenre('28')">Action</button>
+                        <button onclick="filterGenre('35')">Comedy</button>
+                        <button onclick="filterGenre('27')">Horror</button>
+                        <button onclick="filterGenre('10749')">Romance</button>
+                        <button onclick="filterGenre('878')">Sci-Fi</button>
+                        <button onclick="filterGenre('16')">Animation</button>
+                        <button onclick="filterGenre('18')">Drama</button>
+                        <button onclick="filterGenre('14')">Fantasy</button>
+                        <button onclick="filterGenre('53')">Thriller</button>
+                        <button onclick="filterGenre('9648')">Mystery</button>
+                        <button onclick="filterGenre('10751')">Family</button>
+                        <button onclick="filterGenre('36')">History</button>
+                        <button onclick="filterGenre('10402')">Music</button>
+                        <button onclick="filterGenre('10752')">War</button>
+                        <button onclick="filterGenre('37')">Western</button>
+                        <button onclick="filterGenre('99')">Documentary</button>
                     </div>
-                    <button class="btn-remind" onclick="alert('Bro, we will notify you once it drops!')">Notify Me</button>
                 </div>
-            </section>
+            </div>
 
-            <div class="genre-container">
+            <!-- ✅ DESKTOP GENRE CONTAINER (hidden on mobile) -->
+            <div class="genre-container desktop-only">
                 <button class="genre-btn active" onclick="filterGenre('all')">All</button>
                 <button class="genre-btn" onclick="filterGenre('28')">Action</button>
                 <button class="genre-btn" onclick="filterGenre('12')">Adventure</button>
@@ -141,7 +158,7 @@
                 <button class="genre-btn" onclick="openVivaMaxAd()">🔥 VivaMax (Coming Soon)</button>
             </div>
 
-            <section class="category-section">
+            <section class="category-section" id="movies-section">
                 <h2>📺 Trending Movies</h2>
                 <div id="movies-list" class="movie-row horizontal-scroll"></div>
             </section>
@@ -154,22 +171,22 @@
                 </div>
             </div>
 
-            <section class="category-section">
+            <section class="category-section" id="upcoming-section">
                 <h2>🔥 Upcoming Blockbusters</h2>
                 <div id="upcoming-list" class="movie-row horizontal-scroll"></div>
             </section>
 
-            <section class="category-section">
+            <section class="category-section" id="tvshows-section">
                 <h2>🎬 TV Shows</h2>
                 <div id="tvshows-list" class="movie-row horizontal-scroll"></div>
             </section>
 
-            <section class="category-section">
+            <section class="category-section" id="anime-section">
                 <h2>⭐ Anime World</h2>
                 <div id="anime-list" class="movie-row horizontal-scroll"></div>
             </section>
 
-            <section class="category-section">
+            <section class="category-section" id="toprated-section">
                 <h2>🏆 Top Rated Classics</h2>
                 <div id="top-rated-list" class="movie-row horizontal-scroll"></div>
             </section>
@@ -291,6 +308,71 @@
                 window.open('https://www.profitablecpmratenetwork.com/s4304airr?key=6b4f3e1e971c417fa77414903411d40c', '_blank');
             }
         }
+        
+        // ============================================
+        // NETFLIX-STYLE TAB FUNCTIONS
+        // ============================================
+        let currentTab = 'movies';
+        
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // Update active states
+            const moviesTab = document.getElementById('movies-tab');
+            const tvshowsTab = document.getElementById('tvshows-tab');
+            
+            if (tab === 'movies') {
+                moviesTab.classList.add('active');
+                tvshowsTab.classList.remove('active');
+                showMoviesOnly();
+            } else {
+                tvshowsTab.classList.add('active');
+                moviesTab.classList.remove('active');
+                showTVShowsOnly();
+            }
+        }
+        
+        function showMoviesOnly() {
+            document.getElementById('movies-section').style.display = 'block';
+            document.getElementById('tvshows-section').style.display = 'none';
+            document.getElementById('upcoming-section').style.display = 'block';
+            document.getElementById('anime-section').style.display = 'block';
+            document.getElementById('toprated-section').style.display = 'block';
+        }
+        
+        function showTVShowsOnly() {
+            document.getElementById('movies-section').style.display = 'none';
+            document.getElementById('tvshows-section').style.display = 'block';
+            document.getElementById('upcoming-section').style.display = 'none';
+            document.getElementById('anime-section').style.display = 'block';
+            document.getElementById('toprated-section').style.display = 'block';
+        }
+        
+        function toggleCategories() {
+            const menu = document.getElementById('categories-menu');
+            menu.classList.toggle('show');
+        }
+        
+        function filterGenre(genreId) {
+            console.log('Filtering genre:', genreId);
+            // Your existing filterGenre logic here
+            const menu = document.getElementById('categories-menu');
+            if (menu) menu.classList.remove('show');
+        }
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            const dropdown = document.querySelector('.categories-dropdown');
+            const menu = document.getElementById('categories-menu');
+            if (dropdown && menu && !dropdown.contains(e.target)) {
+                menu.classList.remove('show');
+            }
+        });
+        
+        // Make functions global
+        window.switchTab = switchTab;
+        window.toggleCategories = toggleCategories;
+        window.filterGenre = filterGenre;
     </script>
     
     <script src="https://pl28947937.profitablecpmratenetwork.com/a5/c3/8e/a5c38ef495583bd163602819c5112f48.js"></script>
