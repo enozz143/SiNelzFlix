@@ -53,7 +53,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="style.css?v=2.0">
+    <link rel="stylesheet" href="style.css?v=3.0">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
     
     <!-- JSON-LD Structured Data -->
@@ -367,10 +367,74 @@
         window.filterGenre = filterGenre;
         
         // ============================================
-        // PERFORMANCE OPTIMIZATIONS
+        // SLIDER FIX - PARA HINDI GUMAGALAW ANG BUTTONS
         // ============================================
         
-        // Lazy loading images
+        function fixSliderHeight() {
+            setTimeout(() => {
+                const slides = document.querySelectorAll('.hero-slide');
+                
+                if (!slides.length) {
+                    setTimeout(fixSliderHeight, 500);
+                    return;
+                }
+                
+                let maxHeight = 0;
+                const isMobile = window.innerWidth <= 768;
+                const defaultHeight = isMobile ? 320 : 450;
+                
+                slides.forEach(slide => {
+                    slide.style.height = 'auto';
+                    const height = slide.offsetHeight;
+                    if (height > maxHeight && height < 600) maxHeight = height;
+                });
+                
+                if (maxHeight < 200) maxHeight = defaultHeight;
+                
+                slides.forEach(slide => {
+                    slide.style.height = maxHeight + 'px';
+                    slide.style.minHeight = maxHeight + 'px';
+                    slide.style.maxHeight = maxHeight + 'px';
+                });
+                
+                const slider = document.getElementById('hero-slider');
+                if (slider) slider.style.height = maxHeight + 'px';
+                
+                console.log('Slider height fixed:', maxHeight + 'px');
+            }, 150);
+        }
+        
+        function fixDotsPosition() {
+            const dots = document.getElementById('slider-dots');
+            if (dots) {
+                dots.style.display = 'flex';
+                dots.style.justifyContent = 'center';
+                dots.style.left = '0';
+                dots.style.right = '0';
+            }
+        }
+        
+        // Run fixes
+        window.addEventListener('load', function() {
+            fixSliderHeight();
+            fixDotsPosition();
+        });
+        
+        window.addEventListener('resize', function() {
+            setTimeout(fixSliderHeight, 100);
+        });
+        
+        // Observe slider changes
+        const observer = new MutationObserver(function() {
+            fixSliderHeight();
+        });
+        
+        const sliderContainer = document.getElementById('hero-slider');
+        if (sliderContainer) {
+            observer.observe(sliderContainer, { childList: true, subtree: true });
+        }
+        
+        // Performance optimizations
         function initLazyLoading() {
             const images = document.querySelectorAll('img:not([loading="lazy"])');
             images.forEach(img => {
@@ -380,14 +444,6 @@
             });
         }
         
-        // Debounce scroll events
-        let scrollTimeout;
-        window.addEventListener('scroll', () => {
-            if (scrollTimeout) clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(() => {}, 100);
-        });
-        
-        // Initialize lazy loading
         initLazyLoading();
     </script>
     
