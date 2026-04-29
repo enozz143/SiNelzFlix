@@ -6,15 +6,6 @@ import { showDetails, closeModal, changeServer, playTrailer } from './js/modal.j
 import { initCountdown } from './js/countdown.js';
 
 // ============================================
-// ✅ GLOBAL VARIABLES
-// ============================================
-
-// Store original content para maibalik pag nag-click ng "All"
-let originalTrendingMovies = [];
-let originalSectionTitle = '';
-let originalMoviesHTML = '';
-
-// ============================================
 // HELPER: SKELETON LOADER
 // ============================================
 
@@ -30,12 +21,10 @@ function showSkeletons(containerId, count = 10) {
 }
 
 // ============================================
-// ✅ IMPROVED GENRE FILTER - NAG-IIBA ANG DISPLAY
+// GENRE NAMES
 // ============================================
 
-// Genre names para sa title
 const genreNames = {
-    'all': '📺 Trending Movies',
     '28': '🔥 Action Movies',
     '12': '🗺️ Adventure Movies',
     '35': '😂 Comedy Movies',
@@ -55,26 +44,24 @@ const genreNames = {
     '99': '📽️ Documentary Movies'
 };
 
-// Save original trending movies content
+// Store original content
+let originalMoviesHTML = '';
+let originalTitleText = '📺 Trending Movies';
+
+// Save original content
 function saveOriginalContent() {
     const moviesContainer = document.getElementById('movies-list');
     const sectionTitle = document.querySelector('#movies-section h2, .category-section h2');
     
-    if (moviesContainer && originalTrendingMovies.length === 0) {
-        // Save the HTML of movie cards
-        const movieCards = moviesContainer.querySelectorAll('.movie-card');
-        movieCards.forEach(card => {
-            originalTrendingMovies.push(card.outerHTML);
-        });
+    if (moviesContainer && !originalMoviesHTML) {
         originalMoviesHTML = moviesContainer.innerHTML;
     }
-    
-    if (sectionTitle && originalSectionTitle === '') {
-        originalSectionTitle = sectionTitle.innerHTML;
+    if (sectionTitle && originalTitleText === '📺 Trending Movies') {
+        originalTitleText = sectionTitle.innerHTML;
     }
 }
 
-// Restore original trending movies
+// Restore original content
 function restoreOriginalContent() {
     const moviesContainer = document.getElementById('movies-list');
     const sectionTitle = document.querySelector('#movies-section h2, .category-section h2');
@@ -82,32 +69,38 @@ function restoreOriginalContent() {
     if (moviesContainer && originalMoviesHTML) {
         moviesContainer.innerHTML = originalMoviesHTML;
     }
-    
-    if (sectionTitle && originalSectionTitle) {
-        sectionTitle.innerHTML = originalSectionTitle;
+    if (sectionTitle) {
+        sectionTitle.innerHTML = originalTitleText;
     }
 }
 
-// Override ang existing filterGenre function
+// ============================================
+// ✅ SIMPLIFIED GENRE FILTER - GUARANTEED TO WORK
+// ============================================
+
 window.filterGenre = async function(genreId) {
-    console.log(`🎬 Filtering genre: ${genreId}`);
+    console.log('Genre clicked:', genreId);
     
     const moviesContainer = document.getElementById('movies-list');
     const sectionTitle = document.querySelector('#movies-section h2, .category-section h2');
     
-    // Save original content on first filter
-    saveOriginalContent();
+    // Save original on first filter
+    if (!originalMoviesHTML) {
+        saveOriginalContent();
+    }
     
+    // If All is clicked, restore original
     if (genreId === 'all') {
         restoreOriginalContent();
         return;
     }
     
-    // Update section title
-    const genreName = genreNames[genreId] || 'Movies';
-    if (sectionTitle) sectionTitle.innerHTML = genreName;
+    // Update title
+    if (sectionTitle && genreNames[genreId]) {
+        sectionTitle.innerHTML = genreNames[genreId];
+    }
     
-    // Show skeletons while loading
+    // Show skeletons
     if (moviesContainer) {
         let skeletons = '';
         for (let i = 0; i < 12; i++) {
@@ -117,24 +110,22 @@ window.filterGenre = async function(genreId) {
     }
     
     try {
-        // Fetch movies by genre
         const url = `${BASE_URL}?endpoint=/discover/movie&with_genres=${genreId}&sort_by=popularity.desc&vote_count.gte=100&page=1`;
         const response = await fetch(url);
         const data = await response.json();
         const movies = data.results || [];
         
-        if (movies.length === 0) {
-            moviesContainer.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">No movies found for this genre.</p>';
+        if (!movies.length) {
+            moviesContainer.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">No movies found.</p>';
             return;
         }
         
-        // Display genre movies
         moviesContainer.innerHTML = movies.slice(0, 12).map(movie => {
-            const posterPath = movie.poster_path 
+            const posterUrl = movie.poster_path 
                 ? `https://image.tmdb.org/t/p/w200${movie.poster_path}`
                 : '';
-            const posterHtml = posterPath 
-                ? `<img src="${posterPath}" alt="${movie.title.replace(/"/g, '&quot;')}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300?text=No+Poster'">`
+            const posterHtml = posterUrl 
+                ? `<img src="${posterUrl}" alt="${movie.title.replace(/"/g, '&quot;')}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300?text=No+Poster'">`
                 : '<div style="width:200px; height:300px; background:#1a1a1a; display:flex; align-items:center; justify-content:center; border-radius:10px;">No Poster</div>';
             
             return `
@@ -147,12 +138,15 @@ window.filterGenre = async function(genreId) {
         }).join('');
         
     } catch (error) {
-        console.error('Error loading genre movies:', error);
-        moviesContainer.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">Failed to load movies. Please try again.</p>';
+        console.error('Error:', error);
+        moviesContainer.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">Failed to load.</p>';
     }
 };
 
-// --- BRIDGE TO HTML ---
+// ============================================
+// BRIDGE TO HTML
+// ============================================
+
 window.showDetails = showDetails;
 window.closeModal = closeModal;
 window.changeServer = changeServer;
@@ -161,7 +155,7 @@ window.nextSlide = nextSlide;
 window.goToSlide = goToSlide;
 window.handleSearch = handleSearch;
 window.loadMore = loadMore;        
-window.BASE_URL = BASE_URL; 
+window.BASE_URL = BASE_URL;
 
 // ============================================
 // LIVE SEARCH DROPDOWN
@@ -257,11 +251,11 @@ document.addEventListener('keydown', function(e) {
 });
 
 // ============================================
-// INITIALIZATION ENGINE
+// INITIALIZATION
 // ============================================
 
 async function init() {
-    console.log("🚀 CINElzFlix Engine is now LIVE, bro!"); 
+    console.log("🚀 CINElzFlix Engine is now LIVE!"); 
     try {
         initCountdown();
 
@@ -300,10 +294,10 @@ async function init() {
             }
         }
 
-        // Save original content after loading
+        // Save original after load
         setTimeout(() => {
             saveOriginalContent();
-        }, 1000);
+        }, 1500);
 
         const params = new URLSearchParams(window.location.search);
         const movieId = params.get('movie');
@@ -317,12 +311,12 @@ async function init() {
         }
 
     } catch (err) { 
-        console.error("Initialization Error, Bro:", err); 
+        console.error("Initialization Error:", err); 
     }
 }
 
 // ============================================
-// MOBILE BOTTOM NAVIGATION FUNCTIONS
+// MOBILE NAVIGATION
 // ============================================
 
 function scrollToTop() {
@@ -339,7 +333,6 @@ function focusSearch() {
 
 function initMobileGenreMenu() {
     const genreList = document.getElementById('mobile-genre-list');
-    
     if (!genreList) return;
     
     const desktopButtons = document.querySelectorAll('.genre-container .genre-btn');
@@ -387,12 +380,10 @@ document.addEventListener('click', function(e) {
     }
 });
 
-// Make available globally
 window.scrollToTop = scrollToTop;
 window.focusSearch = focusSearch;
 window.toggleGenreMenu = toggleGenreMenu;
 window.closeGenreMenu = closeGenreMenu;
-window.initMobileGenreMenu = initMobileGenreMenu;
 
-// Start the app
+// Start!
 init();
