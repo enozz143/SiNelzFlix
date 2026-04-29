@@ -356,7 +356,7 @@
     color: #000;
 }
 
-/* Mobile adjustment */
+/* Mobile adjustment for download button */
 @media (max-width: 768px) {
     .download-nav-btn {
         padding: 6px 12px;
@@ -366,8 +366,25 @@
 }
 
 /* ============================================ */
+/* ✅ HIDE DOWNLOAD BUTTON ON DESKTOP - SHOW ONLY ON MOBILE & TABLET */
+/* ============================================ */
+
+/* Hide on desktop (1024px and above) */
+@media (min-width: 1024px) {
+    .download-nav-btn {
+        display: none !important;
+    }
+}
+
+/* Show on tablet (768px to 1023px) - optional, kasi visible naman by default */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .download-nav-btn {
+        display: inline-flex !important;
+    }
+}
+
+/* ============================================ */
 /* ✅ PERFORMANCE OPTIMIZATIONS - PARA HINDI MAINIT ANG PHONE */
-/* Hindi ginalaw ang existing styles, dinagdagan lang */
 /* ============================================ */
 
 /* 1. Limit visible movie cards sa mobile para hindi sabay-sabay mag-load */
