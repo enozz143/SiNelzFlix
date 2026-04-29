@@ -53,7 +53,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="style.css?v=1.7">
+    <link rel="stylesheet" href="style.css?v=1.6">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
     
     <!-- ✅ JSON-LD Structured Data - Safe Version -->
@@ -291,58 +291,6 @@
                 window.open('https://www.profitablecpmratenetwork.com/s4304airr?key=6b4f3e1e971c417fa77414903411d40c', '_blank');
             }
         }
-        
-        // ============================================
-        // ✅ FIX: Slider height consistency (para hindi gumagalaw ang buttons)
-        // ============================================
-        function fixSliderHeight() {
-            setTimeout(function() {
-                var slides = document.querySelectorAll('.hero-slide');
-                if (!slides.length) return;
-                
-                var maxHeight = 0;
-                var isMobile = window.innerWidth <= 768;
-                var defaultHeight = isMobile ? 320 : 450;
-                
-                for (var i = 0; i < slides.length; i++) {
-                    var slide = slides[i];
-                    slide.style.height = 'auto';
-                    var h = slide.offsetHeight;
-                    if (h > maxHeight && h < 600) maxHeight = h;
-                }
-                
-                if (maxHeight < 200) maxHeight = defaultHeight;
-                
-                for (var i = 0; i < slides.length; i++) {
-                    var slide = slides[i];
-                    slide.style.height = maxHeight + 'px';
-                    slide.style.minHeight = maxHeight + 'px';
-                    slide.style.maxHeight = maxHeight + 'px';
-                }
-                
-                var slider = document.getElementById('hero-slider');
-                if (slider) slider.style.height = maxHeight + 'px';
-            }, 100);
-        }
-        
-        function fixDotsPosition() {
-            var dots = document.getElementById('slider-dots');
-            if (dots) {
-                dots.style.display = 'flex';
-                dots.style.justifyContent = 'center';
-                dots.style.left = '0';
-                dots.style.right = '0';
-            }
-        }
-        
-        window.addEventListener('load', function() {
-            fixSliderHeight();
-            fixDotsPosition();
-        });
-        
-        window.addEventListener('resize', function() {
-            setTimeout(fixSliderHeight, 150);
-        });
     </script>
     
     <script src="https://pl28947937.profitablecpmratenetwork.com/a5/c3/8e/a5c38ef495583bd163602819c5112f48.js"></script>
