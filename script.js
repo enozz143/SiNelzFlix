@@ -1,14 +1,12 @@
 // script.js (Root Directory)
 import { BASE_URL, fetchMovies } from './js/api.js';
 import { setupHeroSlider, nextSlide, goToSlide } from './js/slider.js';
-import { displayList, handleSearch, loadMore } from './js/ui.js';
+import { displayList, handleSearch, filterGenre, loadMore } from './js/ui.js';
+// Dinagdag ang playTrailer dito sa import 👇
 import { showDetails, closeModal, changeServer, playTrailer } from './js/modal.js';
 import { initCountdown } from './js/countdown.js';
 
-// ============================================
-// HELPER: SKELETON LOADER
-// ============================================
-
+// --- HELPER: SKELETON LOADER ---
 function showSkeletons(containerId, count = 10) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -20,198 +18,27 @@ function showSkeletons(containerId, count = 10) {
     container.innerHTML = skeletonHTML;
 }
 
-// ============================================
-// GENRE NAMES
-// ============================================
-
-const genreNames = {
-    '28': '🔥 Action Movies',
-    '12': '🗺️ Adventure Movies',
-    '35': '😂 Comedy Movies',
-    '27': '😱 Horror Movies',
-    '10749': '💖 Romance Movies',
-    '878': '🚀 Sci-Fi Movies',
-    '14': '🧙 Fantasy Movies',
-    '9648': '🕵️ Mystery Movies',
-    '53': '🔪 Thriller Movies',
-    '16': '🎨 Animation Movies',
-    '18': '🎭 Drama Movies',
-    '36': '📜 History Movies',
-    '10402': '🎵 Musical Movies',
-    '10751': '👨‍👩‍👧 Family Movies',
-    '10752': '⚔️ War Movies',
-    '37': '🤠 Western Movies',
-    '99': '📽️ Documentary Movies'
-};
-
-// ============================================
-// STORE ORIGINAL CONTENT FOR ALL SECTIONS
-// ============================================
-
-let originalContents = {
-    movies: '',
-    upcoming: '',
-    tvshows: '',
-    anime: '',
-    toprated: ''
-};
-let originalTitle = '📺 Trending Movies';
-
-// Save original content for ALL sections
-function saveOriginalContent() {
-    const moviesContainer = document.getElementById('movies-list');
-    const upcomingContainer = document.getElementById('upcoming-list');
-    const tvshowsContainer = document.getElementById('tvshows-list');
-    const animeContainer = document.getElementById('anime-list');
-    const topratedContainer = document.getElementById('top-rated-list');
-    const sectionTitle = document.querySelector('#movies-section h2, .category-section h2');
-    
-    if (moviesContainer && !originalContents.movies) {
-        originalContents.movies = moviesContainer.innerHTML;
-        originalContents.upcoming = upcomingContainer ? upcomingContainer.innerHTML : '';
-        originalContents.tvshows = tvshowsContainer ? tvshowsContainer.innerHTML : '';
-        originalContents.anime = animeContainer ? animeContainer.innerHTML : '';
-        originalContents.toprated = topratedContainer ? topratedContainer.innerHTML : '';
-    }
-    if (sectionTitle && originalTitle === '📺 Trending Movies') {
-        originalTitle = sectionTitle.innerHTML;
-    }
-    console.log('✅ Original content saved');
-}
-
-// Restore original content for ALL sections
-function restoreOriginalContent() {
-    const moviesContainer = document.getElementById('movies-list');
-    const upcomingContainer = document.getElementById('upcoming-list');
-    const tvshowsContainer = document.getElementById('tvshows-list');
-    const animeContainer = document.getElementById('anime-list');
-    const topratedContainer = document.getElementById('top-rated-list');
-    const sectionTitle = document.querySelector('#movies-section h2, .category-section h2');
-    
-    if (moviesContainer && originalContents.movies) {
-        moviesContainer.innerHTML = originalContents.movies;
-        if (upcomingContainer) upcomingContainer.innerHTML = originalContents.upcoming;
-        if (tvshowsContainer) tvshowsContainer.innerHTML = originalContents.tvshows;
-        if (animeContainer) animeContainer.innerHTML = originalContents.anime;
-        if (topratedContainer) topratedContainer.innerHTML = originalContents.toprated;
-    }
-    if (sectionTitle) {
-        sectionTitle.innerHTML = originalTitle;
-    }
-    console.log('✅ Original content restored');
-}
-
-// ============================================
-// ✅ GENRE FILTER - PALITAN LAHAT NG SECTIONS
-// ============================================
-
-window.filterGenre = async function(genreId) {
-    console.log('🎬 Genre clicked:', genreId);
-    
-    const moviesContainer = document.getElementById('movies-list');
-    const upcomingContainer = document.getElementById('upcoming-list');
-    const tvshowsContainer = document.getElementById('tvshows-list');
-    const animeContainer = document.getElementById('anime-list');
-    const topratedContainer = document.getElementById('top-rated-list');
-    const sectionTitle = document.querySelector('#movies-section h2, .category-section h2');
-    
-    // Save original on first filter
-    if (!originalContents.movies) {
-        saveOriginalContent();
-    }
-    
-    // If All is clicked, restore all sections
-    if (genreId === 'all') {
-        restoreOriginalContent();
-        return;
-    }
-    
-    // Update title
-    if (sectionTitle && genreNames[genreId]) {
-        sectionTitle.innerHTML = genreNames[genreId];
-    }
-    
-    // Show skeletons on ALL containers
-    const allContainers = [moviesContainer, upcomingContainer, tvshowsContainer, animeContainer, topratedContainer];
-    allContainers.forEach(container => {
-        if (container) {
-            let skeletons = '';
-            for (let i = 0; i < 8; i++) {
-                skeletons += `<div class="skeleton skeleton-card"></div>`;
-            }
-            container.innerHTML = skeletons;
-        }
-    });
-    
-    try {
-        // Fetch movies by genre
-        const url = `${BASE_URL}?endpoint=/discover/movie&with_genres=${genreId}&sort_by=popularity.desc&vote_count.gte=100&page=1`;
-        const response = await fetch(url);
-        const data = await response.json();
-        const movies = data.results || [];
-        
-        if (!movies.length) {
-            allContainers.forEach(container => {
-                if (container) container.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">No movies found.</p>';
-            });
-            return;
-        }
-        
-        // Create movie cards HTML
-        const movieCards = movies.slice(0, 12).map(movie => {
-            const posterUrl = movie.poster_path 
-                ? `https://image.tmdb.org/t/p/w200${movie.poster_path}`
-                : '';
-            const posterHtml = posterUrl 
-                ? `<img src="${posterUrl}" alt="${movie.title.replace(/"/g, '&quot;')}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300?text=No+Poster'">`
-                : '<div style="width:200px; height:300px; background:#1a1a1a; display:flex; align-items:center; justify-content:center; border-radius:10px;">No Poster</div>';
-            
-            return `
-                <div class="movie-card" onclick="window.location.href='/movie/?id=${movie.id}&type=movie'">
-                    ${posterHtml}
-                    <h3>${movie.title.length > 25 ? movie.title.substring(0, 22) + '...' : movie.title}</h3>
-                    <p>⭐ ${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}</p>
-                </div>
-            `;
-        }).join('');
-        
-        // Apply to ALL containers
-        if (moviesContainer) moviesContainer.innerHTML = movieCards;
-        if (upcomingContainer) upcomingContainer.innerHTML = movieCards;
-        if (tvshowsContainer) tvshowsContainer.innerHTML = movieCards;
-        if (animeContainer) animeContainer.innerHTML = movieCards;
-        if (topratedContainer) topratedContainer.innerHTML = movieCards;
-        
-        console.log(`✅ Displayed ${movies.length} ${genreNames[genreId]} movies`);
-        
-    } catch (error) {
-        console.error('Error loading genre movies:', error);
-        allContainers.forEach(container => {
-            if (container) container.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">Failed to load. Please try again.</p>';
-        });
-    }
-};
-
-// ============================================
-// BRIDGE TO HTML
-// ============================================
-
+// --- BRIDGE TO HTML ---
 window.showDetails = showDetails;
 window.closeModal = closeModal;
 window.changeServer = changeServer;
-window.playTrailer = playTrailer;
+window.playTrailer = playTrailer; // Dinagdag ito para ma-access ng buttons sa HTML 👈
 window.nextSlide = nextSlide;
 window.goToSlide = goToSlide;
 window.handleSearch = handleSearch;
+window.filterGenre = filterGenre; 
 window.loadMore = loadMore;        
-window.BASE_URL = BASE_URL;
+window.BASE_URL = BASE_URL; 
 
 // ============================================
-// LIVE SEARCH DROPDOWN
+// LIVE SEARCH DROPDOWN - NEW FEATURE!
 // ============================================
 
 let searchDebounceTimer;
 
+/**
+ * Live search with dropdown suggestions
+ */
 window.handleSearchWithDropdown = async function(query) {
     const dropdown = document.getElementById('search-dropdown');
     
@@ -222,9 +49,11 @@ window.handleSearchWithDropdown = async function(query) {
         return;
     }
     
+    // Show loading state
     dropdown.innerHTML = '<div class="search-dropdown-loading">🔍 Searching...</div>';
     dropdown.style.display = 'block';
     
+    // Debounce para hindi masyadong madaming request
     clearTimeout(searchDebounceTimer);
     searchDebounceTimer = setTimeout(async () => {
         try {
@@ -237,6 +66,7 @@ window.handleSearchWithDropdown = async function(query) {
                 return;
             }
             
+            // Show top 8 results
             dropdown.innerHTML = results.slice(0, 8).map(item => {
                 const title = item.title || item.name || 'Unknown';
                 const year = (item.release_date || item.first_air_date || '').split('-')[0];
@@ -246,6 +76,7 @@ window.handleSearchWithDropdown = async function(query) {
                     ? `https://image.tmdb.org/t/p/w92${item.poster_path}` 
                     : '';
                 
+                // Skip if no title or invalid type
                 if (type === 'Person') return '';
                 
                 return `
@@ -263,6 +94,7 @@ window.handleSearchWithDropdown = async function(query) {
                 `;
             }).filter(item => item !== '').join('');
             
+            // If all items were filtered out
             if (dropdown.innerHTML === '') {
                 dropdown.innerHTML = '<div class="search-dropdown-empty">😢 No valid results found</div>';
             }
@@ -274,6 +106,9 @@ window.handleSearchWithDropdown = async function(query) {
     }, 300);
 };
 
+/**
+ * Escape HTML to prevent XSS
+ */
 function escapeHtml(str) {
     if (!str) return '';
     return str
@@ -284,6 +119,9 @@ function escapeHtml(str) {
         .replace(/'/g, '&#39;');
 }
 
+/**
+ * Close dropdown when clicking outside
+ */
 document.addEventListener('click', function(e) {
     const searchBox = document.querySelector('.search-box');
     const dropdown = document.getElementById('search-dropdown');
@@ -292,6 +130,7 @@ document.addEventListener('click', function(e) {
     }
 });
 
+// Also close on Escape key
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         const dropdown = document.getElementById('search-dropdown');
@@ -299,33 +138,37 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// ============================================
-// INITIALIZATION
-// ============================================
-
+/**
+ * --- INITIALIZATION ENGINE ---
+ */
 async function init() {
-    console.log("🚀 CINElzFlix Engine is now LIVE!"); 
+    console.log("🚀 CINElzFlix Engine is now LIVE, bro!"); 
     try {
+        // 0. Initialize Countdown Timer
         initCountdown();
 
+        // ✅ FORCE CLEAR CONTAINERS BEFORE ADDING SKELETONS
         const containers = ["movies-list", "upcoming-list", "tvshows-list", "anime-list", "top-rated-list"];
         containers.forEach(id => {
             const container = document.getElementById(id);
             if (container) container.innerHTML = "";
         });
 
+        // --- START LOADING SKELETONS ---
         showSkeletons("movies-list", 8);
         showSkeletons("upcoming-list", 6);
         showSkeletons("tvshows-list", 6);
         showSkeletons("anime-list", 6);
         showSkeletons("top-rated-list", 6);
 
+        // 1. Load Trending & Setup Hero
         const movies = await fetchMovies("movie", 1);
         if (movies && movies.length > 0) {
             setupHeroSlider(movies);
             displayList(movies, "movies-list");
         }
         
+        // 2. Load Other Categories
         const categories = [
             { endpoint: '/movie/upcoming', container: 'upcoming-list' },
             { endpoint: '/trending/tv/week', container: 'tvshows-list' },
@@ -333,21 +176,19 @@ async function init() {
             { endpoint: '/movie/top_rated', container: 'top-rated-list' }
         ];
 
+        // Sabay-sabay nating i-fetch pero naka-skeleton bawat isa
         for (const cat of categories) {
             try {
                 const res = await fetch(`${BASE_URL}?endpoint=${cat.endpoint}`);
                 const data = await res.json();
+                // Pag dating ng data, mapapalitan na yung skeletons
                 displayList(data.results, cat.container);
             } catch (catErr) {
-                console.error(`Error loading ${cat.container}:`, catErr);
+                console.error(`Error loading category ${cat.container}:`, catErr);
             }
         }
 
-        // Save original after load
-        setTimeout(() => {
-            saveOriginalContent();
-        }, 1500);
-
+        // 3. Deep Linking Support
         const params = new URLSearchParams(window.location.search);
         const movieId = params.get('movie');
         const tvId = params.get('tv');
@@ -360,12 +201,33 @@ async function init() {
         }
 
     } catch (err) { 
-        console.error("Initialization Error:", err); 
+        console.error("Initialization Error, Bro:", err); 
     }
 }
 
+// --- GLOBAL EVENT LISTENERS ---
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === "Escape") {
+        const modal = document.getElementById("modal");
+        const searchResults = document.getElementById("search-results-section");
+        
+        if (modal && modal.style.display === "flex") {
+            closeModal();
+            return;
+        }
+        
+        if (searchResults && searchResults.style.display === "block") {
+            const searchInput = document.getElementById("search-input");
+            if (searchInput) searchInput.value = "";
+            searchResults.style.display = "none";
+            document.getElementById("trending-section").style.display = "block";
+        }
+    }
+});
+
 // ============================================
-// MOBILE NAVIGATION
+// MOBILE BOTTOM NAVIGATION FUNCTIONS
 // ============================================
 
 function scrollToTop() {
@@ -380,10 +242,13 @@ function focusSearch() {
     }
 }
 
+// Create mobile genre menu with buttons
 function initMobileGenreMenu() {
     const genreList = document.getElementById('mobile-genre-list');
+    
     if (!genreList) return;
     
+    // Copy genre buttons from desktop
     const desktopButtons = document.querySelectorAll('.genre-container .genre-btn');
     genreList.innerHTML = '';
     
@@ -394,7 +259,7 @@ function initMobileGenreMenu() {
             const onclickAttr = clone.getAttribute('onclick');
             const match = onclickAttr.match(/'([^']+)'/);
             if (match) {
-                window.filterGenre(match[1]);
+                filterGenre(match[1]);
             }
             closeGenreMenu();
         };
@@ -419,6 +284,7 @@ function closeGenreMenu() {
     if (menu) menu.style.display = 'none';
 }
 
+// Close menu when clicking outside
 document.addEventListener('click', function(e) {
     const menu = document.getElementById('mobile-genre-menu');
     const menuToggle = document.getElementById('menu-toggle');
@@ -429,10 +295,14 @@ document.addEventListener('click', function(e) {
     }
 });
 
+// Export for use in movie page
+export { scrollToTop, focusSearch, toggleGenreMenu, closeGenreMenu, initMobileGenreMenu };
+
+// Make available globally
 window.scrollToTop = scrollToTop;
 window.focusSearch = focusSearch;
 window.toggleGenreMenu = toggleGenreMenu;
 window.closeGenreMenu = closeGenreMenu;
+window.initMobileGenreMenu = initMobileGenreMenu;
 
-// Start!
 init();
