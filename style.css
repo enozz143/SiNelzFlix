@@ -195,7 +195,104 @@
 }
 
 /* ============================================ */
-/* MOBILE OPTIMIZATIONS - PARA HINDI MAINIT ANG CP */
+/* HERO SLIDER - FIXED (WALANG BLACK SA MOBILE) */
+/* ============================================ */
+
+#hero-slider-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background: #0a0a0a;
+}
+
+#hero-slider {
+    position: relative;
+    width: 100%;
+    display: flex;
+    overflow: hidden;
+}
+
+.hero-slide {
+    position: relative;
+    width: 100%;
+    flex-shrink: 0;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+}
+
+/* Desktop height */
+.hero-slide {
+    height: 450px !important;
+}
+
+/* Gradient overlay */
+.hero-slide::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(to top, #0a0a0a 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Content positioning */
+.hero-slide-content {
+    position: absolute;
+    bottom: 30px;
+    left: 50px;
+    right: 20%;
+    z-index: 2;
+    color: white;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.hero-slide-content h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.hero-slide-content p {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Slider dots */
+.slider-dots {
+    position: absolute;
+    bottom: 15px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    z-index: 10;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.dot.active {
+    background: #00d4ff;
+    width: 25px;
+    border-radius: 10px;
+}
+
+/* ============================================ */
+/* MOBILE OPTIMIZATIONS - WALANG BLACK SA SLIDER */
 /* ============================================ */
 
 @media (max-width: 768px) {
@@ -270,17 +367,53 @@
         display: none !important;
     }
     
+    /* ===== HERO SLIDER MOBILE FIX - WALANG BLACK ===== */
+    #hero-slider {
+        min-height: auto !important;
+    }
+    
+    .hero-slide {
+        height: 280px !important;
+        background-position: center 30% !important;
+        background-size: cover !important;
+    }
+    
+    .hero-slide-content {
+        bottom: 20px !important;
+        left: 15px !important;
+        right: 15px !important;
+    }
+    
+    .hero-slide-content h2 {
+        font-size: 1.1rem !important;
+        margin-bottom: 5px !important;
+    }
+    
+    .hero-slide-content p {
+        font-size: 0.7rem !important;
+        -webkit-line-clamp: 2 !important;
+    }
+    
+    .slider-dots {
+        bottom: 10px !important;
+    }
+    
+    .dot {
+        width: 6px !important;
+        height: 6px !important;
+    }
+    
+    .dot.active {
+        width: 18px !important;
+    }
+    
     /* Remove heavy animations for battery */
-    .movie-card, .hero-slide, .genre-btn {
+    .movie-card, .genre-btn {
         transition: none !important;
     }
     
     .movie-card:hover {
         transform: none !important;
-    }
-    
-    .hero-slide {
-        background-attachment: scroll !important;
     }
     
     .movie-card, .genre-btn, .search-dropdown {
@@ -295,39 +428,6 @@
     /* Image optimization */
     img {
         content-visibility: auto !important;
-    }
-    
-    /* Hero slider */
-    .hero-slide {
-        height: 280px !important;
-    }
-    
-    .hero-slide-content {
-        padding: 20px !important;
-        bottom: 15px !important;
-        left: 15px !important;
-        right: 15px !important;
-    }
-    
-    .hero-slide-content h2 {
-        font-size: 1.1rem !important;
-    }
-    
-    .hero-slide-content p {
-        font-size: 0.7rem !important;
-        display: -webkit-box !important;
-        -webkit-line-clamp: 2 !important;
-        -webkit-box-orient: vertical !important;
-        overflow: hidden !important;
-    }
-    
-    .slider-dots {
-        bottom: 5px !important;
-    }
-    
-    .slider-dots .dot {
-        width: 6px !important;
-        height: 6px !important;
     }
     
     /* Category sections */
@@ -478,6 +578,73 @@
     }
 }
 
+/* Extra small devices */
+@media (max-width: 480px) {
+    .hero-slide {
+        height: 220px !important;
+        background-position: center 25% !important;
+    }
+    
+    .hero-slide-content h2 {
+        font-size: 0.95rem !important;
+    }
+    
+    .movie-card {
+        min-width: 100px !important;
+    }
+    
+    .movie-card img {
+        height: 140px !important;
+    }
+    
+    .movie-card h3 {
+        font-size: 0.7rem !important;
+    }
+    
+    .category-section h2 {
+        font-size: 1rem !important;
+    }
+    
+    .modal-info img {
+        width: 100px !important;
+    }
+    
+    #similar-movies-container {
+        gap: 8px !important;
+    }
+}
+
+/* Tablet */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .hero-slide {
+        height: 380px !important;
+    }
+    
+    .hero-slide-content {
+        bottom: 30px !important;
+        left: 40px !important;
+        right: 25% !important;
+    }
+    
+    .hero-slide-content h2 {
+        font-size: 1.5rem !important;
+    }
+    
+    .genre-container {
+        gap: 8px !important;
+        padding: 10px 15px !important;
+    }
+    
+    .genre-btn {
+        font-size: 0.75rem !important;
+        padding: 6px 12px !important;
+    }
+    
+    .movie-card {
+        min-width: 160px !important;
+    }
+}
+
 /* Mobile bottom nav */
 .mobile-nav {
     position: fixed;
@@ -617,41 +784,6 @@
     box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
 }
 
-/* Extra small devices */
-@media (max-width: 480px) {
-    .hero-slide {
-        height: 220px !important;
-    }
-    
-    .hero-slide-content h2 {
-        font-size: 0.95rem !important;
-    }
-    
-    .movie-card {
-        min-width: 100px !important;
-    }
-    
-    .movie-card img {
-        height: 140px !important;
-    }
-    
-    .movie-card h3 {
-        font-size: 0.7rem !important;
-    }
-    
-    .category-section h2 {
-        font-size: 1rem !important;
-    }
-    
-    .modal-info img {
-        width: 100px !important;
-    }
-    
-    #similar-movies-container {
-        gap: 8px !important;
-    }
-}
-
 /* Notched phones */
 @supports (padding: max(0px)) {
     @media (max-width: 767px) {
@@ -664,6 +796,10 @@
         .mobile-nav {
             padding-bottom: max(8px, env(safe-area-inset-bottom)) !important;
         }
+        
+        .hero-slide-content {
+            padding-bottom: max(15px, env(safe-area-inset-bottom)) !important;
+        }
     }
 }
 
@@ -671,6 +807,14 @@
 @media (max-width: 767px) and (orientation: landscape) {
     .hero-slide {
         height: 180px !important;
+    }
+    
+    .hero-slide-content h2 {
+        font-size: 0.9rem !important;
+    }
+    
+    .hero-slide-content p {
+        display: none !important;
     }
     
     .player-container {
@@ -683,22 +827,5 @@
     
     .mobile-genre-menu {
         max-height: 85vh !important;
-    }
-}
-
-/* Tablet */
-@media (min-width: 768px) and (max-width: 1024px) {
-    .genre-container {
-        gap: 8px !important;
-        padding: 10px 15px !important;
-    }
-    
-    .genre-btn {
-        font-size: 0.75rem !important;
-        padding: 6px 12px !important;
-    }
-    
-    .movie-card {
-        min-width: 160px !important;
     }
 }
