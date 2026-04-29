@@ -437,32 +437,36 @@
 }
 
 /* ============================================ */
-/* ✅ MOBILE OPTIMIZATIONS - BAWAS SPACING AT HIDE SCROLLBAR */
+/* ✅ MOBILE OPTIMIZATIONS - Dikit na spacing at hide scrollbar */
 /* ============================================ */
 
 @media (max-width: 768px) {
     
-    /* ===== BAWASAN ANG SPACING ===== */
+    /* ===== DIKIT NA SPACING SA PAGITAN NG MGA ROWS ===== */
     
+    /* Para mas dikit ang mga sections (Trending, Upcoming, TV Shows, Anime) */
     .category-section {
-        margin: 15px 0 !important;
+        margin: 6px 0 !important;
         padding: 0 10px !important;
     }
     
+    /* Para mas dikit ang title sa posters */
     .category-section h2 {
-        font-size: 0.9rem !important;
-        margin-bottom: 6px !important;
+        font-size: 0.85rem !important;
+        margin-bottom: 4px !important;
     }
     
+    /* Para mas dikit ang poster rows */
     .movie-row {
-        gap: 6px !important;
+        gap: 5px !important;
+        margin-bottom: 0 !important;
     }
     
     .movie-card {
         min-width: 95px !important;
     }
     
-    /* ✅ ORIGINAL SHAPE NG POSTERS - HINDI SQUARE */
+    /* Original shape ng posters - rectangle hindi square */
     .movie-card img {
         width: 100% !important;
         height: auto !important;
@@ -474,13 +478,14 @@
     .movie-card h3 {
         font-size: 0.65rem !important;
         margin-top: 3px !important;
+        margin-bottom: 2px !important;
     }
     
     .movie-card p {
         font-size: 0.55rem !important;
     }
     
-    /* ===== HIDE SCROLLBAR SA MOBILE ===== */
+    /* ===== HIDE SCROLLBAR SA MOBILE (pero pwedeng mag-swipe) ===== */
     .movie-row::-webkit-scrollbar {
         display: none !important;
     }
@@ -503,21 +508,22 @@
     }
     
     .load-more-container {
-        padding: 0 10px 15px !important;
+        padding: 0 10px 12px !important;
     }
     
     #load-more-btn {
-        padding: 8px !important;
-        font-size: 0.75rem !important;
+        padding: 6px !important;
+        font-size: 0.7rem !important;
     }
     
+    /* Bawasan ang ad container spacing para dikit din */
     .native-ad-container {
-        margin: 15px auto !important;
+        margin: 6px auto !important;
         padding: 0 10px !important;
     }
     
     .native-ad-container p {
-        font-size: 0.6rem !important;
-        margin-bottom: 5px !important;
+        font-size: 0.55rem !important;
+        margin-bottom: 3px !important;
     }
 }
