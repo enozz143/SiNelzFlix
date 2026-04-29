@@ -356,94 +356,11 @@
     color: #000;
 }
 
-/* Mobile adjustment for download button */
+/* Mobile adjustment */
 @media (max-width: 768px) {
     .download-nav-btn {
         padding: 6px 12px;
         font-size: 0.7rem;
         margin: 0 5px;
     }
-}
-
-/* ============================================ */
-/* ✅ HIDE DOWNLOAD BUTTON ON DESKTOP - SHOW ONLY ON MOBILE & TABLET */
-/* ============================================ */
-
-/* Hide on desktop (1024px and above) */
-@media (min-width: 1024px) {
-    .download-nav-btn {
-        display: none !important;
-    }
-}
-
-/* Show on tablet (768px to 1023px) - optional, kasi visible naman by default */
-@media (min-width: 768px) and (max-width: 1023px) {
-    .download-nav-btn {
-        display: inline-flex !important;
-    }
-}
-
-/* ============================================ */
-/* ✅ PERFORMANCE OPTIMIZATIONS - PARA HINDI MAINIT ANG PHONE */
-/* ============================================ */
-
-/* 1. Limit visible movie cards sa mobile para hindi sabay-sabay mag-load */
-@media (max-width: 768px) {
-    .movie-card:nth-child(n+15) {
-        display: none !important;
-    }
-}
-
-/* 2. Remove heavy animations sa mobile */
-@media (max-width: 768px) {
-    .movie-card, .genre-btn, .hero-slide, .search-dropdown-item {
-        transition: none !important;
-    }
-    
-    .movie-card:hover {
-        transform: none !important;
-    }
-    
-    /* Remove heavy shadows */
-    .movie-card, .genre-btn, .search-dropdown, .mobile-genre-menu {
-        box-shadow: none !important;
-    }
-    
-    /* Remove backdrop-filter (malakas sa CPU) */
-    .mobile-nav, .modal {
-        backdrop-filter: none !important;
-        background: #0a0a0a !important;
-    }
-}
-
-/* 3. Optimize images - lazy loading at content-visibility */
-img {
-    content-visibility: auto !important;
-    contain-intrinsic-size: auto 200px !important;
-}
-
-.movie-card img, .similar-item img, .search-dropdown-img {
-    background: #1a1a1a !important;
-}
-
-/* 4. Reduce paint operations */
-.movie-row {
-    scroll-behavior: smooth !important;
-    -webkit-overflow-scrolling: touch !important;
-}
-
-/* 5. Disable heavy filters on mobile */
-@media (max-width: 768px) {
-    .hero-slide::before {
-        background: linear-gradient(to top, #0a0a0a 0%, transparent 80%) !important;
-    }
-    
-    .download-nav-btn {
-        box-shadow: none !important;
-    }
-}
-
-/* 6. Limit API calls visualization - reduce reflows */
-#movies-list, #tvshows-list, #anime-list, #upcoming-list, #top-rated-list {
-    contain: layout style paint !important;
 }
