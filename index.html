@@ -17,18 +17,18 @@
     <meta name="google-site-verification" content="qwSQmjhkugm8eUJeMZeGK5seJ4ZXi38a_uG97iOwAdQ" />
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
     <meta name="author" content="CINElzFlix">
-    <meta name="keywords" content="watch movies online, streaming, watch movies, tv shows, anime streaming, CINElzFlix, HD movies, trending movies, upcoming blockbusters">
+    <meta name="keywords" content="watch movies online, streaming, watch movies, tv shows, anime streaming, CINElzFlix, HD movies">
     <meta name="revisit-after" content="1 day">
     
     <title>CINElzFlix | Watch Movies, TV Shows & Anime Online in HD</title>
-    <meta name="description" content="Stream the latest movies, TV shows, and anime in HD quality on CINElzFlix. No sign-up required. Your ultimate cinematic experience starts here!">
+    <meta name="description" content="Stream the latest movies, TV shows, and anime in HD quality on CINElzFlix. Your ultimate cinematic experience starts here!">
 
     <!-- Canonical Tag -->
     <link rel="canonical" href="https://cinelzflix.com/">
 
     <!-- Open Graph -->
     <meta property="og:title" content="CINElzFlix | Watch Movies, TV Shows & Anime Online">
-    <meta property="og:description" content="Stream the latest trending movies, TV series, and anime in HD quality. No sign-up required!">
+    <meta property="og:description" content="Stream the latest trending movies, TV series, and anime in HD quality.">
     <meta property="og:image" content="https://cinelzflix.com/logo.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -40,7 +40,7 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="CINElzFlix | Watch Movies, TV Shows & Anime">
-    <meta name="twitter:description" content="Stream the latest movies and TV series in HD quality. No sign-up required!">
+    <meta name="twitter:description" content="Stream the latest movies and TV series in HD quality.">
     <meta name="twitter:image" content="https://cinelzflix.com/logo.png">
     <meta name="twitter:site" content="@cinelzflix">
 
@@ -53,7 +53,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="style.css?v=1.7">
+    <link rel="stylesheet" href="style.css?v=2.0">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
     
     <!-- JSON-LD Structured Data -->
@@ -63,7 +63,7 @@
         "@type": "WebSite",
         "name": "CINElzFlix",
         "url": "https://cinelzflix.com/",
-        "description": "Watch movies, TV shows, and anime online in HD quality. No sign-up required.",
+        "description": "Watch movies, TV shows, and anime online in HD quality.",
         "potentialAction": {
             "@type": "SearchAction",
             "target": {
@@ -80,7 +80,7 @@
     <nav id="navbar">
         <div class="logo">
             <a href="/" style="text-decoration: none;">
-                <img src="logo.png" alt="CINElzFlix Logo" id="site-logo">
+                <img src="logo.png" alt="CINElzFlix Logo" id="site-logo" width="120" height="40">
             </a>
             <a href="https://github.com/enozZZZ/enozZ/releases/download/v1.0/cinelzflix.apk" class="download-nav-btn" download>
                 📱 Download App
@@ -105,7 +105,7 @@
                 <div class="slider-dots" id="slider-dots"></div>
             </section>
 
-            <!-- ✅ NETFLIX-STYLE MOBILE TOP NAVIGATION -->
+            <!-- NETFLIX-STYLE MOBILE TOP NAVIGATION -->
             <div class="mobile-top-nav">
                 <button class="top-nav-btn active" id="movies-tab" onclick="switchTab('movies')">🎬 Movies</button>
                 <button class="top-nav-btn" id="tvshows-tab" onclick="switchTab('tvshows')">📺 TV Shows</button>
@@ -135,7 +135,7 @@
                 </div>
             </div>
 
-            <!-- ✅ DESKTOP GENRE CONTAINER (hidden on mobile) -->
+            <!-- DESKTOP GENRE CONTAINER (hidden on mobile) -->
             <div class="genre-container desktop-only">
                 <button class="genre-btn active" onclick="filterGenre('all')">All</button>
                 <button class="genre-btn" onclick="filterGenre('28')">Action</button>
@@ -163,9 +163,9 @@
                 <div id="movies-list" class="movie-row horizontal-scroll"></div>
             </section>
             
-            <div class="native-ad-container" style="margin: 30px auto; max-width: 1200px; padding: 0 15px; text-align: center;">
+            <div class="native-ad-container">
                 <p style="color: rgba(255,255,255,0.3); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">Recommended for you</p>
-                <div id="adsterra-native-slot" style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 15px; min-height: 100px;">
+                <div id="adsterra-native-slot">
                     <script async="async" data-cfasync="false" src="https://pl28947985.profitablecpmratenetwork.com/fc6a7236b66d527871d5f41236ef0ec5/invoke.js"></script>
                     <div id="container-fc6a7236b66d527871d5f41236ef0ec5"></div>
                 </div>
@@ -208,7 +208,7 @@
             </div>
             <div class="modal-details">
                 <div class="modal-info">
-                    <img id="modal-image" src="" alt="Poster">
+                    <img id="modal-image" src="" alt="Poster" loading="lazy">
                     <div>
                         <h2 id="modal-title"></h2>
                         <div id="modal-rating"></div>
@@ -224,9 +224,9 @@
                 
                 <div id="similar-movies-container"></div>
                 
-                <div class="modal-banner-ad" style="margin-top: 30px; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+                <div class="modal-banner-ad">
                     <p style="color: rgba(255,255,255,0.3); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">Recommended for you</p>
-                    <div id="adsterra-modal-banner-slot" style="min-height: 250px; display: flex; justify-content: center; align-items: center;">
+                    <div id="adsterra-modal-banner-slot">
                         <script>
                             atOptions = {
                                 'key' : '4677c11ed240a7ea84888be8a557f607',
@@ -283,7 +283,7 @@
         <div id="mobile-genre-list" class="mobile-genre-list"></div>
     </div>
 
-    <script type="module" src="script.js"></script>
+    <script src="script.js" type="module"></script>
     
     <script>
         // Disable right click
@@ -317,35 +317,25 @@
         function switchTab(tab) {
             currentTab = tab;
             
-            // Update active states
             const moviesTab = document.getElementById('movies-tab');
             const tvshowsTab = document.getElementById('tvshows-tab');
             
             if (tab === 'movies') {
                 moviesTab.classList.add('active');
                 tvshowsTab.classList.remove('active');
-                showMoviesOnly();
+                document.getElementById('movies-section').style.display = 'block';
+                document.getElementById('tvshows-section').style.display = 'none';
+                document.getElementById('upcoming-section').style.display = 'block';
+                document.getElementById('toprated-section').style.display = 'block';
             } else {
                 tvshowsTab.classList.add('active');
                 moviesTab.classList.remove('active');
-                showTVShowsOnly();
+                document.getElementById('movies-section').style.display = 'none';
+                document.getElementById('tvshows-section').style.display = 'block';
+                document.getElementById('upcoming-section').style.display = 'none';
+                document.getElementById('toprated-section').style.display = 'none';
             }
-        }
-        
-        function showMoviesOnly() {
-            document.getElementById('movies-section').style.display = 'block';
-            document.getElementById('tvshows-section').style.display = 'none';
-            document.getElementById('upcoming-section').style.display = 'block';
             document.getElementById('anime-section').style.display = 'block';
-            document.getElementById('toprated-section').style.display = 'block';
-        }
-        
-        function showTVShowsOnly() {
-            document.getElementById('movies-section').style.display = 'none';
-            document.getElementById('tvshows-section').style.display = 'block';
-            document.getElementById('upcoming-section').style.display = 'none';
-            document.getElementById('anime-section').style.display = 'block';
-            document.getElementById('toprated-section').style.display = 'block';
         }
         
         function toggleCategories() {
@@ -355,9 +345,11 @@
         
         function filterGenre(genreId) {
             console.log('Filtering genre:', genreId);
-            // Your existing filterGenre logic here
             const menu = document.getElementById('categories-menu');
             if (menu) menu.classList.remove('show');
+            if (typeof window.filterGenreOriginal === 'function') {
+                window.filterGenreOriginal(genreId);
+            }
         }
         
         // Close dropdown when clicking outside
@@ -373,6 +365,30 @@
         window.switchTab = switchTab;
         window.toggleCategories = toggleCategories;
         window.filterGenre = filterGenre;
+        
+        // ============================================
+        // PERFORMANCE OPTIMIZATIONS
+        // ============================================
+        
+        // Lazy loading images
+        function initLazyLoading() {
+            const images = document.querySelectorAll('img:not([loading="lazy"])');
+            images.forEach(img => {
+                if (!img.hasAttribute('loading')) {
+                    img.setAttribute('loading', 'lazy');
+                }
+            });
+        }
+        
+        // Debounce scroll events
+        let scrollTimeout;
+        window.addEventListener('scroll', () => {
+            if (scrollTimeout) clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {}, 100);
+        });
+        
+        // Initialize lazy loading
+        initLazyLoading();
     </script>
     
     <script src="https://pl28947937.profitablecpmratenetwork.com/a5/c3/8e/a5c38ef495583bd163602819c5112f48.js"></script>
