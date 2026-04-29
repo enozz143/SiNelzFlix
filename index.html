@@ -13,7 +13,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     
-    <!-- ✅ SEO Meta Tags - Safe Version (Minimal "free") -->
+    <!-- ✅ SEO Meta Tags -->
     <meta name="google-site-verification" content="qwSQmjhkugm8eUJeMZeGK5seJ4ZXi38a_uG97iOwAdQ" />
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
     <meta name="author" content="CINElzFlix">
@@ -26,7 +26,7 @@
     <!-- ✅ Canonical Tag -->
     <link rel="canonical" href="https://cinelzflix.com/">
 
-    <!-- ✅ Open Graph (Facebook, WhatsApp, Telegram) - Safe Version -->
+    <!-- ✅ Open Graph -->
     <meta property="og:title" content="CINElzFlix | Watch Movies, TV Shows & Anime Online">
     <meta property="og:description" content="Stream the latest trending movies, TV series, and anime in HD quality. No sign-up required!">
     <meta property="og:image" content="https://cinelzflix.com/logo.png">
@@ -37,7 +37,7 @@
     <meta property="og:site_name" content="CINElzFlix">
     <meta property="og:locale" content="en_US">
 
-    <!-- ✅ Twitter Card - Safe Version -->
+    <!-- ✅ Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="CINElzFlix | Watch Movies, TV Shows & Anime">
     <meta name="twitter:description" content="Stream the latest movies and TV series in HD quality. No sign-up required!">
@@ -56,7 +56,7 @@
     <link rel="stylesheet" href="style.css?v=1.6">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
     
-    <!-- ✅ JSON-LD Structured Data - Safe Version -->
+    <!-- ✅ JSON-LD Structured Data -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -146,7 +146,7 @@
                 <div id="movies-list" class="movie-row horizontal-scroll"></div>
             </section>
             
-          <section class="category-section">
+            <section class="category-section">
                 <h2>🔥 Upcoming Blockbusters</h2>
                 <div id="upcoming-list" class="movie-row horizontal-scroll"></div>
             </section>
@@ -171,13 +171,14 @@
             </div>
         </div>
     </main>
-      <div class="native-ad-container" style="margin: 30px auto; max-width: 1200px; padding: 0 15px; text-align: center;">
-                <p style="color: rgba(255,255,255,0.3); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">Recommended for you</p>
-                <div id="adsterra-native-slot" style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 15px; min-height: 100px;">
-                    <script async="async" data-cfasync="false" src="https://pl28947985.profitablecpmratenetwork.com/fc6a7236b66d527871d5f41236ef0ec5/invoke.js"></script>
-                    <div id="container-fc6a7236b66d527871d5f41236ef0ec5"></div>
-                </div>
-            </div>
+    
+    <div class="native-ad-container" style="margin: 30px auto; max-width: 1200px; padding: 0 15px; text-align: center;">
+        <p style="color: rgba(255,255,255,0.3); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">Recommended for you</p>
+        <div id="adsterra-native-slot" style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 15px; min-height: 100px;">
+            <script async="async" data-cfasync="false" src="https://pl28947985.profitablecpmratenetwork.com/fc6a7236b66d527871d5f41236ef0ec5/invoke.js"></script>
+            <div id="container-fc6a7236b66d527871d5f41236ef0ec5"></div>
+        </div>
+    </div>
 
     <div id="modal" class="modal">
         <div class="modal-header-branding">
@@ -252,9 +253,9 @@
             <span class="nav-label">Search</span>
         </div>
         <div class="nav-item" id="menu-toggle" onclick="toggleGenreMenu()">
-    <span class="nav-icon">🎬</span>
-    <span class="nav-label">Categories</span>
-</div>
+            <span class="nav-icon">🎬</span>
+            <span class="nav-label">Categories</span>
+        </div>
     </div>
 
     <div id="mobile-genre-menu" class="mobile-genre-menu" style="display: none;">
@@ -292,10 +293,9 @@
         }
         
         // ============================================
-        // ✅ HEATING FIX - PARA HINDI MAINIT ANG PHONE
+        // HEATING FIX - PARA HINDI MAINIT ANG PHONE
         // ============================================
         
-        // Lazy loading sa lahat ng images
         function initLazyLoading() {
             const images = document.querySelectorAll('img');
             images.forEach(img => {
@@ -303,20 +303,17 @@
                     img.setAttribute('loading', 'lazy');
                 }
             });
-            console.log('✅ Heating fix applied - lazy loading enabled');
+            console.log('✅ Lazy loading enabled');
         }
         
-        // Debounce scroll events
         let scrollTimeout;
         window.addEventListener('scroll', function() {
             if (scrollTimeout) clearTimeout(scrollTimeout);
             scrollTimeout = setTimeout(function() {}, 100);
         });
         
-        // Run on load
         document.addEventListener('DOMContentLoaded', initLazyLoading);
         
-        // Detect battery saving mode
         if ('getBattery' in navigator) {
             navigator.getBattery().then(function(battery) {
                 if (!battery.charging && battery.level < 0.2) {
@@ -329,7 +326,7 @@
         }
         
         // ============================================
-        // ✅ FIX: LOAD MORE BUTTON AT GENRE FILTER WITH AUTO-SCROLL
+        // MAIN FUNCTIONS - GENRE FILTER & LOAD MORE
         // ============================================
         
         let loadMorePage = 1;
@@ -337,10 +334,9 @@
         let currentGenre = 'all';
         let currentType = 'movie';
         
-        // ✅ FIXED: Use the correct API URL for GitHub Pages
+        // Direct API URL - works on both mobile and desktop
         const API_URL = 'https://cinelzflix-worker.baquial-enozz.workers.dev/';
         
-        // Save original movies HTML for "All" reset
         let originalMoviesHTML = '';
         let originalTitleText = '📺 Trending Movies';
         
@@ -397,7 +393,7 @@
             }, 200);
         }
         
-        // Override filterGenre
+        // Genre filter function
         window.filterGenre = async function(genreId) {
             console.log('Genre clicked:', genreId);
             
@@ -406,6 +402,7 @@
             
             if (!originalMoviesHTML) {
                 saveOriginalContent();
+                console.log('Original content saved');
             }
             
             currentGenre = genreId;
@@ -431,6 +428,7 @@
             
             try {
                 const url = `${API_URL}?endpoint=/discover/movie&with_genres=${genreId}&sort_by=popularity.desc&vote_count.gte=100&page=1`;
+                console.log('Fetching genre movies:', url);
                 const response = await fetch(url);
                 const data = await response.json();
                 const movies = data.results || [];
@@ -461,14 +459,17 @@
                 scrollToMovies();
                 
             } catch (error) {
-                console.error('Error:', error);
-                moviesContainer.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">Failed to load.</p>';
+                console.error('Error loading genre:', error);
+                moviesContainer.innerHTML = '<p style="color: #888; text-align: center; padding: 40px;">Failed to load. Please try again.</p>';
             }
         };
         
-        // Override loadMore function - FIXED for mobile
+        // Load more function - works on mobile
         window.loadMore = async function() {
-            if (isLoading) return;
+            if (isLoading) {
+                console.log('Already loading...');
+                return;
+            }
             isLoading = true;
             
             const loadMoreBtn = document.getElementById('load-more-btn');
@@ -486,7 +487,7 @@
                     url = `${API_URL}?endpoint=/discover/movie&with_genres=${currentGenre}&sort_by=popularity.desc&vote_count.gte=100&page=${loadMorePage}`;
                 }
                 
-                console.log('Loading more from:', url);
+                console.log('Load more URL:', url);
                 
                 const response = await fetch(url);
                 const data = await response.json();
@@ -514,9 +515,10 @@
                     
                     if (moviesContainer) {
                         moviesContainer.insertAdjacentHTML('beforeend', newMoviesHTML);
-                        console.log(`Added ${movies.length} more movies`);
+                        console.log(`✅ Added ${movies.length} more movies (total page ${loadMorePage})`);
                     }
                 } else {
+                    console.log('No more movies available');
                     if (loadMoreBtn) loadMoreBtn.innerHTML = 'No More Movies';
                     setTimeout(() => {
                         if (loadMoreBtn) loadMoreBtn.innerHTML = originalText;
@@ -538,8 +540,7 @@
             isLoading = false;
         };
         
-        console.log('✅ Load more and genre filter with auto-scroll enabled!');
-        console.log('✅ API URL:', API_URL);
+        console.log('✅ All functions loaded! API URL:', API_URL);
     </script>
     
     <script src="https://pl28947937.profitablecpmratenetwork.com/a5/c3/8e/a5c38ef495583bd163602819c5112f48.js"></script>
