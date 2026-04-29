@@ -6,6 +6,33 @@ import { displayList, handleSearch, filterGenre, loadMore } from './js/ui.js';
 import { showDetails, closeModal, changeServer, playTrailer } from './js/modal.js';
 import { initCountdown } from './js/countdown.js';
 
+// ============================================
+// ✅ GENRE ID MAPPING FOR ADDITIONAL SECTIONS
+// ============================================
+
+const genreMapping = [
+    { name: 'action', id: 28, title: '🔥 Action Movies' },
+    { name: 'adventure', id: 12, title: '🗺️ Adventure Movies' },
+    { name: 'comedy', id: 35, title: '😂 Comedy Movies' },
+    { name: 'drama', id: 18, title: '🎭 Drama Movies' },
+    { name: 'horror', id: 27, title: '😱 Horror Movies' },
+    { name: 'thriller', id: 53, title: '🔪 Thriller Movies' },
+    { name: 'romance', id: 10749, title: '💖 Romance Movies' },
+    { name: 'scifi', id: 878, title: '🚀 Sci-Fi Movies' },
+    { name: 'fantasy', id: 14, title: '🧙 Fantasy Movies' },
+    { name: 'mystery', id: 9648, title: '🕵️ Mystery Movies' },
+    { name: 'crime', id: 80, title: '🕵️ Crime Movies' },
+    { name: 'animation', id: 16, title: '🎨 Animation' },
+    { name: 'documentary', id: 99, title: '📽️ Documentary' },
+    { name: 'family', id: 10751, title: '👨‍👩‍👧 Family Movies' },
+    { name: 'war', id: 10752, title: '⚔️ War Movies' },
+    { name: 'western', id: 37, title: '🤠 Western Movies' },
+    { name: 'musical', id: 10402, title: '🎵 Musical Movies' },
+    { name: 'biography', id: 36, title: '📖 Biography Movies' },
+    { name: 'history', id: 36, title: '📜 History Movies' },
+    { name: 'sports', id: 10762, title: '🏅 Sports Movies' }
+];
+
 // --- HELPER: SKELETON LOADER ---
 function showSkeletons(containerId, count = 10) {
     const container = document.getElementById(containerId);
@@ -18,11 +45,64 @@ function showSkeletons(containerId, count = 10) {
     container.innerHTML = skeletonHTML;
 }
 
+// --- LOAD GENRE MOVIES (for additional sections) ---
+async function loadGenreMovies(genreName, genreId) {
+    const container = document.getElementById(`genre-${genreName}-list`);
+    if (!container) return;
+    
+    try {
+        const url = `${BASE_URL}?endpoint=/discover/movie&with_genres=${genreId}&sort_by=popularity.desc&vote_count.gte=100&page=1`;
+        const response = await fetch(url);
+        const data = await response.json();
+        const movies = data.results || [];
+        
+        if (movies.length === 0) {
+            container.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">No movies found.</p>';
+            return;
+        }
+        
+        container.innerHTML = movies.slice(0, 12).map(movie => `
+            <div class="movie-card" onclick="window.location.href='/movie/?id=${movie.id}&type=movie'">
+                <img src="https://image.tmdb.org/t/p/w200${movie.poster_path}" 
+                     alt="${movie.title.replace(/"/g, '&quot;')}"
+                     loading="lazy"
+                     onerror="this.src='https://via.placeholder.com/200x300?text=No+Poster'">
+                <h3>${movie.title}</h3>
+                <p>⭐ ${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}</p>
+            </div>
+        `).join('');
+        
+    } catch (error) {
+        console.error(`Error loading ${genreName} movies:`, error);
+        container.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">Failed to load movies.</p>';
+    }
+}
+
+// Load all genre movies
+async function loadAllGenreMovies() {
+    console.log('🎬 Loading additional genre sections...');
+    
+    // Load skeletons first
+    for (const genre of genreMapping) {
+        const container = document.getElementById(`genre-${genre.name}-list`);
+        if (container) {
+            showSkeletons(`genre-${genre.name}-list`, 8);
+        }
+    }
+    
+    // Load actual movies
+    for (const genre of genreMapping) {
+        await loadGenreMovies(genre.name, genre.id);
+    }
+    
+    console.log('✅ All genre sections loaded!');
+}
+
 // --- BRIDGE TO HTML ---
 window.showDetails = showDetails;
 window.closeModal = closeModal;
 window.changeServer = changeServer;
-window.playTrailer = playTrailer; // Dinagdag ito para ma-access ng buttons sa HTML 👈
+window.playTrailer = playTraiter; // Dinagdag ito para ma-access ng buttons sa HTML 👈
 window.nextSlide = nextSlide;
 window.goToSlide = goToSlide;
 window.handleSearch = handleSearch;
@@ -187,8 +267,11 @@ async function init() {
                 console.error(`Error loading category ${cat.container}:`, catErr);
             }
         }
+        
+        // 3. Load Additional Genre Sections
+        await loadAllGenreMovies();
 
-        // 3. Deep Linking Support
+        // 4. Deep Linking Support
         const params = new URLSearchParams(window.location.search);
         const movieId = params.get('movie');
         const tvId = params.get('tv');
