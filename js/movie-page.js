@@ -1,6 +1,6 @@
 /**
  * CINElzFlix - Movie Page Engine
- * Version: 6.0 (SEO Optimized with Meta Tags)
+ * Version: 7.0 (No Descriptions - DMCA Safe)
  */
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -15,7 +15,7 @@ window.currentMovieData = null;
 window.movieTitle = "";
 
 // ============================================
-// ✅ SEO META TAGS UPDATE FUNCTION
+// ✅ SEO META TAGS UPDATE FUNCTION (WALANG DESCRIPTION)
 // ============================================
 function updateMetaTags(movieData, type) {
     const title = movieData.title || movieData.name || 'CINElzFlix';
@@ -24,9 +24,8 @@ function updateMetaTags(movieData, type) {
         ? `${title} (${year}) - Watch ${type === 'movie' ? 'Movie' : 'TV Series'} Online | CINElzFlix` 
         : `${title} - Watch ${type === 'movie' ? 'Movie' : 'TV Series'} Online | CINElzFlix`;
     
-    const description = movieData.overview 
-        ? `${movieData.overview.substring(0, 160)}... Watch ${title} in HD quality on CINElzFlix.` 
-        : `Watch ${title} online for free in HD. Stream the best movies and TV series at CINElzFlix.`;
+    // ✅ WALANG DESCRIPTION - generic lang
+    const description = `Watch ${title} in HD quality on CINElzFlix.`;
     
     const posterUrl = movieData.poster_path 
         ? `https://image.tmdb.org/t/p/original${movieData.poster_path}`
@@ -120,21 +119,20 @@ function updateMetaTags(movieData, type) {
         document.head.appendChild(twitterImage);
     }
     
-    // ✅ Add JSON-LD Structured Data (mas maganda sa Google search results)
-    addJsonLd(movieData, type, fullTitle, description, posterUrl, pageUrl);
+    // ✅ Add JSON-LD Structured Data (walang description)
+    addJsonLd(movieData, type, fullTitle, posterUrl, pageUrl);
     
-    console.log('✅ Meta tags updated for:', title);
+    console.log('✅ Meta tags updated (no description) for:', title);
 }
 
 // ============================================
-// ✅ JSON-LD STRUCTURED DATA
+// ✅ JSON-LD STRUCTURED DATA (WALANG DESCRIPTION)
 // ============================================
-function addJsonLd(movieData, type, fullTitle, description, posterUrl, pageUrl) {
+function addJsonLd(movieData, type, fullTitle, posterUrl, pageUrl) {
     const jsonLd = {
         "@context": "https://schema.org",
         "@type": type === 'movie' ? "Movie" : "TVSeries",
         "name": movieData.title || movieData.name,
-        "description": description,
         "image": posterUrl,
         "url": pageUrl,
         "datePublished": movieData.release_date || movieData.first_air_date,
@@ -210,7 +208,7 @@ async function initMoviePage() {
         window.currentMovieData = data;
         window.movieTitle = data.title || data.name || "Unknown Title";
         
-        // ✅ UPDATE META TAGS DYNAMICALLY
+        // ✅ UPDATE META TAGS DYNAMICALLY (walang description)
         updateMetaTags(data, mediaType);
         
         renderHero(data);
@@ -519,11 +517,11 @@ function showNoTrailerModal() {
 function renderHero(data) {
     const heroBg = document.getElementById('movie-hero');
     const title = document.getElementById('movie-title');
-    const desc = document.getElementById('movie-description-hero');
+    // ✅ DESCRIPTION REMOVED
     const meta = document.getElementById('movie-meta-hero');
 
     if (title) title.innerText = data.title || data.name;
-    if (desc) desc.innerText = data.overview ? data.overview.substring(0, 180) + "..." : "No description available.";
+    // ✅ Description removed - hindi na nagre-render
     
     if (meta) {
         const year = (data.release_date || data.first_air_date || "").split('-')[0];
@@ -544,11 +542,11 @@ function renderHero(data) {
 
 function renderDetails(data) {
     const poster = document.getElementById('movie-poster');
-    const overview = document.getElementById('movie-overview');
+    // ✅ DESCRIPTION REMOVED
     const vote = document.getElementById('vote-avg');
     
     if (poster) poster.src = data.poster_path ? `${TMDB_POSTER}${data.poster_path}` : 'https://via.placeholder.com/500x750?text=No+Poster';
-    if (overview) overview.innerText = data.overview || "The plot for this title is currently unavailable.";
+    // ✅ Description removed - hindi na nagre-render
     if (vote) vote.innerText = data.vote_average ? data.vote_average.toFixed(1) : "0.0";
 }
 
