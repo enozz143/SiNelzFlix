@@ -8,16 +8,16 @@
     <title id="page-title">Loading - CINElzFlix</title>
     
     <!-- ✅ BASIC SEO META TAGS -->
-    <meta name="description" id="meta-description" content="Watch latest movies and TV series online for free in HD. CINElzFlix - Your ultimate streaming destination.">
-    <meta name="keywords" content="watch movies online, free movies, streaming, HD movies, TV series, anime, CINElzFlix">
+    <meta name="description" id="meta-description" content="Watch latest movies and TV series online in HD. CINElzFlix - Your ultimate streaming destination.">
+    <meta name="keywords" content="watch movies online, streaming, HD movies, TV series, anime, CINElzFlix">
     <meta name="author" content="Nelz">
     <meta name="robots" content="index, follow">
     <meta name="googlebot" content="index, follow">
     <meta name="revisit-after" content="1 day">
     
     <!-- ✅ OPEN GRAPH (Facebook, WhatsApp, Telegram) -->
-    <meta property="og:title" id="og-title" content="CINElzFlix - Watch Movies Online Free">
-    <meta property="og:description" id="og-description" content="Stream the latest movies and TV series in HD quality. No sign-up required.">
+    <meta property="og:title" id="og-title" content="CINElzFlix - Watch Movies Online">
+    <meta property="og:description" id="og-description" content="Stream the latest movies and TV series in HD quality.">
     <meta property="og:image" id="og-image" content="https://cinelzflix.com/logo.png">
     <meta property="og:url" id="og-url" content="https://cinelzflix.com">
     <meta property="og:type" content="website">
@@ -27,7 +27,7 @@
     
     <!-- ✅ TWITTER CARD -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" id="twitter-title" content="CINElzFlix - Watch Movies Online Free">
+    <meta name="twitter:title" id="twitter-title" content="CINElzFlix - Watch Movies Online">
     <meta name="twitter:description" id="twitter-description" content="Stream the latest movies and TV series in HD quality.">
     <meta name="twitter:image" id="twitter-image" content="https://cinelzflix.com/logo.png">
     
@@ -42,7 +42,7 @@
     <link rel="stylesheet" href="movie-style.css"> 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
     
-    <!-- ✅ FAVICON (optional) -->
+    <!-- ✅ FAVICON -->
     <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="shortcut icon" href="/favicon.ico">
 </head>
@@ -65,7 +65,7 @@
         <div class="hero-info-content">
             <div class="hero-meta" id="movie-meta-hero"></div>
             <h1 id="movie-title">Loading Title...</h1>
-            <p id="movie-description-hero">Fetching cinematic details...</p>
+            <!-- ✅ DESCRIPTION REMOVED -->
             <div class="hero-actions">
                 <button id="scroll-to-player" class="watch-now">▶ WATCH FULL MOVIE</button>
                 <button id="play-trailer-btn" class="btn-secondary">🎬 WATCH TRAILER</button>
@@ -121,15 +121,14 @@
             </div>
         </div>
 
-        <!-- BOTTOM SECTION: Poster, Description & Cast -->
+        <!-- BOTTOM SECTION: Poster & Cast (WALANG DESCRIPTION) -->
         <div class="movie-info-grid">
             <div class="poster-side">
                 <img id="movie-poster" src="" alt="Poster">
                 <div class="rating-badge" id="vote-avg">0.0</div>
             </div>
             <div class="details-side">
-                <h2>The Story</h2>
-                <p id="movie-overview">Loading overview...</p>
+                <!-- ✅ DESCRIPTION REMOVED -->
                 
                 <div class="cast-section">
                     <h3>Top Cast</h3>
@@ -343,15 +342,15 @@
         }
         
         // ============================================================
-        // ✅ FUNCTION TO UPDATE META TAGS DYNAMICALLY (para sa movie-page.js)
+        // ✅ META TAGS UPDATE (WALANG DESCRIPTION)
         // ============================================================
         window.updateMetaTags = function(movieData, type) {
             const title = movieData.title || movieData.name || 'CINElzFlix';
             const year = (movieData.release_date || movieData.first_air_date || '').split('-')[0];
             const fullTitle = year ? `${title} (${year}) - Watch ${type === 'movie' ? 'Movie' : 'TV Series'} Online | CINElzFlix` : `${title} - Watch ${type === 'movie' ? 'Movie' : 'TV Series'} Online | CINElzFlix`;
-            const description = movieData.overview 
-                ? `${movieData.overview.substring(0, 160)}... Watch ${title} in HD quality on CINElzFlix.` 
-                : `Watch ${title} online for free in HD. Stream the best movies and TV series at CINElzFlix.`;
+            
+            // ✅ WALANG DESCRIPTION - generic lang
+            const description = `Watch ${title} in HD quality on CINElzFlix.`;
             
             const posterUrl = movieData.poster_path 
                 ? `https://image.tmdb.org/t/p/original${movieData.poster_path}`
@@ -389,7 +388,7 @@
             const twitterImage = document.querySelector('meta[name="twitter:image"]');
             if (twitterImage) twitterImage.setAttribute('content', posterUrl);
             
-            console.log('✅ Meta tags updated for:', title);
+            console.log('✅ Meta tags updated (no description) for:', title);
         };
     </script>
     
